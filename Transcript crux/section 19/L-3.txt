@@ -1,0 +1,116 @@
+1️⃣ What This Video Tries to Prove
+
+A web server is just software
+
+Tools like nginx are programs that:
+
+Listen on a port
+
+Receive HTTP requests
+
+Serve files as responses
+
+You can build a basic version yourself using Node.js
+
+2️⃣ What You Actually Built
+
+A custom static file server that:
+
+Listens on a port (e.g., 3000)
+
+Serves:
+
+index.html for /
+
+Other .html files for /about.html, /contact.html
+
+Shows a 404 error if file doesn’t exist
+
+👉 Same core job as nginx (at a basic level)
+
+3️⃣ Core Node.js Modules Used
+
+http → create & run server
+
+fs → read files from disk
+
+path → resolve file paths & extensions
+
+4️⃣ How the Server Works (Flow)
+
+Browser makes request → localhost:3000/...
+
+Server listens on a port
+
+Request arrives as req
+
+Server decides:
+
+Which file to serve
+
+Or send a 404
+
+Server sends response using res
+
+5️⃣ Key Server Concepts Learned
+
+http.createServer((req, res) => {})
+
+req.url → tells which file is requested
+
+res.writeHead() → send headers (status + content-type)
+
+res.end() → send response body & close connection
+
+6️⃣ File Serving Logic
+
+/ → serve index.html
+
+Any other URL → serve matching file
+
+File path resolved using:
+
+__dirname
+
+path.join()
+
+7️⃣ MIME Types (Important)
+
+Server must tell browser what type of file it is sending
+
+Examples:
+
+.html → text/html
+
+.css → text/css
+
+.js → text/javascript
+
+unknown → application/octet-stream
+
+8️⃣ Error Handling
+
+If file not found (ENOENT)
+
+Send 404
+
+Custom message like “File not found”
+
+9️⃣ Why This Matters
+
+You now understand:
+
+What servers actually do
+
+How HTTP works internally
+
+How Node.js powers backend systems
+
+This removes fear of backend & servers
+
+🔟 Big Takeaway
+
+Frameworks don’t replace understanding — they simplify it.
+This video gives you the raw foundation before using tools like Express.
+
+(Next step is Express, which abstracts all this.)
