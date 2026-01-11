@@ -1,0 +1,105 @@
+1️⃣ Purpose of This Video
+
+Optional / exploratory video
+
+Shows how powerful Node.js event-driven architecture is
+
+Demonstrates:
+
+Events
+
+Custom loggers
+
+OS-level monitoring
+
+2️⃣ Two Core Concepts
+
+Events → something happens → trigger action
+
+Loggers → record events (console / file / monitoring tools)
+
+Node.js is built on event-driven architecture.
+
+3️⃣ What You Built
+
+A custom event logger that:
+
+Emits events
+
+Listens to those events
+
+Logs system activity (memory usage)
+
+Writes logs to a file
+
+4️⃣ Node.js Modules Used
+
+fs → write logs to file
+
+os → system memory info
+
+events → event emitter base class
+
+5️⃣ EventEmitter Usage
+
+Extend EventEmitter to create a custom Logger class
+
+Custom method log():
+
+Emits a "message" event
+
+Listener listens using:
+
+logger.on("message", callback)
+
+👉 Emitter name and listener name must match
+
+6️⃣ Logging Flow
+
+logger.log(message) called
+
+Emits "message" event
+
+Listener receives event object
+
+Log written to file with timestamp
+
+7️⃣ OS Monitoring
+
+Uses:
+
+os.freemem()
+
+os.totalmem()
+
+Calculates memory usage percentage
+
+Runs every 3 seconds using setInterval
+
+8️⃣ File Logging
+
+Logs appended to eventlog.txt
+
+Format:
+
+TIMESTAMP - MESSAGE
+
+9️⃣ Why This Matters
+
+This is the foundation of:
+
+Production loggers (e.g. Winston)
+
+Process managers (e.g. PM2)
+
+Explains how Node.js:
+
+Waits for events
+
+Reacts when they occur
+
+Scales efficiently
+
+🔟 Key Takeaway
+
+Node.js works by listening for events and reacting to them — logging, servers, sockets, monitoring all follow this model.
