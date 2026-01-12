@@ -1,0 +1,45 @@
+📦 SQL vs NoSQL — Single Copy CRUX
+Databases exist for permanent (persistent) storage; 
+memory is temporary
+Core database operations = CRUD (Create, Read, Update, Delete)
+
+SQL (Structured Query Language):
+Uses a fixed schema
+Data stored in tables (rows & columns) like Excel
+Tables are connected using primary keys & foreign keys
+Also called relational databases (RDBMS)
+Best for structured, predictable data
+Examples: MySQL, PostgreSQL
+
+NoSQL (Not Only SQL):
+Uses flexible schema
+Data stored as documents (JSON-like objects)
+Different records can have different fields
+Easy to evolve data structure over time
+Best for dynamic, rapidly changing data
+Example: MongoDB
+
+Key Difference:
+SQL → strict structure, strong relationships
+NoSQL → flexible structure, faster iteration
+
+Types of NoSQL databases:
+Document
+Key-value
+Column-oriented
+Graph
+Vector (modern use cases)
+
+Scaling:
+SQL → traditionally vertical
+NoSQL → designed for horizontal scaling
+
+Modern reality:
+No database is “better”
+Choice depends on use case
+Line between SQL & NoSQL is increasingly blurry
+
+Learning path in this course:
+Start with NoSQL (MongoDB)
+Learn through real projects, not theory
+SQL understanding comes easily once concepts are clear

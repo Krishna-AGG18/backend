@@ -1,0 +1,114 @@
+🎯 CRUX — Introduction to Databases (Backend Perspective)
+1️⃣ Why Databases Exist
+
+Memory (arrays, variables) is temporary
+
+Databases provide persistent storage (HDD / SSD)
+
+Needed to store data permanently
+
+2️⃣ Core Purpose of a Database
+
+Store application data
+
+Support CRUD operations:
+
+Create
+
+Read
+
+Update
+
+Delete
+
+👉 Every database revolves around CRUD.
+
+3️⃣ Types of Databases (High Level)
+
+SQL databases
+
+NoSQL databases (means Not Only SQL)
+
+Other types exist (graph, vector, etc.) but not covered here
+
+This course focuses on SQL + NoSQL only.
+
+4️⃣ SQL vs NoSQL (Important Clarity)
+
+SQL is not better than NoSQL
+
+NoSQL is not better than SQL
+
+Choice depends on:
+
+Use case
+
+Data structure
+
+Application needs
+
+Once you learn one → switching is easy.
+
+5️⃣ Backend Data Flow
+Frontend → Server → Database
+Database → Server → Frontend
+
+
+❌ Frontend should never talk directly to database
+✅ Server processes data before DB interaction
+
+6️⃣ Why MongoDB First
+
+MongoDB is a NoSQL database
+
+Data stored as objects (JSON-like)
+
+Very natural for JavaScript developers
+
+No separate SQL language required initially
+
+7️⃣ ORM Layer (Very Important)
+
+Server usually does not talk directly to database
+
+An ORM (Object Relational Mapper) sits in between
+
+ORM benefits:
+
+Easier queries
+
+Cleaner code
+
+Better structure
+
+Less pain with DB drivers
+
+8️⃣ ORMs Mentioned
+
+Mongoose → most commonly used with MongoDB
+
+Prisma
+
+Drizzle
+
+This course uses Mongoose (industry standard).
+
+9️⃣ How You’ll Learn MongoDB
+
+No separate MongoDB-only section
+
+Learned while building real applications
+
+Uses MongoDB Atlas
+
+Everything required is covered inline
+
+🔟 Key Takeaways
+
+Databases are essential for backend
+
+SQL & NoSQL are use-case driven
+
+ORM simplifies database interaction
+
+MongoDB + Mongoose fits naturally with Node.js
