@@ -1,0 +1,57 @@
+MongoDB Atlas – Tour (CRUX NOTES)
+MongoDB Atlas is a cloud-based database service provided by MongoDB. It allows you to use MongoDB without installing it locally and gives a production-like database environment. It is beginner-friendly and widely used in real-world applications.
+Atlas provides a free tier of 512 MB shared cluster. No credit card is required, which makes it ideal for learning and practice projects.
+
+Why MongoDB Atlas is used:
+Easy setup for beginners
+No local installation required
+Production-like experience
+Same MongoDB used by companies in real projects
+
+Database structure in MongoDB (NoSQL):
+SQL databases use tables, rows, and columns
+MongoDB uses databases, collections, and documents
+Each document is BSON (JSON-like object)
+Example document structure:
+{
+_id,
+name,
+email,
+password,
+isAdmin
+}
+
+CRUD operations:
+Insert documents
+Read and query documents
+Update documents
+Delete documents
+These operations can be done visually in Atlas UI or through code later.
+
+Security concepts in Atlas:
+Database Access
+Create database users
+Assign roles (read, write, admin)
+Network Access
+Control which IP addresses can access the database
+For learning: allow access from anywhere (0.0.0.0/0)
+For production: allow only server IPs
+
+Deployment details:
+MongoDB Atlas supports AWS, GCP, and Azure
+Choose the nearest region
+Free shared cluster is sufficient for learning
+
+Hands-on inside Atlas:
+Create a database (example: webDevPro)
+Create a collection (example: students)
+Insert documents manually
+Query, update, and delete documents from UI
+
+Purpose of this video:
+Remove fear of databases
+Show databases are just software services
+Make MongoDB feel simple and approachable
+
+Final summary:
+MongoDB Atlas provides a free, cloud-hosted MongoDB environment where databases, collections, and documents can be created and securely used in backend applications.
