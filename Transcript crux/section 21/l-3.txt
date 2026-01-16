@@ -5,189 +5,107 @@ The focus of this project is backend API design, not frontend development.
 It is inspired by Basecamp-style project management systems.
 
 Purpose of the PRD:
-
 Clearly define what needs to be built
-
 Avoid confusion during development
-
 Act as a single source of truth for features, roles, and permissions
 
 TARGET USERS & ROLES (RBAC)
-
 The system uses Role-Based Access Control (RBAC) with three roles:
-
 Admin
-
 Full system access
-
 Can create, update, delete projects
-
 Can manage users, roles, and notes
 
 Project Admin
-
 Manages assigned projects only
-
 Can manage tasks and team members within a project
 
 Member
-
 Can view projects
-
 Update task status
-
 Access assigned project information
 
 CORE FEATURES OVERVIEW
-
 User Authentication & Authorization
-
 User registration with email verification
-
 Secure login using JWT (access & refresh tokens)
-
 Password reset and change functionality
-
 Email verification via token
-
 Token refresh mechanism
-
 Role-based access control (Admin, Project Admin, Member)
 
 Project Management
-
 Create new projects (Admin only)
-
 View all accessible projects with member count
-
 View project details
-
 Update project details (Admin only)
-
 Delete project (Admin only)
-
 Aggregation pipelines used for project listing
-
 Team Member Management
-
 Add members to projects
-
 List project members
-
 Update member roles (Admin only)
-
 Remove members from projects
-
 Task Management
-
 Create tasks under projects
-
 List all tasks for a project
-
 View task details
-
 Update task information
-
 Delete tasks (Admin / Project Admin only)
-
 Assign tasks to members
 
 Track task status:
-
 Todo
-
 In Progress
-
 Done
-
 Support multiple file attachments per task
-
 Subtask Management
-
 Create subtasks under an existing task
-
 Update subtasks
-
 Delete subtasks
-
 Track subtask completion
-
 Subtasks removed automatically if parent task is deleted
-
 Only Admin / Project Admin can manage subtasks
-
 Project Notes
-
 Add notes to projects (Admin only)
-
 List project notes
-
 View note details
-
 Update notes
-
 Delete notes
-
 System & Utility
-
 Health check API endpoint
-
 Security features (CORS, validation, etc.)
-
 File management for attachments
-
 API STRUCTURE (HIGH LEVEL)
 
 Base path:
-
 /api/v1
-
 Auth routes:
-
 /api/v1/auth/register
-
 /api/v1/auth/login
-
 /api/v1/auth/refresh
-
 /api/v1/auth/verify-email
-
 /api/v1/auth/reset-password
-
 Project routes:
-
 /api/v1/projects
 
 Task routes:
-
 /api/v1/tasks
-
 Note routes:
-
 /api/v1/notes
-
 Access to endpoints depends on user role (permission matrix defined in PRD).
-
 DATA MODELS (INITIAL)
 
 User roles: Admin, Project Admin, Member
-
 Task status: Todo, In Progress, Done
-
 Models will be refined during implementation
 
 IMPORTANT NOTES
-
 PRDs are intentionally detailed and overwhelming
-
 Implementation will be done step-by-step
-
 No assignments dumped on learners
-
 Entire project will be built together
-
 PRD will be referenced repeatedly during development
 
 FINAL SUMMARY
-
 This PRD defines a full-featured backend project management system with authentication, RBAC, project handling, task/subtask management, notes, and secure REST APIs. The document acts as a roadmap to build the entire backend incrementally and confidently.
