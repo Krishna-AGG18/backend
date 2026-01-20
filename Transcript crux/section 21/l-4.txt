@@ -1,0 +1,85 @@
+Project Initialization (Node.js) – Quick Revision Notes
+1. Purpose of Project Initialization
+Organizes project structure
+Standardizes setup for team collaboration
+Helps manage scripts, dependencies, and configuration
+Essential for scalable backend projects
+
+2. Creating a Node Project
+Open terminal in empty project folder
+Initialize Node project using:
+npm init
+This creates a package.json file
+
+3. package.json
+Core configuration file for Node projects
+Stores:
+Project name
+version
+Description
+Entry point (default: index.js)
+Scripts
+Dependencies
+Module type
+
+4. Entry File
+Default entry file: index.js
+Created manually after initialization
+Used as the starting point of the backend application
+
+5. Running the Project
+Direct way:
+node index.js
+
+
+Recommended way (using npm scripts):
+"scripts": {
+  "dev": "node index.js",
+  "start": "node index.js"
+}
+
+Run using:
+npm run dev
+npm run start
+
+6. npm Scripts
+Allow standardized commands across team
+Common scripts:
+dev → development
+start → production start
+Scripts run shell commands internally
+
+7. Console Test
+Use console.log() in index.js to verify setup
+Confirms project runs successfully
+
+8. Module System Configuration
+Node supports two module systems:
+CommonJS → require()
+ES Modules → import
+Configure in package.json:
+"type": "module"
+
+Use:
+"module" → import/export
+"commonjs" → require/module.exports
+
+9. Why Module Type Matters
+Prevents syntax errors
+Ensures consistent import style across project
+Required before using import syntax
+
+10. Team Consistency (Next Step)
+Code formatting consistency is important
+Avoid differences like:
+Semicolon vs no semicolon
+Tabs vs spaces
+Solved using tools like Prettier
+
+Summary
+npm init initializes Node project
+package.json controls project behavior
+index.js is entry point
+npm scripts standardize project execution
+Module type must be defined early
+Foundation setup is critical before adding features
