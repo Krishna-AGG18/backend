@@ -1,0 +1,122 @@
+🎯 Problem Being Solved
+
+When multiple developers work on the same project:
+
+Different formatting styles (tabs, spaces, semicolons, quotes)
+
+Git shows fake changes due to formatting
+
+Code reviews become messy and frustrating
+
+➡️ Solution: Enforce one common formatting standard for everyone.
+
+🧰 Prettier (Code Formatter)
+Why Prettier?
+
+Stops debates about code style
+
+Automatically formats code
+
+Opinionated → everyone follows the same rules
+
+Works on save and via CLI
+
+Used widely in real projects
+
+📦 Install Prettier
+
+Prettier is a dev dependency (not used in production).
+
+npm install --save-dev --save-exact prettier
+
+▶️ Run Prettier Once (Initial Setup)
+
+Formats all files in the project:
+
+npx prettier . --write
+
+⚙️ Prettier Configuration (.prettierrc)
+
+Create a file named:
+
+.prettierrc
+
+
+Example configuration:
+
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "always"
+}
+
+
+📌 Purpose:
+
+Fix indentation
+
+Enforce semicolons
+
+Enforce quotes
+
+Make formatting consistent across team
+
+🚫 Files to Ignore (.prettierignore)
+
+Create:
+
+.prettierignore
+
+
+Add:
+
+node_modules
+.env
+
+
+📌 Prettier will not format these files.
+
+🧠 What Prettier Solves
+
+Same formatting for all developers
+
+Clean Git diffs
+
+No style arguments
+
+Professional team workflow
+
+🧑‍💻 Git Setup After Prettier
+Initialize Git
+git init
+
+Create .gitignore
+
+Ignore files that should never go to GitHub:
+
+node_modules
+.env
+
+Track & Commit Files
+git add .
+git commit -m "Add Prettier configuration"
+
+✅ Final State of Project
+
+Node project initialized
+
+Prettier installed & configured
+
+Formatting rules enforced
+
+Git repository ready
+
+Team-friendly setup
+
+🧠 One-Line Takeaway
+
+Prettier ensures every developer writes code the same way, so Git tracks real changes—not formatting noise.
