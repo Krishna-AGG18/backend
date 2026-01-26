@@ -1,0 +1,165 @@
+📁 Why Project Restructuring is Needed
+
+Large-scale projects must be organized
+
+Restructuring early is much easier than doing it later
+
+Unstructured projects become hard to maintain in teams
+
+Frameworks like NestJS enforce structure automatically
+
+Since we are using raw Node.js, we must design structure ourselves
+
+🎯 Goal of Restructuring
+
+Clean, professional folder layout
+
+Separation of concerns
+
+Easy scalability
+
+Industry-standard backend structure
+
+🗂️ Standard Backend Folder Structure
+Root Level
+node_modules/
+public/
+src/
+.env
+package.json
+
+🌐 public/ Folder
+
+Purpose:
+
+Serve static files
+
+Structure:
+
+public/
+ └── images/
+     └── .gitkeep
+
+
+Used for images (instead of Cloudinary/CDN for now)
+
+.gitkeep ensures Git tracks empty folders
+
+🧠 src/ Folder (Main Application Code)
+
+src acts as a wrapper for all backend logic.
+
+src/
+ ├── controllers/
+ ├── db/
+ ├── middlewares/
+ ├── models/
+ ├── routes/
+ ├── utils/
+ ├── validators/
+ └── index.js
+
+📌 Purpose of Each Folder
+controllers/
+
+Business logic
+
+Functions that handle requests
+
+Core application logic
+
+db/
+
+Database connection & configuration
+
+DB operations (connect, disconnect, seed)
+
+middlewares/
+
+Code that runs between request and response
+
+Auth checks
+
+Role checks (admin, project admin, user)
+
+Error handling
+
+models/
+
+Database schema / structure
+
+Defines how data is stored
+
+MongoDB models (later via Mongoose)
+
+routes/
+
+API endpoints
+
+Maps URLs to controllers
+
+Example: /login, /register, /projects
+
+utils/
+
+Reusable helper functions
+
+Email sending
+
+Token helpers
+
+Common utilities
+
+validators/
+
+Input validation
+
+Request data checks
+
+Keeps controllers clean
+
+🛠️ Creating Structure Using CLI
+mkdir src
+cd src
+mkdir controllers db middlewares models routes utils validators
+
+
+Create public folder:
+
+mkdir public
+cd public
+mkdir images
+
+
+Create .gitkeep inside images so Git tracks it.
+
+📦 Moving Entry File
+
+Move index.js into src/
+
+Update package.json scripts if needed
+
+Example:
+
+"scripts": {
+  "dev": "nodemon src/index.js",
+  "start": "node src/index.js"
+}
+
+⚠️ Important Git Note
+
+Git does NOT track empty folders
+
+Use .gitkeep for folders like images
+
+Do NOT push before adding .gitkeep
+
+✅ Final Result
+
+Clean, scalable backend structure
+
+Industry-standard layout
+
+Ready for authentication, DB, APIs
+
+Easy for multiple developers to work together

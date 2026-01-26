@@ -1,0 +1,134 @@
+🔐 Problem: Hiding Secrets in Backend Applications
+
+In large applications, sensitive information must NOT be hardcoded inside source files.
+
+Examples of sensitive data:
+
+Database credentials
+
+API keys
+
+JWT secrets
+
+Server ports
+
+Third-party service keys
+
+If secrets are written directly in code:
+
+They can leak
+
+They get pushed to GitHub
+
+Anyone can misuse them ❌
+
+🧠 Concept: Environment Variables (ENV)
+
+Sensitive data is stored outside the application
+
+Server provides this data securely at runtime
+
+Application only reads the data when needed
+
+This is how real production servers (AWS, DigitalOcean, etc.) work.
+
+🧰 Solution: dotenv Package
+
+dotenv loads environment variables from a .env file into:
+
+process.env
+
+
+This allows secure access without hardcoding values.
+
+📦 Installing dotenv
+
+This is a production dependency (not dev dependency):
+
+npm install dotenv
+
+📄 Creating .env File
+
+Create a file in the root of the project:
+
+.env
+
+
+Example:
+
+USERNAME=Hitesh
+DATABASE=mongo
+
+
+📌 Rules:
+
+No quotes
+
+One key=value per line
+
+File is never pushed to GitHub
+
+🚫 Ignore .env in Git
+
+Add to .gitignore:
+
+.env
+
+⚙️ Using dotenv in Code
+Import and configure (top of entry file)
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: "./.env"
+});
+
+
+📌 Usually added at the top of index.js or app.js
+
+📥 Accessing Environment Variables
+
+Use:
+
+process.env.VARIABLE_NAME
+
+
+Example:
+
+const username = process.env.USERNAME;
+console.log(username);
+
+
+Output:
+
+Hitesh
+
+
+Another example:
+
+const database = process.env.DATABASE;
+console.log(database);
+
+
+Output:
+
+mongo
+
+🧠 Why dotenv.config({ path })?
+
+Helps if project structure changes later
+
+Ensures .env is always read from root directory
+
+Makes app more flexible and scalable
+
+✅ Benefits of Using Environment Variables
+
+Secrets are secure
+
+No hardcoding
+
+Same code works in dev, staging, production
+
+Industry-standard practice
+
+Required for deployment

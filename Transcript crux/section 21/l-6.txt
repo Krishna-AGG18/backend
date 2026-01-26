@@ -1,0 +1,130 @@
+🔁 Problem: Constant Server Restart During Development
+
+While building a backend project:
+
+Every time we change a file
+
+We must stop and restart the server manually
+
+This slows development and becomes painful in large projects
+
+Example problem:
+
+Run npm run dev
+
+Change code in index.js
+
+Server does not update automatically
+
+Need to rerun command again and again ❌
+
+✅ Solution: Automatic Server Restart (Hot Reloading)
+
+We want:
+
+Server to auto-restart on file change
+
+No manual stopping / starting
+
+Faster development workflow
+
+This is called:
+
+Hot Reloading
+
+Hot Restart
+
+Watch Mode
+
+🛠 Tools Available
+1️⃣ Nodemon (Most Popular – Industry Standard)
+
+Watches files
+
+Automatically restarts server on change
+
+Used in most real-world Node.js projects
+
+2️⃣ Node Watch Mode
+
+Built-in feature in newer Node versions
+
+Less commonly used in industry
+
+➡️ We use Nodemon
+
+📦 Installing Nodemon
+
+Install as dev dependency (not for production):
+
+npm install --save-dev nodemon
+
+
+Why dev dependency?
+
+Used only during development
+
+Not needed on production server
+
+⚙️ Configuring Nodemon (Important)
+
+Open package.json
+
+Before:
+"scripts": {
+  "dev": "node index.js"
+}
+
+After:
+"scripts": {
+  "dev": "nodemon index.js",
+  "start": "node index.js"
+}
+
+🧠 Difference Between dev and start
+npm run dev
+
+Uses nodemon
+
+Auto-restarts on file changes
+
+Used during development
+
+npm run start
+
+Uses node
+
+No auto restart
+
+Used in production
+
+➡️ Never use nodemon in production
+
+▶️ Running the Project
+Development mode:
+npm run dev
+
+Production mode:
+npm run start
+
+🧪 Result After Setup
+
+Server starts once
+
+Any file change → server restarts automatically
+
+No manual restart needed
+
+Huge productivity boost 🚀
+
+Example:
+
+Change console.log("Start of backend project")
+
+Save file
+
+Server restarts instantly and prints updated output
+
+🧠 One-Line Takeaway
+
+Nodemon automatically restarts the Node.js server whenever files change, eliminating manual restarts during development.

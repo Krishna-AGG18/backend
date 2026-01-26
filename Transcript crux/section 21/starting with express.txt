@@ -1,0 +1,161 @@
+🚀 Getting Started with Express.js (Core Concepts)
+
+So far, we only built project structure.
+Now we start building how the application actually works.
+
+Every backend application has two main parts:
+
+Routing (Web Server logic)
+
+Database interaction
+
+In this section, we focus on routing using Express.js.
+
+🧠 What is Express.js?
+
+Express.js is a Node.js web application framework
+
+It helps build web servers and APIs
+
+It is fast, minimal, and unopinionated
+
+Unlike frameworks like NestJS, Express does not force structure
+
+📌 Express handles:
+
+Routes (/login, /register, /projects)
+
+HTTP methods (GET, POST, PUT, DELETE)
+
+Request & Response handling
+
+⚠️ NestJS vs Next.js (Important Clarification)
+
+NestJS → Backend framework (built on Express/Fastify)
+
+Next.js → Full-stack React framework
+
+👉 They are completely different. Do not confuse them.
+
+📦 Installing Express
+npm install express
+
+
+Express is a production dependency
+
+Latest version installed by default
+
+Most existing projects use Express 4.x
+
+We are using Express 5.x (newer)
+
+🛠 Basic Express Setup (src/index.js)
+1️⃣ Import Express
+import express from "express";
+
+2️⃣ Create Express App
+const app = express();
+
+
+This app object gives all Express superpowers.
+
+3️⃣ Setup Port Using Environment Variable
+const port = process.env.PORT || 3000;
+
+
+Uses .env value if available
+
+Falls back to 3000 if not
+
+Best practice for production
+
+🌐 Creating a Route
+app.get("/instagram", (req, res) => {
+  res.send("This is an Instagram page");
+});
+
+Explanation:
+
+get → HTTP method
+
+/instagram → Route
+
+req → Request from client
+
+res → Response sent back
+
+▶️ Starting the Server
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
+
+Starts server
+
+Listens for incoming requests
+
+Prints server URL on success
+
+🧪 Testing the Route
+
+Open browser:
+
+http://localhost:8000/instagram
+
+
+Output:
+
+This is an Instagram page
+
+
+📌 Route name must match exactly (case-sensitive).
+
+🧠 Request & Response Concept
+
+Request (req) → Data coming from client
+
+Response (res) → Data sent back by server
+
+Express provides many response methods:
+
+res.send()
+
+res.json()
+
+res.status()
+
+res.download()
+
+res.redirect()
+
+Currently using:
+
+res.send("text")
+
+📚 Express Core Components (High Level)
+
+Application → app
+
+Request → req
+
+Response → res
+
+Router → route handling (later)
+
+Middleware → logic in between (later)
+
+✅ What We Achieved in This Lecture
+
+Installed Express
+
+Created Express server
+
+Used environment-based port
+
+Created a basic GET route
+
+Served a response to browser
+
+🧠 One-Line Takeaway
+
+Express.js is a routing and server framework that handles HTTP requests and responses in a Node.js backend application.
