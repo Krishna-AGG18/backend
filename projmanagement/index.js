@@ -1,1 +1,0 @@
-console.log("START OF AWESOME BACKEND PROJECT ");
