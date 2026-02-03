@@ -1,0 +1,107 @@
+📦 Environment Variables vs Constants (Backend Design)
+
+In a backend application, we mainly deal with two types of important data:
+
+1️⃣ Sensitive Data (Environment Variables)
+2️⃣ Non-sensitive but reusable values (Constants)
+
+---
+
+🔐 Environment Variables (.env)
+
+Sensitive data should NEVER be hard-coded.
+
+Examples:
+- Database credentials
+- JWT secrets
+- API keys
+- CORS origins
+- Ports
+
+These values are stored in an environment file (.env) and kept separate for:
+- Development
+- Testing
+- Pre-production
+- Production
+
+.env files are:
+✔ Secure
+✔ Environment-specific
+✔ Never committed to Git
+
+---
+
+📌 Why We Need Constants
+
+Some values are not sensitive but must remain consistent across the project.
+
+Examples:
+- User roles
+- Task statuses
+- Permissions
+- Flags
+- Fixed application states
+
+Hardcoding these values everywhere can cause:
+- Typing mistakes
+- Inconsistent casing
+- Bugs when values change later
+
+So we centralize them in a constants file.
+
+---
+
+📁 constants.js (src/constants/constants.js)
+
+User Roles Enum
+
+export const USER_ROLES_ENUM = {
+  ADMIN: "admin",
+  PROJECT_ADMIN: "projectAdmin",
+  MEMBER: "member",
+};
+
+export const AVAILABLE_USER_ROLES = Object.values(USER_ROLES_ENUM);
+
+✔ Object → for direct reference
+✔ Array → for looping and validation
+
+---
+
+📁 Task Status Enum
+
+export const TASK_STATUS_ENUM = {
+  TODO: "todo",
+  IN_PROGRESS: "inProgress",
+  DONE: "done",
+};
+
+export const AVAILABLE_TASK_STATUSES = Object.values(TASK_STATUS_ENUM);
+
+✔ Prevents hardcoded strings
+✔ Ensures consistency everywhere
+✔ Easy to extend in future
+
+---
+
+🧠 Why This Pattern Is Powerful
+
+- One source of truth
+- No repeated strings
+- No casing mistakes
+- Easy role/status expansion
+- Cleaner validation logic
+- IDE auto-suggestions help a lot
+
+---
+
+🧠 Final Takeaway
+
+.env → Sensitive, environment-specific values  
+constants.js → Non-sensitive, reusable fixed values  
+
+Using constants makes large-scale backend applications:
+✔ Safer
+✔ Cleaner
+✔ More scalable
+✔ Easier to maintain
