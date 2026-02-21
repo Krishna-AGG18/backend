@@ -1,0 +1,207 @@
+🧩 Mongoose Schema Methods — Password Verification (Single Copy Format)
+
+Now we are learning about another feature of Mongoose Schema:
+Methods.
+
+So far we have learned:
+✔ Schema (data structure)
+✔ Hooks (pre/post operations)
+
+Now:
+✔ Methods attached to schema.
+
+--------------------------------------------------
+
+🧠 Why Do We Need Schema Methods?
+
+Normally business logic is written inside controllers.
+
+But some logic directly belongs to the model itself.
+
+Example:
+Password verification.
+
+Since password belongs to User data,
+verification logic should stay inside User Schema.
+
+--------------------------------------------------
+
+🔐 Problem We Are Solving
+
+User registers with password:
+
+Udemy123
+
+Before saving:
+Password gets hashed using bcrypt.
+
+Example stored in DB:
+
+112233AABBCC (hashed value)
+
+Database NEVER stores real password.
+
+--------------------------------------------------
+
+❓ Login Situation
+
+User enters password again:
+
+Udemy123
+
+Now question:
+
+How do we verify it?
+
+Because stored password =
+hashed value.
+
+--------------------------------------------------
+
+🧠 Password Verification Logic
+
+Step 1:
+User enters password.
+
+Step 2:
+Hash the entered password.
+
+Step 3:
+Compare hashes.
+
+If hashes match →
+Password correct.
+
+If not →
+Password wrong.
+
+Good news:
+bcrypt already handles this internally.
+
+--------------------------------------------------
+
+🛠 Writing Schema Method
+
+Methods are attached directly to schema.
+
+Syntax:
+
+userSchema.methods.methodName = function(){}
+
+--------------------------------------------------
+
+✅ Password Check Method
+
+userSchema.methods.isPasswordCorrect =
+async function(password) {
+
+  return await bcrypt.compare(
+    password,
+    this.password
+  );
+
+};
+
+--------------------------------------------------
+
+🧠 Understanding This Code
+
+methods →
+Allows attaching custom functions to schema.
+
+isPasswordCorrect →
+Custom method name.
+
+password →
+Password entered by user during login.
+
+this.password →
+Password already stored in database.
+
+--------------------------------------------------
+
+⚠ Important Rule
+
+Use:
+
+function ()
+
+NOT arrow function.
+
+Because:
+We need access to "this"
+(current database document).
+
+Arrow functions lose context.
+
+--------------------------------------------------
+
+⚙ What bcrypt.compare Does
+
+bcrypt.compare(
+  enteredPassword,
+  storedHashedPassword
+)
+
+bcrypt internally:
+- hashes input
+- compares safely
+
+Returns:
+
+true → password correct
+false → password incorrect
+
+--------------------------------------------------
+
+📈 Flow During Login
+
+User Login Request
+        ↓
+Controller receives password
+        ↓
+Call schema method
+        ↓
+bcrypt.compare()
+        ↓
+true / false returned
+
+--------------------------------------------------
+
+✅ Example Usage Later (Controller)
+
+user.isPasswordCorrect(password)
+
+Very clean and reusable.
+
+--------------------------------------------------
+
+🎯 Why Keep This Inside Schema?
+
+Benefits:
+
+✔ Cleaner controllers
+✔ Reusable logic
+✔ Model handles its own behavior
+✔ Better project structure
+
+--------------------------------------------------
+
+🧠 Big Picture So Far
+
+User Schema now has:
+
+Fields →
+User data structure.
+
+Hooks →
+Password hashing before save.
+
+Methods →
+Password verification.
+
+--------------------------------------------------
+
+✅ One-Line Takeaway
+
+Schema methods allow reusable logic (like password verification) to live directly inside the model instead of controllers.

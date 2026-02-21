@@ -69,4 +69,9 @@ userSchema.pre("save", async function(next){
     next()
 })
 
+// METHOD TO CHECK THE PASSWORD ENTERED BY USER IF ITS CORRECT OR NOT
+userSchema.methods.isPasswordCorrect = async function (password) {
+   return await bcrypt.compare(password, this.password)
+}
+
 export const User = mongoose.model("User", userSchema)
