@@ -1,0 +1,243 @@
+🔐 Authentication & User Model – Transcript Explanation (Single Copy Format)
+
+We are now starting the Authentication part of the PRD (Project Requirement Document).
+
+Authentication means:
+- Register user
+- Login user
+- Keep login persistent
+- Logout user
+- Show current user info (profile)
+
+But before login or logout, the FIRST step is:
+User Registration
+
+--------------------------------------------------
+
+📦 Data Flow (Important)
+
+Frontend Form (name, email, password, avatar, etc.)
+        ↓
+Server (Express)
+        ↓
+Database (MongoDB)
+
+Journey:
+Form → Server → Process → Store in Database
+
+--------------------------------------------------
+
+📁 Where Do We Define Database Structure?
+
+Inside:
+models/
+
+We create:
+user.model.js
+
+Models define:
+Structure of data (Schema)
+
+--------------------------------------------------
+
+🧠 Why Mongoose?
+
+Mongoose helps with:
+- Validation
+- Casting
+- Business logic
+- Default values
+- Unique checks
+- Lowercase conversion
+- Trimming spaces
+- Indexing
+- Timestamps
+
+Without mongoose, you'd manually write all that logic.
+
+--------------------------------------------------
+
+🛠 Basic Model Structure
+
+import mongoose, { Schema } from "mongoose";
+
+const userSchema = new Schema(
+  {
+    // fields here
+  },
+  {
+    timestamps: true
+  }
+);
+
+export const User = mongoose.model("User", userSchema);
+
+Important:
+- "User" becomes "users" in MongoDB automatically (plural + lowercase).
+- timestamps: true adds:
+  - createdAt
+  - updatedAt
+
+--------------------------------------------------
+
+🧩 Fields Defined in Schema
+
+1️⃣ Avatar (Image)
+
+avatar: {
+  url: {
+    type: String,
+    default: "https://placehold.co/200x200"
+  },
+  localPath: {
+    type: String,
+    default: ""
+  }
+}
+
+We store:
+- URL (string)
+- Local path (string)
+Images are not stored directly in DB — only URL.
+
+--------------------------------------------------
+
+2️⃣ Username
+
+username: {
+  type: String,
+  required: true,
+  unique: true,
+  lowercase: true,
+  trim: true,
+  index: true
+}
+
+What this does:
+- required → must be provided
+- unique → no duplicate usernames
+- lowercase → auto converts
+- trim → removes extra spaces
+- index → faster searching
+
+--------------------------------------------------
+
+3️⃣ Email
+
+email: {
+  type: String,
+  required: true,
+  unique: true,
+  lowercase: true,
+  trim: true
+}
+
+--------------------------------------------------
+
+4️⃣ Full Name
+
+fullName: {
+  type: String,
+  trim: true
+}
+
+--------------------------------------------------
+
+5️⃣ Password
+
+password: {
+  type: String,
+  required: [true, "Password is required"]
+}
+
+Note:
+- We will hash password later.
+- Custom error message added.
+- Password is stored as hashed string.
+
+--------------------------------------------------
+
+6️⃣ Email Verified Flag
+
+isEmailVerified: {
+  type: Boolean,
+  default: false
+}
+
+--------------------------------------------------
+
+7️⃣ Refresh Token (JWT)
+
+refreshToken: {
+  type: String
+}
+
+--------------------------------------------------
+
+8️⃣ Forgot Password Token
+
+forgotPasswordToken: {
+  type: String
+}
+
+forgotPasswordExpiry: {
+  type: Date
+}
+
+--------------------------------------------------
+
+9️⃣ Email Verification Token
+
+emailVerificationToken: {
+  type: String
+}
+
+emailVerificationExpiry: {
+  type: Date
+}
+
+--------------------------------------------------
+
+🔥 Important Concept
+
+Schema allows:
+- Fields
+- Validations
+- Defaults
+- Unique constraints
+- Indexing
+- Methods
+- Hooks
+
+--------------------------------------------------
+
+🧠 What Are Hooks?
+
+Hooks allow you to run logic:
+- Before saving
+- After saving
+- Before updating
+- After deleting
+
+Example (later):
+- Hash password before saving
+
+--------------------------------------------------
+
+🎯 Big Picture
+
+We completed:
+✔ Database connection
+✔ Folder structure
+✔ Async handler
+✔ Health check
+✔ User model (Schema design)
+
+Next step:
+Attach methods & hooks to schema (like password hashing).
+
+--------------------------------------------------
+
+One-Line Takeaway:
+
+User model defines the structure and validation rules for how user data is stored in MongoDB using Mongoose.
