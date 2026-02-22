@@ -1,0 +1,103 @@
+🔄 Async Handler Improvement (Higher Order Function)
+
+As the project grows, writing try/catch in every controller becomes repetitive and messy.
+
+When a controller talks to the database:
+1. The database can throw errors.
+2. The database is asynchronous (it takes time).
+3. You must use await.
+4. If you use await, the function must be async.
+5. If async throws error, Express may crash if not handled properly.
+
+Traditional Way (With try/catch)
+
+const healthCheck = async (req, res, next) => {
+  try {
+    const user = await getUserFromDB();
+
+    res.status(200).json(
+      new ApiResponse(200, { message: "Server is running" })
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+Problems:
+- Must write try/catch in every controller
+- Must pass next
+- Easy to forget error handling
+- Code becomes repetitive
+
+--------------------------------------------------
+
+🧠 Solution: Async Handler (Wrapper Function)
+
+Instead of writing try/catch everywhere, we create a reusable wrapper.
+
+utils/asyncHandler.js
+
+const asyncHandler = (requestHandler) => {
+  return (req, res, next) => {
+    Promise
+      .resolve(requestHandler(req, res, next))
+      .catch((error) => next(error));
+  };
+};
+
+export default asyncHandler;
+
+--------------------------------------------------
+
+🧠 What This Does
+
+1. Takes your controller function as input.
+2. Returns a new function.
+3. Automatically wraps it in Promise.resolve().
+4. If any error happens → .catch() sends it to next(error).
+5. Express built-in error handler handles it.
+
+This is called a Higher Order Function because:
+- It takes a function as input.
+- It returns a function.
+
+--------------------------------------------------
+
+✅ Cleaner Controller Using asyncHandler
+
+import asyncHandler from "../utils/asyncHandler.js";
+
+const healthCheck = asyncHandler(async (req, res) => {
+  const user = await getUserFromDB();
+
+  res.status(200).json(
+    new ApiResponse(200, { message: "Server is running" })
+  );
+});
+
+export { healthCheck };
+
+--------------------------------------------------
+
+🔥 Benefits
+
+- No try/catch in every controller
+- No need to manually use next()
+- Automatically catches async errors
+- Cleaner and scalable
+- Reusable in any project
+
+--------------------------------------------------
+
+🧠 Flow After Improvement
+
+Client → Route → asyncHandler → Controller → Response
+
+If error happens:
+Controller → asyncHandler → next(error) → Express error handler
+
+--------------------------------------------------
+
+🎯 One-Line Takeaway
+
+asyncHandler is a wrapper that automatically catches async errors and forwards them to Express error handling, making controllers clean and scalable.
