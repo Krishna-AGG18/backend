@@ -1,0 +1,237 @@
+🪝 Mongoose Hooks (Pre & Post Hooks) — Explanation (Single Copy Format)
+
+Now we are learning about Hooks in Mongoose Schema.
+
+A schema mainly contains:
+1. Fields (data structure)
+2. Methods
+3. Hooks
+
+--------------------------------------------------
+
+🧠 What Are Hooks?
+
+Hooks are functions that automatically run
+before or after a database operation.
+
+Mainly used around:
+Saving data.
+
+Two Types:
+
+✅ Pre Hook
+Runs BEFORE an operation.
+
+✅ Post Hook
+Runs AFTER an operation.
+
+Example flow:
+
+Data Comes →
+Pre Hook Runs →
+Data Saved in Database →
+Post Hook Runs
+
+--------------------------------------------------
+
+🎯 Why Do We Need Hooks?
+
+Example:
+User sends password during registration.
+
+We SHOULD NOT store password directly.
+
+Instead:
+Password → Hash → Store in Database
+
+This hashing must happen automatically
+before saving data.
+
+That is exactly where PRE HOOK is used.
+
+--------------------------------------------------
+
+🔐 Password Hashing Concept
+
+Important clarification:
+
+We DO NOT encrypt passwords.
+
+We HASH passwords.
+
+Hashing =
+One-way transformation.
+
+Original password cannot be recovered.
+
+--------------------------------------------------
+
+📦 Library Used
+
+bcrypt
+
+Install:
+
+npm install bcrypt
+
+Import:
+
+import bcrypt from "bcrypt";
+
+--------------------------------------------------
+
+🛠 Creating a Pre Hook
+
+Hooks are attached to schema.
+
+userSchema.pre("save", async function (next) {
+
+});
+
+Meaning:
+Run this logic before saving user data.
+
+--------------------------------------------------
+
+⚠ Important Rule
+
+Use normal function()
+
+NOT arrow function () =>
+
+Because:
+We need access to "this".
+
+Arrow functions do not provide schema context.
+
+--------------------------------------------------
+
+🧩 Accessing Schema Data
+
+Inside hook:
+
+this.password
+
+"this" represents the current document being saved.
+
+Example user object fields become accessible here.
+
+--------------------------------------------------
+
+✅ Password Hashing Logic
+
+userSchema.pre("save", async function (next) {
+
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  this.password = await bcrypt.hash(
+    this.password,
+    10
+  );
+
+  next();
+});
+
+--------------------------------------------------
+
+🧠 Step-by-Step Understanding
+
+1️⃣ Save operation starts.
+
+2️⃣ Pre hook runs automatically.
+
+3️⃣ Check:
+Is password modified?
+
+this.isModified("password")
+
+Why?
+
+Because hook runs EVERY save.
+
+Example:
+- Updating avatar
+- Updating name
+- Updating email
+
+Without check →
+Password keeps hashing again and again.
+
+Bad result.
+
+--------------------------------------------------
+
+✅ Safeguard Logic
+
+if password NOT modified →
+Skip hashing.
+
+return next();
+
+Only hash when:
+- First user creation
+- Password change/reset
+
+--------------------------------------------------
+
+🔄 Hashing Process
+
+bcrypt.hash(data, saltRounds)
+
+Parameters:
+
+data → password
+saltRounds → hashing strength
+
+Common value:
+10 rounds
+
+Higher rounds =
+More secure but slower.
+
+--------------------------------------------------
+
+📈 Final Flow
+
+User sends data →
+Pre Hook triggers →
+Password hashed →
+Saved into MongoDB
+
+Database stores:
+hashed_password_string
+
+NOT real password.
+
+--------------------------------------------------
+
+🎯 Role of next()
+
+next()
+
+Means:
+"My hook work is finished,
+continue saving process."
+
+Without next(),
+execution may stop.
+
+--------------------------------------------------
+
+🧠 Big Picture
+
+User Save Request
+        ↓
+Pre Hook (Password Hash)
+        ↓
+MongoDB Save
+        ↓
+(Post hooks if any)
+
+--------------------------------------------------
+
+✅ One-Line Takeaway
+
+Mongoose pre hooks allow automatic logic (like password hashing) to run before saving data, ensuring sensitive information is securely stored.
