@@ -1,0 +1,211 @@
+🔐 JSON Web Token (JWT) — Full Explanation (Single Copy Format)
+
+Now we are learning about JSON Web Tokens (JWT).
+
+JWT is a standard way to authenticate users and keep them logged in.
+
+--------------------------------------------------
+
+🧠 Why Do We Need JWT?
+
+Imagine:
+
+Client (Browser)
+        ↓
+Server
+        ↓
+Database
+
+User logs in once.
+
+But after login, user keeps making requests:
+
+- Get profile
+- Update data
+- Access dashboard
+- Create project
+- Delete task
+
+For every request, the server must verify:
+
+"Is this user really logged in?"
+
+We cannot just trust cookies blindly.
+
+We need proof.
+
+That proof is JWT.
+
+--------------------------------------------------
+
+🎯 What Is JWT?
+
+JWT (JSON Web Token) is a long encoded string that:
+
+- Proves user identity
+- Is sent with every request
+- Is digitally signed
+- Can be verified by server
+
+--------------------------------------------------
+
+📦 How JWT Is Used
+
+1️⃣ User logs in successfully.
+2️⃣ Server generates a JWT.
+3️⃣ Server sends JWT to client.
+4️⃣ Client stores it.
+5️⃣ For every new request → client sends JWT again.
+
+--------------------------------------------------
+
+📤 How JWT Is Sent
+
+Inside request headers:
+
+Authorization: Bearer <token>
+
+Example:
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Important:
+- "Bearer" keyword is standard.
+- Token follows after a space.
+
+--------------------------------------------------
+
+🧱 Structure of JWT
+
+JWT has THREE parts separated by dots:
+
+xxxxx.yyyyy.zzzzz
+
+These parts are:
+
+1️⃣ Header
+2️⃣ Payload
+3️⃣ Signature
+
+--------------------------------------------------
+
+1️⃣ Header
+
+Contains:
+- Algorithm (HS256, RS256, etc.)
+- Type = JWT
+
+Example:
+
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+
+--------------------------------------------------
+
+2️⃣ Payload
+
+Contains data you want to send.
+
+Example:
+
+{
+  "userId": "12345",
+  "email": "user@email.com"
+}
+
+Important:
+- Keep payload small.
+- Do NOT store sensitive data like passwords.
+- It is base64 encoded (not encrypted).
+
+--------------------------------------------------
+
+3️⃣ Signature
+
+Signature ensures:
+- Token was not tampered.
+- Token is trusted.
+
+Generated using:
+
+Header + Payload + Secret Key
+
+Signature is what makes JWT secure.
+
+--------------------------------------------------
+
+📌 What Happens During Authentication?
+
+Login Flow:
+
+User → Login
+        ↓
+Server checks password
+        ↓
+If valid → Generate JWT
+        ↓
+Send token to user
+
+Now user includes this token in every request.
+
+--------------------------------------------------
+
+🔁 Request Flow After Login
+
+Client sends request
+        ↓
+Includes Authorization header
+        ↓
+Server verifies JWT signature
+        ↓
+If valid → Allow request
+If invalid → Reject (401 Unauthorized)
+
+--------------------------------------------------
+
+🔒 Why JWT Is Trusted?
+
+Because it is digitally signed.
+
+Server verifies signature using secret key.
+
+If token modified → signature breaks → rejected.
+
+--------------------------------------------------
+
+🧠 JWT Is Used For:
+
+1️⃣ Authorization
+User proves they are logged in.
+
+2️⃣ Information Exchange
+Securely transmitting small pieces of user data.
+
+--------------------------------------------------
+
+📏 Important Notes
+
+- JWT is not random string.
+- It follows strict structure.
+- It is signed, not just encoded.
+- Signature verification prevents tampering.
+
+--------------------------------------------------
+
+🎯 Big Picture
+
+Login Once
+        ↓
+Receive JWT
+        ↓
+Send JWT with every request
+        ↓
+Server verifies and responds
+
+--------------------------------------------------
+
+✅ One-Line Takeaway
+
+JWT is a digitally signed token sent with every request to prove that a user is authenticated and authorized.
