@@ -1,0 +1,236 @@
+🔑 Implementing Tokens in Code — Access Token, Refresh Token, and Temporary Token (Single Copy Format)
+
+In this step we implement three types of tokens in our backend:
+
+1. Access Token (JWT with data)
+2. Refresh Token (JWT with data)
+3. Temporary Token (random string without data)
+
+--------------------------------------------------
+
+1️⃣ Environment Variables Setup
+
+We first define secrets and expiry times inside the .env file so that token behavior can be controlled from one place.
+
+ACCESS_TOKEN_SECRET=test
+ACCESS_TOKEN_EXPIRY=1d
+
+REFRESH_TOKEN_SECRET=test
+REFRESH_TOKEN_EXPIRY=10d
+
+Important:
+Secrets should normally be long and complex because they are used to sign tokens securely.
+
+Example of stronger secret:
+chaiCodeHereIsTeachingJWTSecretKey
+
+--------------------------------------------------
+
+2️⃣ Install JWT Library
+
+JWT tokens are created using the jsonwebtoken package.
+
+npm install jsonwebtoken
+
+Import it:
+
+import jwt from "jsonwebtoken";
+
+--------------------------------------------------
+
+3️⃣ Generating Access Token
+
+Access tokens are short-lived tokens used to authenticate API requests.
+
+They are generated inside the user schema as a method.
+
+userSchema.methods.generateAccessToken = function () {
+
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username: this.username
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+    }
+  );
+
+};
+
+Explanation:
+
+Payload
+Contains user data such as:
+- _id
+- email
+- username
+
+Secret
+Used to digitally sign the token.
+
+Expiry
+Defines how long the token remains valid.
+
+Example:
+1d = 1 day
+
+--------------------------------------------------
+
+4️⃣ Generating Refresh Token
+
+Refresh tokens are long-lived tokens used to generate new access tokens when the old one expires.
+
+userSchema.methods.generateRefreshToken = function () {
+
+  return jwt.sign(
+    {
+      _id: this._id
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    }
+  );
+
+};
+
+Important difference:
+Refresh tokens usually store minimal payload (only user ID).
+
+--------------------------------------------------
+
+5️⃣ Tokens With Data vs Tokens Without Data
+
+Tokens WITH data:
+Access Token
+Refresh Token
+
+Created using JWT.
+
+Tokens WITHOUT data:
+Temporary tokens used for:
+
+- Email verification
+- Password reset
+- One-time actions
+
+These are simple random strings.
+
+--------------------------------------------------
+
+6️⃣ Generating Temporary Token (Using Crypto)
+
+Node.js provides a built-in crypto module.
+
+Import:
+
+import crypto from "crypto";
+
+Method for generating temporary tokens:
+
+userSchema.methods.generateTemporaryToken = function () {
+
+  const unhashedToken = crypto
+    .randomBytes(20)
+    .toString("hex");
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(unhashedToken)
+    .digest("hex");
+
+  const tokenExpiry =
+    Date.now() + 20 * 60 * 1000;
+
+  return {
+    unhashedToken,
+    hashedToken,
+    tokenExpiry
+  };
+
+};
+
+--------------------------------------------------
+
+Explanation of Each Step
+
+randomBytes(20)
+Generates a secure random sequence.
+
+toString("hex")
+Converts binary data into readable hexadecimal string.
+
+createHash("sha256")
+Creates a cryptographic hash of the token.
+
+update()
+Adds data to be hashed.
+
+digest("hex")
+Returns final hashed value.
+
+--------------------------------------------------
+
+Why Two Versions of Token?
+
+unhashedToken
+Sent to user (via email or link).
+
+hashedToken
+Stored in database for verification.
+
+This ensures that even if database leaks, the original token cannot be easily used.
+
+--------------------------------------------------
+
+Token Expiry
+
+tokenExpiry =
+Date.now() + (20 minutes)
+
+Calculation:
+
+20 * 60 * 1000
+= 20 minutes in milliseconds
+
+--------------------------------------------------
+
+Summary of Token System
+
+Access Token
+- JWT
+- Short lifetime
+- Used for authentication
+- Not stored in database
+
+Refresh Token
+- JWT
+- Long lifetime
+- Used to generate new access tokens
+- Stored in database
+
+Temporary Token
+- Random string
+- Used for verification or password reset
+- Stored temporarily
+
+--------------------------------------------------
+
+Final Outcome
+
+User model now contains methods to generate:
+
+generateAccessToken()
+generateRefreshToken()
+generateTemporaryToken()
+
+These methods will be used later inside authentication controllers.
+
+--------------------------------------------------
+
+Key Takeaway
+
+JWT tokens handle authentication (access + refresh), while temporary tokens handle one-time actions like password reset or email verification.
