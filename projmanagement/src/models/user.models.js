@@ -1,5 +1,8 @@
-import mongoose, {Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+
 
 const userSchema = new Schema(
     {
@@ -8,25 +11,25 @@ const userSchema = new Schema(
                 url: String,
                 localPath: String,
             },
-            default : {
-                url:`https://placehold.co/200x200`,
+            default: {
+                url: `https://placehold.co/200x200`,
                 localPath: "",
-            }
+            },
         },
-        username : {
+        username: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
-            trim : true,
-            index : true,
+            trim: true,
+            index: true,
         },
-        email : {
+        email: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
-            trim : true,
+            trim: true,
         },
         fullName: {
             type: String,
@@ -34,27 +37,27 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            required: [true, "Password is required!"]
+            required: [true, "Password is required!"],
         },
-        isEmailVerified :{
+        isEmailVerified: {
             type: Boolean,
             default: false,
         },
         refreshToken: {
-            type :String,
+            type: String,
         },
-        forgotPasswordToken : {
-            type : String,
+        forgotPasswordToken: {
+            type: String,
         },
         forgotPasswordExpiry: {
             type: Date,
         },
-        emailVerificationToken : {
+        emailVerificationToken: {
             type: String,
         },
         emailVerificationExpiry: {
-            type : Date,
-        }
+            type: Date,
+        },
     },
     {
         timestamps: true,
@@ -62,16 +65,56 @@ const userSchema = new Schema(
 );
 
 // pre hooks for password hashing
-userSchema.pre("save", async function(next){
-    if(!this.isModified("password")) return next()
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
 
-    this.password = await bcrypt.hash(this.password, 10)
-    next()
-})
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+});
 
 // METHOD TO CHECK THE PASSWORD ENTERED BY USER IF ITS CORRECT OR NOT
 userSchema.methods.isPasswordCorrect = async function (password) {
-   return await bcrypt.compare(password, this.password)
-}
+    return await bcrypt.compare(password, this.password);
+};
 
-export const User = mongoose.model("User", userSchema)
+// tokens
+userSchema.methods.generateAccessToken = function () {
+    // singed tokem for access token, 1st object - payload
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.email,
+            username: this.username,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
+    );
+};
+
+//refreshtoken
+userSchema.methods.generateRefreshToken = function () {
+    // singed tokem for refresh token, 1st object - payload
+    return jwt.sign(
+        {
+            _id: this._id,
+            // email: this.email,
+            // username: this.username,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
+    );
+};
+
+// temporary token
+userSchema.methods.generateTemporaryToken = function(){
+    const unHashedToken = crypto.randomBytes(20).toString("hex")
+
+    const hashedToken = crypto
+        .createHash("sha256")
+        .update(unHashedToken)
+        .digest("hex")
+
+    const tokenExpiry = Date.now() + (20*60*1000) // 20 mins
+    return {unHashedToken, hashedToken, tokenExpiry}
+}
+export const User = mongoose.model("User", userSchema);
