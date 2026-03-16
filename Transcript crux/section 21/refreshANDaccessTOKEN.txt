@@ -1,0 +1,266 @@
+🔑 Tokens, Access Token & Refresh Token — Explanation (Single Copy Format)
+
+In this section we learn about different types of tokens used in authentication systems.
+
+A token is simply a long string used to verify a user's identity.
+
+Example token:
+asjhd8734hjsdhf8234hjsdfh
+
+The content of the string itself is not important — it is used as proof of identity.
+
+--------------------------------------------------
+
+🧠 Two Main Types of Tokens
+
+Tokens are generally divided into two categories:
+
+1️⃣ Tokens WITHOUT data
+2️⃣ Tokens WITH data
+
+--------------------------------------------------
+
+1️⃣ Tokens WITHOUT Data
+
+These tokens are just random strings.
+
+Example:
+
+A93HJS8SHD8723JH
+
+They contain no embedded information.
+
+Instead, the server stores a copy in the database.
+
+--------------------------------------------------
+
+📌 How They Work
+
+Server generates token.
+
+Two copies are created:
+
+Server Database → stores token  
+User (email or link) → receives token
+
+Later when the user sends the token back:
+
+Server checks database → match token
+
+If match exists → request allowed.
+
+--------------------------------------------------
+
+📍 Where These Tokens Are Used
+
+Typical use cases:
+
+✔ Email verification
+✔ Forgot password reset
+✔ One-time login links
+✔ Temporary actions
+
+These tokens are usually:
+- short-lived
+- one-time use
+
+--------------------------------------------------
+
+2️⃣ Tokens WITH Data
+
+These tokens contain encoded information inside them.
+
+Example:
+
+JWT (JSON Web Token)
+
+Structure looks like:
+
+xxxxx.yyyyy.zzzzz
+
+These tokens contain information like:
+
+userId  
+email  
+role  
+
+The data is encoded and signed.
+
+--------------------------------------------------
+
+📦 JWT Tokens
+
+JWT tokens carry information inside them.
+
+They are:
+- encoded
+- signed
+- verifiable
+
+They allow the server to verify users without storing session data.
+
+--------------------------------------------------
+
+🧠 Special Types of JWT Tokens
+
+There are two important JWT tokens used in authentication:
+
+1️⃣ Access Token  
+2️⃣ Refresh Token
+
+Both are JWT tokens.
+
+The difference is their lifetime.
+
+--------------------------------------------------
+
+🔐 Access Token
+
+Access tokens are short-lived tokens.
+
+Example lifespan:
+
+5 minutes  
+10 minutes  
+1 hour
+
+(Teacher exaggerated example: 1 day)
+
+Purpose:
+Allow user to access protected APIs.
+
+Example usage:
+
+Authorization: Bearer ACCESS_TOKEN
+
+Every request must include the access token.
+
+--------------------------------------------------
+
+🔄 Refresh Token
+
+Refresh tokens are long-lived tokens.
+
+Example lifespan:
+
+1 day  
+7 days  
+30 days
+
+(Teacher exaggerated example: 10 days)
+
+Purpose:
+Generate a new access token when the old one expires.
+
+--------------------------------------------------
+
+⚠ Important Rule
+
+Access Tokens → NOT stored in database  
+Refresh Tokens → stored in database
+
+Access tokens are stateless.
+
+Server only verifies the signature.
+
+--------------------------------------------------
+
+📈 Authentication Flow
+
+User Login
+        ↓
+Server generates:
+- Access Token
+- Refresh Token
+
+Access Token → sent to client  
+Refresh Token → sent to client AND stored in database
+
+--------------------------------------------------
+
+📤 API Request Flow
+
+Client sends request:
+
+Authorization: Bearer ACCESS_TOKEN
+
+Server verifies token.
+
+If valid → request allowed.
+
+--------------------------------------------------
+
+⏳ When Access Token Expires
+
+Server returns error:
+
+401 Unauthorized
+
+Client understands token expired.
+
+--------------------------------------------------
+
+🔁 Token Refresh Flow
+
+Client sends refresh token to server.
+
+Server checks:
+
+Does refresh token match database?
+
+If valid:
+
+Server generates NEW access token.
+
+Old access token is discarded.
+
+Client continues using new token.
+
+--------------------------------------------------
+
+📊 Full Token System Flow
+
+Login
+   ↓
+Access Token + Refresh Token created
+   ↓
+Access Token used for requests
+   ↓
+Access Token expires
+   ↓
+Client sends Refresh Token
+   ↓
+Server verifies refresh token
+   ↓
+New Access Token issued
+   ↓
+User stays logged in
+
+--------------------------------------------------
+
+📌 Token Summary
+
+Without Data Tokens
+Used for:
+- Email verification
+- Password reset
+
+Stored in database.
+
+--------------------------------------------------
+
+With Data Tokens (JWT)
+
+Used for:
+- Authentication
+- Authorization
+
+Includes:
+- Access Token (short-lived)
+- Refresh Token (long-lived)
+
+--------------------------------------------------
+
+🎯 One-Line Takeaway
+
+Access tokens authenticate API requests, while refresh tokens allow the system to generate new access tokens without forcing the user to log in again.
