@@ -1,0 +1,175 @@
+📩 Email Sending Utility — Complete Explanation (Single Copy)
+
+1. Big Idea
+   Till now we only created email content using Mailgen.
+   But creating content does NOT send email.
+
+Now this utility:
+👉 Takes content → Sends email using Nodemailer + Mailtrap
+
+---
+
+2. Types of Email Services
+
+Development (Testing):
+
+* Mailtrap → Emails go to a fake inbox for testing UI
+
+Production:
+
+* AWS SES
+* Brevo (Sendinblue)
+
+👉 In this project → using Mailtrap (safe for testing)
+
+---
+
+3. Environment Variables (.env)
+
+We store SMTP credentials safely:
+
+MAILTRAP_SMTP_HOST=your_host
+MAILTRAP_SMTP_PORT=your_port
+MAILTRAP_SMTP_USER=your_user
+MAILTRAP_SMTP_PASS=your_password
+
+👉 These are used to connect to Mailtrap server
+
+---
+
+4. Required Libraries
+
+Install:
+
+npm install nodemailer mailgen
+
+Import:
+
+import nodemailer from "nodemailer";
+import Mailgen from "mailgen";
+
+---
+
+5. Create Mail Generator (Branding)
+
+const mailGenerator = new Mailgen({
+theme: "default",
+product: {
+name: "Task Manager",
+link: "[https://taskmanager.com](https://taskmanager.com)"
+}
+});
+
+👉 Adds branding like app name, style, etc.
+
+---
+
+6. Generate Email Content
+
+From options (passed by controller):
+
+const emailText = mailGenerator.generatePlaintext(options.mailGenContent);
+const emailHtml = mailGenerator.generate(options.mailGenContent);
+
+👉 Two versions:
+
+* Plain text (fallback)
+* HTML (main email UI)
+
+---
+
+7. Create Transporter (Core Step)
+
+const transporter = nodemailer.createTransport({
+host: process.env.MAILTRAP_SMTP_HOST,
+port: process.env.MAILTRAP_SMTP_PORT,
+auth: {
+user: process.env.MAILTRAP_SMTP_USER,
+pass: process.env.MAILTRAP_SMTP_PASS
+}
+});
+
+👉 This is the "email sending engine"
+
+---
+
+8. Create Mail Object
+
+const mail = {
+from: "[mail.manager@example.com](mailto:mail.manager@example.com)",
+to: options.email,
+subject: options.subject,
+text: emailText,
+html: emailHtml
+};
+
+👉 Contains:
+
+* sender
+* receiver
+* subject
+* content
+
+---
+
+9. Send Email
+
+await transporter.sendMail(mail);
+
+👉 This line actually sends the email
+
+---
+
+10. Error Handling
+
+try {
+await transporter.sendMail(mail);
+} catch (error) {
+console.error("Email service failed");
+console.error(error);
+}
+
+👉 Important because email can fail
+
+---
+
+11. Export Function
+
+export { sendEmail };
+
+👉 So controllers can use it
+
+---
+
+12. Full Flow
+
+Controller
+→ Generate token
+→ Generate email content (Mailgen)
+→ Call sendEmail()
+→ Nodemailer sends via Mailtrap
+→ Email received in inbox
+
+---
+
+13. Simple Analogy
+
+Mailgen = writing the letter
+Nodemailer = postman
+Mailtrap = practice mailbox
+
+---
+
+14. Key Point
+
+Preparing email ≠ Sending email
+
+You need:
+
+* Mailgen → for content
+* Nodemailer → for sending
+* Mailtrap → for testing
+
+---
+
+That’s it — your email system is now fully ready 🚀
