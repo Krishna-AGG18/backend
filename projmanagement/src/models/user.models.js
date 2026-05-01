@@ -66,10 +66,10 @@ const userSchema = new Schema(
 
 // pre hooks for password hashing
 userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
-    next();
+    // next();     
 });
 
 // METHOD TO CHECK THE PASSWORD ENTERED BY USER IF ITS CORRECT OR NOT
