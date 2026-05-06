@@ -15,9 +15,9 @@ const sendEmail = async (options) => {
     })
 
     const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent)
-    const emailHTML = mailGenerator.generate(options.mailgenContent)
+    const emailHTML = mailGenerator.generate(options.mailgenContent) //html based text will be generated
 
-
+    //transporter method that actually sends the mail...
     const transporter = nodemailer.createTransport({
         host : process.env.MAILTRAP_SMTP_HOST,
         port: process.env.MAILTRAP_SMTP_PORT,
@@ -27,6 +27,7 @@ const sendEmail = async (options) => {
         }
     })
 
+    //create a mail object : bascially details
     const mail = {
         from: "mail.taskmanager@example.com",
         to : options.email,
@@ -34,7 +35,8 @@ const sendEmail = async (options) => {
         text: emailTextual,
         html: emailHTML
     }
-
+    
+    // wrap in try catch coz email have tedency to fail
     try {
         await transporter.sendMail(mail)
     } catch (error) {

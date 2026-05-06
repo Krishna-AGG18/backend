@@ -105,7 +105,7 @@ userSchema.methods.generateRefreshToken = function () {
     );
 };
 
-// temporary token
+// temporary token - using crypto module
 userSchema.methods.generateTemporaryToken = function(){
     const unHashedToken = crypto.randomBytes(20).toString("hex")
 
