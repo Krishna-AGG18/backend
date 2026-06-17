@@ -23,6 +23,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
     }
 }
 
+// for registering a new user
 const registerUser = asyncHandler(
     async (req, res) => {
         const {email, username, password , role} = req.body
@@ -76,6 +77,58 @@ const registerUser = asyncHandler(
     }
 );
 
+// for login
+const login = asyncHandler(async (req,res) => {
+    const {email,password} = req.body
+
+    if(!email){
+        throw new ApiErrors(400,"Email is required!")
+    }
+
+    const user = await User.findOne({email});
+
+    if(!user){
+        throw new ApiErrors(400,"User does not exists!")
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if(!isPasswordValid){
+        throw new ApiErrors(400,"Invalid credentials.")
+    }
+
+    const {accessToken, refreshToken} = await  generateAccessAndRefreshTokens(user._id)
+    
+    const loggedInUser = await User.findById(user._id).select(
+            "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
+        )
+
+    //save tokens in cookies as well
+
+    //options is just a object that specifies that cokkies are http and browser can edit them only
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+    //return and set cookies
+    return res
+        .status(200)
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",refreshToken,options)
+        .json(
+            new ApiResponse(200,{
+                user : loggedInUser,
+                accessToken : accessToken,
+                refreshToken : refreshToken
+            },
+        "User logged in successfully.")
+        )
+
+})
+
+
 export {
-    registerUser
+    registerUser,
+    login,
 };
