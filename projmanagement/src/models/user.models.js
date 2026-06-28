@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
-
 const userSchema = new Schema(
     {
         avatar: {
@@ -69,7 +68,7 @@ userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
-    // next();     
+    // next();
 });
 
 // METHOD TO CHECK THE PASSWORD ENTERED BY USER IF ITS CORRECT OR NOT
@@ -106,15 +105,15 @@ userSchema.methods.generateRefreshToken = function () {
 };
 
 // temporary token - using crypto module
-userSchema.methods.generateTemporaryToken = function(){
-    const unHashedToken = crypto.randomBytes(20).toString("hex")
+userSchema.methods.generateTemporaryToken = function () {
+    const unHashedToken = crypto.randomBytes(20).toString("hex");
 
     const hashedToken = crypto
         .createHash("sha256")
         .update(unHashedToken)
-        .digest("hex")
+        .digest("hex");
 
-    const tokenExpiry = Date.now() + (20*60*1000) // 20 mins
-    return {unHashedToken, hashedToken, tokenExpiry}
-}
+    const tokenExpiry = Date.now() + 20 * 60 * 1000; // 20 mins
+    return { unHashedToken, hashedToken, tokenExpiry };
+};
 export const User = mongoose.model("User", userSchema);
