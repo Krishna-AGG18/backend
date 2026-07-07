@@ -66,8 +66,9 @@ const deleteProject = asyncHandler(async (req, res) => {
 const getProjects = asyncHandler(async (req, res) => {
     const projects = await ProjectMember.aggregate([
         {
-            $match : new mongoose.Types.ObjectId(req.user._id) 
-        },{
+             $match:{
+      user: new mongoose.Types.ObjectId(req.user._id)
+   }},{
             $lookup : {
                     from : "projects",
                     localField : "projects",
