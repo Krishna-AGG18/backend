@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { AvailableUserRoles } from "../utils/constants";
 
 const userRegisterValidator = () => {
     return [
@@ -27,24 +28,58 @@ const userLoginValidator = () => {
     ];
 };
 
-const userChangeCurrentPasswordValidator = () =>{
+const userChangeCurrentPasswordValidator = () => {
     return [
         body("oldPassword").notEmpty().withMessage("Old Password is required"),
         body("newPassword").notEmpty().withMessage("New Password is required"),
-    ]
-}
+    ];
+};
 
 const userForgotPasswordValidator = () => {
     return [
-        body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Email is invalid"),
-    ]
-}
+        body("email")
+            .notEmpty()
+            .withMessage("Email is required")
+            .isEmail()
+            .withMessage("Email is invalid"),
+    ];
+};
 
 const userResetForgotPasswordValidator = () => {
+    return [body("newPassword").notEmpty().withMessage("Password is required")];
+};
+
+const createProjectValidator = () => {
     return [
-        body("newPassword").notEmpty().withMessage("Password is required")
+        body("name").notEmpty().withMessage("Name is required"),
+        body("description").optional(),
+    ];
+};
+
+const addMemberToProjectValidator = () => {
+    return [
+        body("email")
+            .trim()
+            .notEmpty()
+            .withMessage("Email is required")
+            .isEmail()
+            .withMessage("Email is required"),
+        body("role")
+            .notEmpty()
+            .withMessage("Role is required")
+            .isIn(AvailableUserRoles)
+            .withMessage("Role is invalid")
     ]
 }
 
 
-export { userRegisterValidator, userLoginValidator, userChangeCurrentPasswordValidator, userForgotPasswordValidator, userResetForgotPasswordValidator };
+
+export {
+    userRegisterValidator,
+    userLoginValidator,
+    userChangeCurrentPasswordValidator,
+    userForgotPasswordValidator,
+    userResetForgotPasswordValidator,
+    createProjectValidator,
+    addMemberToProjectValidator,
+};
