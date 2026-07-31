@@ -78,7 +78,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 // tokens
 userSchema.methods.generateAccessToken = function () {
-    // singed tokem for access token, 1st object - payload
+    // singed tokem for access token, 1st object - payload, 2nd - secret, 3rd - expiry
     return jwt.sign(
         {
             _id: this._id,

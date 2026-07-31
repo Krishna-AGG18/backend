@@ -135,20 +135,127 @@ const getTaskById = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200,task[0], "Task fetched successfully!"))
 });
-const UpdateTask = asyncHandler(async (req, res) => {
-    //task
+const updateTask = asyncHandler(async (req, res) => {
+    const { projectId, taskId } = req.params;
+    const { title, description, assignedTo, status } = req.body;
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new ApiErrors(404, "Project not found");
+    }
+
+    let updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (description !== undefined) updateFields.description = description;
+    if (status !== undefined) updateFields.status = status;
+    if (assignedTo) updateFields.assignedTo = new mongoose.Types.ObjectId(assignedTo);
+
+    const task = await Task.findOneAndUpdate(
+        { _id: taskId, project: projectId },
+        { $set: updateFields },
+        { new: true }
+    );
+
+    if (!task) {
+        throw new ApiErrors(404, "Task not found");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, task, "Task updated successfully"));
 });
 const deleteTask = asyncHandler(async (req, res) => {
-    //task
+    const { projectId, taskId } = req.params;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+        throw new ApiErrors(404, "Project not found!");
+    }
+
+    const task = await Task.findOneAndDelete({ _id: taskId, project: projectId });
+
+    if (!task) {
+        throw new ApiErrors(404, "Task not found!");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Task deleted successfully"));
 });
 const createSubTask = asyncHandler(async (req, res) => {
-    //task
+    const { projectId, taskId } = req.params;
+    const { title, isCompleted } = req.body;
+
+    if (!title) {
+        throw new ApiErrors(400, "Title is required");
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new ApiErrors(404, "Project not found!");
+    }
+
+    const task = await Task.findOne({ _id: taskId, project: projectId });
+    if (!task) {
+        throw new ApiErrors(404, "Task not found!");
+    }
+
+    const subTask = await SubTask.create({
+        title,
+        task: new mongoose.Types.ObjectId(taskId),
+        isCompleted: isCompleted !== undefined ? isCompleted : false,
+        createdBy: new mongoose.Types.ObjectId(req.user._id),
+    });
+
+    return res
+        .status(201)
+        .json(new ApiResponse(201, subTask, "Subtask created successfully"));
 });
 const updateSubTask = asyncHandler(async (req, res) => {
-    //task
+    const { projectId, subTaskId } = req.params;
+    const { title, isCompleted } = req.body;
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new ApiErrors(404, "Project not found!");
+    }
+
+    let updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (isCompleted !== undefined) updateFields.isCompleted = isCompleted;
+
+    const subTask = await SubTask.findByIdAndUpdate(
+        subTaskId,
+        { $set: updateFields },
+        { new: true }
+    );
+
+    if (!subTask) {
+        throw new ApiErrors(404, "Subtask not found!");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, subTask, "Subtask updated successfully"));
 });
 const deleteSubTask = asyncHandler(async (req, res) => {
-    //task
+    const { projectId, subTaskId } = req.params;
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new ApiErrors(404, "Project not found!");
+    }
+
+    const subTask = await SubTask.findByIdAndDelete(subTaskId);
+
+    if (!subTask) {
+        throw new ApiErrors(404, "Subtask not found!");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Subtask deleted successfully"));
 });
 
 export {
@@ -157,7 +264,7 @@ export {
     deleteSubTask,
     deleteTask,
     updateSubTask,
-    UpdateTask,
+    updateTask,
     getTaskById,
     getTasks,
 };

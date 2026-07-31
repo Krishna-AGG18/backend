@@ -52,7 +52,7 @@ const updateProject = asyncHandler(async (req, res) => {
 const deleteProject = asyncHandler(async (req, res) => {
     const { projectId } = req.params;
 
-    const { project } = await Project.findByIdAndDelete(projectId);
+    const project = await Project.findByIdAndDelete(projectId);
 
     if (!project) {
         throw new ApiErrors(404, "Project not found!");
