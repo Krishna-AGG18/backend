@@ -72,7 +72,14 @@ const addMemberToProjectValidator = () => {
     ]
 }
 
-
+const noteValidator = () => {
+    return [
+        body("content")
+            .trim()
+            .notEmpty()
+            .withMessage("Note content is required"),
+    ];
+};
 
 export {
     userRegisterValidator,
@@ -82,4 +89,5 @@ export {
     userResetForgotPasswordValidator,
     createProjectValidator,
     addMemberToProjectValidator,
+    noteValidator,
 };
