@@ -6,6 +6,12 @@ import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
+//security
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
+
 const swaggerDocument = JSON.parse(fs.readFileSync(new URL("./swagger.json", import.meta.url)));
 const app = express();
 
@@ -21,6 +27,24 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // to make public folder publicly viewable such that i can serve content from it directly
 app.use(express.static("public"));
+
+// 1. Set security HTTP headers
+app.use(helmet());
+
+// 2. Limit requests from same API (Rate Limiting)
+// Ye rule banayega ki 15 minute me ek IP se 100 se zyada requests na aayein
+const limiter = rateLimit({
+    max: 100, 
+    windowMs: 15 * 60 * 1000, 
+    message: "Too many requests from this IP, please try again in an hour!"
+});
+app.use("/api", limiter);
+
+// 3. Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// 4. Data sanitization against XSS (Cross-Site Scripting)
+app.use(xss());
 
 // cookie-parser : now we have access to cookies
 app.use(cookieParser())
