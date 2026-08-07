@@ -1,10 +1,15 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import fs from "fs";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
-
-
+const swaggerDocument = JSON.parse(fs.readFileSync(new URL("./swagger.json", import.meta.url)));
 const app = express();
+
+app.use(morgan("dev")); // Log all incoming HTTP requests to the console
 
 // app.use middleware - BASIC CONFIGURATION
 
@@ -39,11 +44,14 @@ import projectRouter from "./routes/project.routes.js";
 import taskRouter from "./routes/task.routes.js";
 import noteRouter from "./routes/notes.routes.js"
 
-app.use("/api/vi/healthcheck", healthCheckRouter);
+app.use("/api/v1/healthcheck", healthCheckRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/tasks", taskRouter);
 app.use("/api/v1/notes", noteRouter);
+
+// Swagger Documentation Route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/", (req, res) => {
     res.send("Welcome to base camp!");
@@ -52,5 +60,8 @@ app.get("/", (req, res) => {
 app.get("/instagram", (req, res) => {
     res.send("Welcome to base camp's insta page!");
 });
+
+// Global error handler should be the last middleware added
+app.use(errorHandler);
 
 export default app;
