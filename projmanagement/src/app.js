@@ -44,7 +44,8 @@ app.use("/api", limiter);
 app.use(mongoSanitize());
 
 // 4. Data sanitization against XSS (Cross-Site Scripting)
-app.use(xss());
+// (xss-clean is currently incompatible with Express v5, so we temporarily disable it)
+// app.use(xss());
 
 // cookie-parser : now we have access to cookies
 app.use(cookieParser())
