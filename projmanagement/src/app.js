@@ -67,13 +67,19 @@ import healthCheckRouter from "./routes/healthcheck.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import projectRouter from "./routes/project.routes.js";
 import taskRouter from "./routes/task.routes.js";
-import noteRouter from "./routes/notes.routes.js"
+import noteRouter from "./routes/notes.routes.js";
+import activityRouter from "./routes/activity.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
+import dashboardRouter from "./routes/dashboard.routes.js";
 
 app.use("/api/v1/healthcheck", healthCheckRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/tasks", taskRouter);
 app.use("/api/v1/notes", noteRouter);
+app.use("/api/v1/activities", activityRouter);
+app.use("/api/v1/notifications", notificationRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
 // Swagger Documentation Route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

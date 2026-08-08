@@ -6,6 +6,8 @@ import { Project } from "../models/project.models.js";
 import mongoose from "mongoose";
 import { ProjectMember } from "../models/projectmember.models.js";
 import { AvailableUserRoles, UserRolesEnum } from "../utils/constants.js";
+import { logActivity } from "./activity.controllers.js";
+import { createNotification } from "./notification.controllers.js";
 
 const createProject = asyncHandler(async (req, res) => {
     const { name, description } = req.body;
@@ -13,6 +15,9 @@ const createProject = asyncHandler(async (req, res) => {
     const project = await Project.create({
         name: name,
         description: description,
+        status: req.body.status,
+        priority: req.body.priority,
+        dueDate: req.body.dueDate,
         createdBy: new mongoose.Types.ObjectId(req.user._id),
     });
 
@@ -21,6 +26,8 @@ const createProject = asyncHandler(async (req, res) => {
         project: new mongoose.Types.ObjectId(project._id),
         role: UserRolesEnum.ADMIN,
     });
+
+    await logActivity(project._id, "Project", project._id, "created", req.user._id, "Project created");
 
     return res
         .status(201)
@@ -36,6 +43,9 @@ const updateProject = asyncHandler(async (req, res) => {
         {
             name,
             description,
+            status: req.body.status,
+            priority: req.body.priority,
+            dueDate: req.body.dueDate,
         },
         { new: true },
     );
@@ -43,6 +53,8 @@ const updateProject = asyncHandler(async (req, res) => {
     if (!project) {
         throw new ApiErrors(404, "Project not found!");
     }
+
+    await logActivity(project._id, "Project", project._id, "updated", req.user._id, "Project details updated");
 
     return res
         .status(200)
@@ -58,12 +70,31 @@ const deleteProject = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "Project not found!");
     }
 
+    await logActivity(project._id, "Project", project._id, "deleted", req.user._id, "Project deleted");
+
     return res
         .status(200)
         .json(new ApiResponse(200, project, "Project deleted successfully!"));
 });
 
 const getProjects = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, search, status, priority, sortBy, sortType = "desc" } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    let projectMatch = {};
+    if (search) {
+        projectMatch.name = { $regex: search, $options: "i" };
+    }
+    if (status) projectMatch.status = status;
+    if (priority) projectMatch.priority = priority;
+
+    let sortOption = {};
+    if (sortBy) {
+        sortOption[`project.${sortBy}`] = sortType === "asc" ? 1 : -1;
+    } else {
+        sortOption[`project.createdAt`] = -1;
+    }
+
     const projects = await ProjectMember.aggregate([
         {
             $match: {
@@ -77,6 +108,9 @@ const getProjects = asyncHandler(async (req, res) => {
                 foreignField: "_id",
                 as: "project",
                 pipeline: [
+                    {
+                        $match: projectMatch
+                    },
                     {
                         $lookup: {
                             from: "projectmembers",
@@ -104,6 +138,9 @@ const getProjects = asyncHandler(async (req, res) => {
                     _id: 1,
                     name: 1,
                     description: 1,
+                    status: 1,
+                    priority: 1,
+                    dueDate: 1,
                     members: 1,
                     createdAt: 1,
                     createdBy: 1,
@@ -112,11 +149,18 @@ const getProjects = asyncHandler(async (req, res) => {
                 _id: 0,
             },
         },
+        { $sort: sortOption },
+        {
+            $facet: {
+                metadata: [ { $count: "total" }, { $addFields: { page: parseInt(page), limit: parseInt(limit) } } ],
+                data: [ { $skip: skip }, { $limit: parseInt(limit) } ]
+            }
+        }
     ]);
 
     return res
         .status(200)
-        .json(new ApiResponse(200, projects, "Projects fetched successfully!"));
+        .json(new ApiResponse(200, projects[0], "Projects fetched successfully!"));
 });
 const getProjectById = asyncHandler(async (req, res) => {
     const { projectId } = req.params;
@@ -150,6 +194,9 @@ const addMemberToProject = asyncHandler(async (req, res) => {
         },
         { new: true, upsert: true },
     );
+
+    await logActivity(projectId, "Project", projectId, "member_added", req.user._id, `Added member ${user.username} with role ${role}`);
+    await createNotification(user._id, `You have been added to a project`, `/projects/${projectId}`, projectId);
 
     return res
         .status(201)

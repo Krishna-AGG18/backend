@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { AvailableTaskStatus,TaskStatusEnum } from "../utils/constants.js";
+import { AvailableTaskStatus, TaskStatusEnum, AvailablePriorities, PriorityEnum } from "../utils/constants.js";
 
 const taskSchema = new Schema({
     title : {
@@ -29,6 +29,14 @@ const taskSchema = new Schema({
     attachments : {
         type : [{url : String, mimetype : String, size:Number}],
         default : []
+    },
+    priority: {
+        type: String,
+        enum: AvailablePriorities,
+        default: PriorityEnum.MEDIUM
+    },
+    dueDate: {
+        type: Date
     }
 },{timestamps : true})
 

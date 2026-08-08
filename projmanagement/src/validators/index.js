@@ -1,5 +1,5 @@
-import { body } from "express-validator";
-import { AvailableUserRoles } from "../utils/constants.js";
+import { body, query } from "express-validator";
+import { AvailableUserRoles, AvailablePriorities, AvailableProjectStatus, AvailableTaskStatus } from "../utils/constants.js";
 
 const userRegisterValidator = () => {
     return [
@@ -53,6 +53,28 @@ const createProjectValidator = () => {
     return [
         body("name").notEmpty().withMessage("Name is required"),
         body("description").optional(),
+        body("status").optional().isIn(AvailableProjectStatus).withMessage("Invalid status"),
+        body("priority").optional().isIn(AvailablePriorities).withMessage("Invalid priority"),
+        body("dueDate").optional().isISO8601().withMessage("Invalid date format"),
+    ];
+};
+
+const createTaskValidator = () => {
+    return [
+        body("title").notEmpty().withMessage("Title is required"),
+        body("description").optional(),
+        body("status").optional().isIn(AvailableTaskStatus).withMessage("Invalid status"),
+        body("priority").optional().isIn(AvailablePriorities).withMessage("Invalid priority"),
+        body("dueDate").optional().isISO8601().withMessage("Invalid date format"),
+    ];
+};
+
+const paginationValidator = () => {
+    return [
+        query("page").optional().isInt({ min: 1 }).withMessage("Page must be >= 1"),
+        query("limit").optional().isInt({ min: 1, max: 100 }).withMessage("Limit must be between 1 and 100"),
+        query("sortBy").optional().isString(),
+        query("sortType").optional().isIn(["asc", "desc"]).withMessage("SortType must be asc or desc"),
     ];
 };
 
@@ -88,6 +110,8 @@ export {
     userForgotPasswordValidator,
     userResetForgotPasswordValidator,
     createProjectValidator,
+    createTaskValidator,
+    paginationValidator,
     addMemberToProjectValidator,
     noteValidator,
 };

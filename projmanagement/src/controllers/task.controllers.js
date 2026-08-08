@@ -7,22 +7,48 @@ import { ApiErrors } from "../utils/api-errors.js";
 import { Project } from "../models/project.models.js";
 import mongoose from "mongoose";
 import { AvailableUserRoles, UserRolesEnum } from "../utils/constants.js";
+import fs from "fs/promises";
+import path from "path";
+import { logActivity } from "./activity.controllers.js";
+import { createNotification } from "./notification.controllers.js";
 
 const getTasks = asyncHandler(async (req, res) => {
     const { projectId } = req.params;
+    const { page = 1, limit = 10, search, status, priority, sortBy, sortType = "desc" } = req.query;
 
     const project = await Project.findById(projectId);
 
     if (!project) {
         throw new ApiErrors(404, "Project not found");
     }
-    const tasks = await Task.find({
-        project: new mongoose.Types.ObjectId(projectId),
-    }).populate("assignedTo", "avatar username fullname");
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    let taskMatch = { project: new mongoose.Types.ObjectId(projectId) };
+
+    if (search) {
+        taskMatch.title = { $regex: search, $options: "i" };
+    }
+    if (status) taskMatch.status = status;
+    if (priority) taskMatch.priority = priority;
+
+    let sortOption = {};
+    if (sortBy) {
+        sortOption[sortBy] = sortType === "asc" ? 1 : -1;
+    } else {
+        sortOption["createdAt"] = -1;
+    }
+
+    const tasks = await Task.find(taskMatch)
+        .populate("assignedTo", "avatar username fullname")
+        .sort(sortOption)
+        .skip(skip)
+        .limit(parseInt(limit));
+        
+    const totalCount = await Task.countDocuments(taskMatch);
 
     return res
         .status(200)
-        .json(new ApiResponse(200, tasks, "Task fetched successfully"));
+        .json(new ApiResponse(200, { metadata: [{ total: totalCount, page: parseInt(page), limit: parseInt(limit) }], data: tasks }, "Tasks fetched successfully!"));
 });
 const createTask = asyncHandler(async (req, res) => {
     const { title, description, assignedTo, status } = req.body;
@@ -36,9 +62,9 @@ const createTask = asyncHandler(async (req, res) => {
 
     const files = req.files || [];
 
-    files.map((file) => {
+    const attachments = files.map((file) => {
         return {
-            url: `${process.env.SERVER_URL}/images/${file.originalname}`,
+            url: `${process.env.SERVER_URL}/images/${file.filename}`,
             mimetype: file.mimetype,
             size: file.size,
         };
@@ -52,9 +78,17 @@ const createTask = asyncHandler(async (req, res) => {
             ? new mongoose.Types.ObjectId(assignedTo)
             : undefined,
         status,
+        priority: req.body.priority,
+        dueDate: req.body.dueDate,
         assignedBy: new mongoose.Types.ObjectId(req.user._id),
-        attachments: files,
+        attachments,
     });
+
+    await logActivity(task._id, "Task", projectId, "created", req.user._id, `Task '${title}' created`);
+
+    if (assignedTo) {
+        await createNotification(assignedTo, `You were assigned a new task: ${title}`, `/projects/${projectId}/tasks/${task._id}`, projectId);
+    }
 
     return res
         .status(201)
@@ -150,6 +184,8 @@ const updateTask = asyncHandler(async (req, res) => {
     if (title !== undefined) updateFields.title = title;
     if (description !== undefined) updateFields.description = description;
     if (status !== undefined) updateFields.status = status;
+    if (req.body.priority !== undefined) updateFields.priority = req.body.priority;
+    if (req.body.dueDate !== undefined) updateFields.dueDate = req.body.dueDate;
     if (assignedTo) updateFields.assignedTo = new mongoose.Types.ObjectId(assignedTo);
 
     const task = await Task.findOneAndUpdate(
@@ -160,6 +196,12 @@ const updateTask = asyncHandler(async (req, res) => {
 
     if (!task) {
         throw new ApiErrors(404, "Task not found");
+    }
+
+    await logActivity(task._id, "Task", projectId, "updated", req.user._id, `Task '${task.title}' updated`);
+
+    if (assignedTo) {
+        await createNotification(assignedTo, `Task '${task.title}' was assigned to you`, `/projects/${projectId}/tasks/${task._id}`, projectId);
     }
 
     return res
@@ -180,6 +222,22 @@ const deleteTask = asyncHandler(async (req, res) => {
     if (!task) {
         throw new ApiErrors(404, "Task not found!");
     }
+
+    if (task.attachments && task.attachments.length > 0) {
+        for (const attachment of task.attachments) {
+            try {
+                const filename = attachment.url.split("/").pop();
+                if (filename) {
+                    const filePath = path.resolve("./public/images", filename);
+                    await fs.unlink(filePath).catch(err => console.error("Error deleting file:", err));
+                }
+            } catch (err) {
+                console.error("Failed to delete attachment:", err);
+            }
+        }
+    }
+
+    await logActivity(taskId, "Task", projectId, "deleted", req.user._id, `Task '${task.title}' deleted`);
 
     return res
         .status(200)

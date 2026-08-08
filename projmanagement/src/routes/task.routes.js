@@ -11,6 +11,7 @@ import {
 } from "../controllers/task.controllers.js";
 import { verifyJWT, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { UserRolesEnum } from "../utils/constants.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
@@ -25,7 +26,7 @@ const ADMIN_ROLES = [ADMIN, PROJECT_ADMIN];
 router
     .route("/:projectId")
     .get(validateProjectPermission(ALL_ROLES), getTasks)
-    .post(validateProjectPermission(ADMIN_ROLES), createTask);
+    .post(validateProjectPermission(ADMIN_ROLES), upload.array("attachments"), createTask);
 
 router
     .route("/:projectId/t/:taskId")

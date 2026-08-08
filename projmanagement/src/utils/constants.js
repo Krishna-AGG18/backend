@@ -13,3 +13,20 @@ export const TaskStatusEnum = {
 }
 
 export const AvailableTaskStatus = Object.values(TaskStatusEnum)
+
+export const PriorityEnum = {
+    LOW: "low",
+    MEDIUM: "medium",
+    HIGH: "high"
+}
+
+export const AvailablePriorities = Object.values(PriorityEnum)
+
+export const ProjectStatusEnum = {
+    PLANNING: "planning",
+    ACTIVE: "active",
+    ON_HOLD: "on_hold",
+    COMPLETED: "completed"
+}
+
+export const AvailableProjectStatus = Object.values(ProjectStatusEnum)
