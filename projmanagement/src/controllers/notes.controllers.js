@@ -40,7 +40,7 @@ const getProjectNotes = asyncHandler(async (req,res) => {
 
     const notes = await ProjectNote.find({
         project : new mongoose.Types.ObjectId(projectId)
-    }).populate("createdBy","avatar username fullname")
+    }).populate("createdBy","avatar username fullName")
 
     return res
         .status(200)
@@ -59,7 +59,7 @@ const getNoteDetails = asyncHandler(async (req,res) => {
     const note = await ProjectNote.findOne({
         _id: new mongoose.Types.ObjectId(noteId),
         project: new mongoose.Types.ObjectId(projectId)
-    }).populate("createdBy", "avatar username fullname");
+    }).populate("createdBy", "avatar username fullName");
 
     if (!note) {
         throw new ApiErrors(404, "Note not found");

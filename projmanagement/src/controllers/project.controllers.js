@@ -5,6 +5,11 @@ import { ApiErrors } from "../utils/api-errors.js";
 import { Project } from "../models/project.models.js";
 import mongoose from "mongoose";
 import { ProjectMember } from "../models/projectmember.models.js";
+import { Task } from "../models/task.models.js";
+import { SubTask } from "../models/subtask.models.js";
+import { ProjectNote } from "../models/note.models.js";
+import { Activity } from "../models/activity.models.js";
+import { Notification } from "../models/notification.models.js";
 import { AvailableUserRoles, UserRolesEnum } from "../utils/constants.js";
 import { logActivity } from "./activity.controllers.js";
 import { createNotification } from "./notification.controllers.js";
@@ -30,6 +35,7 @@ const createProject = asyncHandler(async (req, res) => {
         ],
         customRoles: [
             { name: "admin", permissions: ["manage_project", "manage_members", "create_task", "update_task", "delete_task", "manage_notes"] },
+            { name: "project_admin", permissions: ["manage_members", "create_task", "update_task", "delete_task", "manage_notes"] },
             { name: "member", permissions: ["update_task"] }
         ],
         createdBy: new mongoose.Types.ObjectId(req.user._id),
@@ -83,6 +89,17 @@ const deleteProject = asyncHandler(async (req, res) => {
     if (!project) {
         throw new ApiErrors(404, "Project not found!");
     }
+
+    // Cascade delete associated data
+    const tasks = await Task.find({ project: projectId });
+    const taskIds = tasks.map(t => t._id);
+
+    await SubTask.deleteMany({ task: { $in: taskIds } });
+    await Task.deleteMany({ project: projectId });
+    await ProjectMember.deleteMany({ project: projectId });
+    await ProjectNote.deleteMany({ project: projectId });
+    await Activity.deleteMany({ project: projectId });
+    await Notification.deleteMany({ targetId: projectId });
 
     await logActivity(project._id, "Project", project._id, "deleted", req.user._id, "Project deleted");
 

@@ -28,7 +28,7 @@ router.route("/register").post(userRegisterValidator(), validate, registerUser);
 router.route("/login").post(userLoginValidator(), validate, login);
 router.route("/verify-email/:verificationToken").get(verifyEmail);
 router.route("/refresh-token").post(refreshAccessToken);
-router.route("/forgot-passowrd").post(userForgotPasswordValidator(), validate, forgetPasswordRequest);
+router.route("/forgot-password").post(userForgotPasswordValidator(), validate, forgetPasswordRequest);
 router.route("/reset-password/:resetToken").post(userResetForgotPasswordValidator(),validate,resetForgotPassword)
 
 //secure routes

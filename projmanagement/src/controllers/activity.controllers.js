@@ -11,7 +11,7 @@ export const getProjectActivities = asyncHandler(async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const activities = await Activity.find({ project: new mongoose.Types.ObjectId(projectId) })
-        .populate("performedBy", "username fullname avatar")
+        .populate("performedBy", "username fullName avatar")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parseInt(limit));

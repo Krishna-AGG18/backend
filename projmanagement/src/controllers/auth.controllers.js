@@ -8,6 +8,7 @@ import {
     sendEmail,
 } from "../utils/mail.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -32,7 +33,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 // for registering a new user
 const registerUser = asyncHandler(async (req, res) => {
-    const { email, username, password, role } = req.body;
+    const { email, username, password, role, fullName } = req.body;
 
     const existingUser = await User.findOne({
         $or: [{ username }, { email }],
@@ -51,6 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         password,
         username,
+        fullName,
         isEmailVerified: false,
     });
 
@@ -67,7 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
         subject: "Please verify your email",
         mailgenContent: emailVerificationMailgenContent(
             user.username,
-            `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+            `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
         ),
     });
 
@@ -163,7 +165,7 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
     };
 
     return res
@@ -191,7 +193,7 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
     }
 
     let hashedToken = crypto
-        .createHash(256)
+        .createHash("sha256")
         .update(verificationToken)
         .digest("hex");
 
@@ -249,7 +251,7 @@ const resendEmailVerification = asyncHandler(async (req, res, next) => {
         subject: "Please verify your email",
         mailgenContent: emailVerificationMailgenContent(
             user.username,
-            `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+            `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
         ),
     });
 

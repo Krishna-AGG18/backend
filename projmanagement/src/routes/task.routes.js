@@ -18,6 +18,9 @@ const router = Router();
 // All task routes require authentication
 router.use(verifyJWT);
 
+import { createTaskValidator, paginationValidator } from "../validators/index.js";
+import { validate } from "../middlewares/validator.middleware.js";
+
 // Task permissions
 const ALL_ROLES = [];
 const CREATE_TASK = ["create_task"];
@@ -27,8 +30,8 @@ const DELETE_TASK = ["delete_task"];
 // Task Routes
 router
     .route("/:projectId")
-    .get(validateProjectPermission(ALL_ROLES), getTasks)
-    .post(validateProjectPermission(CREATE_TASK), upload.array("attachments"), createTask);
+    .get(paginationValidator(), validate, validateProjectPermission(ALL_ROLES), getTasks)
+    .post(validateProjectPermission(CREATE_TASK), upload.array("attachments"), createTaskValidator(), validate, createTask);
 
 router
     .route("/:projectId/t/:taskId")

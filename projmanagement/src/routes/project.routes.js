@@ -20,6 +20,7 @@ import { validate } from "../middlewares/validator.middleware.js";
 import {
     addMemberToProjectValidator,
     createProjectValidator,
+    paginationValidator,
 } from "../validators/index.js";
 
 import {
@@ -39,7 +40,7 @@ router.use(verifyJWT); // whatever written after this line will run verifyJWT fi
 
 router
     .route("/")
-    .get(getProjects)
+    .get(paginationValidator(), validate, getProjects)
     .post(createProjectValidator(),validate, createProject)
 
 router
@@ -50,7 +51,7 @@ router
 
 router
     .route("/:projectId/members")
-    .get(getProjectMembers)
+    .get(validateProjectPermission(ANY_ROLE), getProjectMembers)
     .post(validateProjectPermission(MANAGE_MEMBERS),addMemberToProjectValidator(),validate,addMemberToProject)
 
 router
