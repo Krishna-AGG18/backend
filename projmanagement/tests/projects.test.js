@@ -49,10 +49,10 @@ describe('Project Routes', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.statusCode).toEqual(200);
-      expect(res.body.data).toBeInstanceOf(Array);
-      expect(res.body.data.length).toBeGreaterThan(0);
-      expect(res.body.data[0].role).toEqual('admin');
-      expect(res.body.data[0].project.name).toEqual('Project 1');
+      expect(res.body.data.data).toBeInstanceOf(Array);
+      expect(res.body.data.data.length).toBeGreaterThan(0);
+      expect(res.body.data.data[0].role).toEqual('admin');
+      expect(res.body.data.data[0].project.name).toEqual('Project 1');
     });
   });
 
