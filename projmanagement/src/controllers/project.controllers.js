@@ -73,15 +73,15 @@ const getProjects = asyncHandler(async (req, res) => {
         {
             $lookup: {
                 from: "projects",
-                localField: "projects",
+                localField: "project",
                 foreignField: "_id",
-                as: "projects",
+                as: "project",
                 pipeline: [
                     {
                         $lookup: {
                             from: "projectmembers",
                             localField: "_id",
-                            foreignField: "projects",
+                            foreignField: "project",
                             as: "projectmembers",
                         },
                     },
@@ -138,7 +138,7 @@ const addMemberToProject = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "User does not exists");
     }
 
-    await ProjectMember.findByIdAndUpdate(
+    await ProjectMember.findOneAndUpdate(
         {
             user: new mongoose.Types.ObjectId(user._id),
             project: new mongoose.Types.ObjectId(projectId),
@@ -158,7 +158,7 @@ const addMemberToProject = asyncHandler(async (req, res) => {
 const getProjectMembers = asyncHandler(async (req, res) => {
     const {projectId} = req.params
 
-    const project = await Project.findById(projectid)
+    const project = await Project.findById(projectId)
 
     if(!project){throw new ApiErrors(404, "Project not found")}
 
