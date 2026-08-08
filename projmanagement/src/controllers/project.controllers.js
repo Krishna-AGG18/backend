@@ -18,13 +18,27 @@ const createProject = asyncHandler(async (req, res) => {
         status: req.body.status,
         priority: req.body.priority,
         dueDate: req.body.dueDate,
+        taskStatuses: [
+            { name: "todo", category: "todo" },
+            { name: "in_progress", category: "in_progress" },
+            { name: "done", category: "done" }
+        ],
+        taskPriorities: [
+            { name: "low", level: 1 },
+            { name: "medium", level: 2 },
+            { name: "high", level: 3 }
+        ],
+        customRoles: [
+            { name: "admin", permissions: ["manage_project", "manage_members", "create_task", "update_task", "delete_task", "manage_notes"] },
+            { name: "member", permissions: ["update_task"] }
+        ],
         createdBy: new mongoose.Types.ObjectId(req.user._id),
     });
 
     await ProjectMember.create({
         user: new mongoose.Types.ObjectId(req.user._id),
         project: new mongoose.Types.ObjectId(project._id),
-        role: UserRolesEnum.ADMIN,
+        role: "admin",
     });
 
     await logActivity(project._id, "Project", project._id, "created", req.user._id, "Project created");
@@ -182,6 +196,16 @@ const addMemberToProject = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "User does not exists");
     }
 
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new ApiErrors(404, "Project not found");
+    }
+
+    const isValidRole = project.customRoles.some(r => r.name === role);
+    if (!isValidRole) {
+        throw new ApiErrors(400, "Invalid role for this project");
+    }
+
     await ProjectMember.findOneAndUpdate(
         {
             user: new mongoose.Types.ObjectId(user._id),
@@ -258,7 +282,11 @@ const updateMemberRole = asyncHandler(async (req, res) => {
     const {projectId, userId} = req.params
     const {newRole} = req.body
 
-    if(!AvailableUserRoles.includes(newRole)){throw new ApiErrors(400,"Invalid role")}
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiErrors(404, "Project not found");
+
+    const isValidRole = project.customRoles.some(r => r.name === newRole);
+    if (!isValidRole) throw new ApiErrors(400, "Invalid role for this project");
 
     let projectMember = await ProjectMember.findOne({
         project : new mongoose.Types.ObjectId(projectId),
@@ -277,29 +305,92 @@ const updateMemberRole = asyncHandler(async (req, res) => {
 const deleteMember = asyncHandler(async (req, res) => {
     const {projectId, userId} = req.params
 
-    let projectMember = await ProjectMember.findOne({
+    const projectMember = await ProjectMember.findOneAndDelete({
         project : new mongoose.Types.ObjectId(projectId),
         user : new mongoose.Types.ObjectId(userId)
     })
 
-    if(!projectMember){throw new ApiErrors(404,"Project Member Not found")}
+    if(!projectMember){throw new ApiErrors(404,"Project Member not found")}
 
-    projectMember = await ProjectMember.findByIdAndDelete(projectMember._id)
+    await logActivity(projectId, "Project", projectId, "member_removed", req.user._id, `Removed a member from the project`);
 
-    if(!projectMember){throw new ApiErrors(404,"Project Member Not found")}
+    return res.status(200).json(new ApiResponse(200,{},"Project Member Deleted Successsfully"))
+});
 
-    return res.status(200).json(new ApiResponse(200,ProjectMember,"Project Member deleted successfully"))
+const addCustomStatus = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const { name, category, color } = req.body;
 
+    if (!name || !category) throw new ApiErrors(400, "Name and category are required");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiErrors(404, "Project not found");
+
+    if (project.taskStatuses.some(s => s.name === name)) {
+        throw new ApiErrors(400, "Status with this name already exists");
+    }
+
+    project.taskStatuses.push({ name, category, color });
+    await project.save();
+
+    await logActivity(projectId, "Project", projectId, "settings_updated", req.user._id, `Added custom status ${name}`);
+
+    return res.status(201).json(new ApiResponse(201, project.taskStatuses, "Custom status added successfully"));
+});
+
+const addCustomPriority = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const { name, level, color } = req.body;
+
+    if (!name || level === undefined) throw new ApiErrors(400, "Name and level are required");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiErrors(404, "Project not found");
+
+    if (project.taskPriorities.some(p => p.name === name)) {
+        throw new ApiErrors(400, "Priority with this name already exists");
+    }
+
+    project.taskPriorities.push({ name, level, color });
+    await project.save();
+
+    await logActivity(projectId, "Project", projectId, "settings_updated", req.user._id, `Added custom priority ${name}`);
+
+    return res.status(201).json(new ApiResponse(201, project.taskPriorities, "Custom priority added successfully"));
+});
+
+const addCustomRole = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const { name, permissions } = req.body;
+
+    if (!name || !Array.isArray(permissions)) throw new ApiErrors(400, "Name and permissions array are required");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiErrors(404, "Project not found");
+
+    if (project.customRoles.some(r => r.name === name)) {
+        throw new ApiErrors(400, "Role with this name already exists");
+    }
+
+    project.customRoles.push({ name, permissions });
+    await project.save();
+
+    await logActivity(projectId, "Project", projectId, "settings_updated", req.user._id, `Added custom role ${name}`);
+
+    return res.status(201).json(new ApiResponse(201, project.customRoles, "Custom role added successfully"));
 });
 
 export {
-    getProjectById,
-    getProjectMembers,
-    getProjects,
     createProject,
-    updateMemberRole,
     updateProject,
-    addMemberToProject,
-    deleteMember,
     deleteProject,
+    getProjects,
+    getProjectById,
+    addMemberToProject,
+    getProjectMembers,
+    updateMemberRole,
+    deleteMember,
+    addCustomStatus,
+    addCustomPriority,
+    addCustomRole,
 };

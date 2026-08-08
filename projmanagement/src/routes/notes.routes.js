@@ -9,7 +9,8 @@ import {
 import { verifyJWT, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { noteValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
-import { UserRolesEnum } from "../utils/constants.js";
+const ANY_ROLE = [];
+const MANAGE_NOTES = ["manage_notes"];
 
 const router = Router();
 
@@ -17,19 +18,12 @@ router.use(verifyJWT);
 
 router
     .route("/:projectId")
-    .get(
-        validateProjectPermission([
-            UserRolesEnum.ADMIN,
-            UserRolesEnum.PROJECT_ADMIN,
-            UserRolesEnum.MEMBER,
-        ]),
-        getProjectNotes
-    );
+    .get(validateProjectPermission(ANY_ROLE), getProjectNotes);
 
 router
     .route("/:projectId")
     .post(
-        validateProjectPermission([UserRolesEnum.ADMIN]),
+        validateProjectPermission(MANAGE_NOTES),
         noteValidator(),
         validate,
         createNote
@@ -37,25 +31,18 @@ router
 
 router
     .route("/:projectId/n/:noteId")
-    .get(
-        validateProjectPermission([
-            UserRolesEnum.ADMIN,
-            UserRolesEnum.PROJECT_ADMIN,
-            UserRolesEnum.MEMBER,
-        ]),
-        getNoteDetails
-    );
+    .get(validateProjectPermission(ANY_ROLE), getNoteDetails);
 
 router
     .route("/:projectId/n/:noteId")
     .put(
-        validateProjectPermission([UserRolesEnum.ADMIN]),
+        validateProjectPermission(MANAGE_NOTES),
         noteValidator(),
         validate,
         updateNote
     )
     .delete(
-        validateProjectPermission([UserRolesEnum.ADMIN]),
+        validateProjectPermission(MANAGE_NOTES),
         deleteNote
     );
 export default router;

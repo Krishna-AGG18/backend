@@ -1,14 +1,14 @@
 # Product Requirements Document (PRD)
 
-## Project Camp Backend
+## Workloom Backend
 
 ### 1. Product Overview
 
-**Product Name:** Project Camp Backend  
+**Product Name:** Workloom Backend  
 **Version:** 1.0.0  
 **Product Type:** Backend API for Project Management System
 
-Project Camp Backend is a RESTful API service designed to support collaborative project management. The system enables teams to organize projects, manage tasks with subtasks, maintain project notes, and handle user authentication with role-based access control.
+Workloom Backend is a RESTful API service designed to support collaborative project management. The system enables teams to organize projects, manage tasks with subtasks, maintain project notes, and handle user authentication with role-based access control.
 
 ### 2. Target Users
 
@@ -25,15 +25,17 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 - **Password Management:** Change password, forgot/reset password functionality
 - **Email Verification:** Account verification via email tokens
 - **Token Management:** Access token refresh mechanism
-- **Role-Based Access Control:** Three-tier permission system (Admin, Project Admin, Member)
+- **Role-Based Access Control:** Highly customizable permission system with dynamic custom roles at the project level.
+- **Dynamic Configuration:** Supports 100% database-driven configurations for custom task statuses, custom priority levels, and custom member roles per project.
 
 #### 3.2 Project Management
 
-- **Project Creation:** Create new projects with name and description
-- **Project Listing:** View all projects user has access to with member count
+- **Project Creation:** Create new projects with name, description, status, priority, and due date
+- **Project Listing:** View all projects user has access to, with advanced pagination, searching, filtering (by status/priority), and sorting.
 - **Project Details:** Access individual project information
-- **Project Updates:** Modify project information (Admin only)
-- **Project Deletion:** Remove projects (Admin only)
+- **Project Updates:** Modify project information
+- **Project Deletion:** Remove projects
+- **Project Settings:** Manage dynamic configurations for custom task statuses, task priorities, and member roles and permissions.
 
 #### 3.3 Team Member Management
 
@@ -44,14 +46,15 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 
 #### 3.4 Task Management
 
-- **Task Creation:** Create tasks with title, description, and assignee
-- **Task Listing:** View all tasks within a project
+- **Task Creation:** Create tasks with title, description, assignee, priority, and due date
+- **Task Listing:** View all tasks within a project, with advanced pagination, searching, filtering (by status/priority), and sorting.
 - **Task Details:** Access individual task information
 - **Task Updates:** Modify task information and status
 - **Task Deletion:** Remove tasks from projects
 - **File Attachments:** Support for multiple file attachments on tasks
 - **Task Assignment:** Assign tasks to specific team members
-- **Status Tracking:** Three-state status system (Todo, In Progress, Done)
+- **Status Tracking:** Dynamic status system fully customizable per project (e.g., Todo, In Progress, Done, QA, etc.)
+- **Priority Tracking:** Dynamic priority levels fully customizable per project (e.g., Low, Medium, High, Critical)
 
 #### 3.5 Subtask Management
 
@@ -71,6 +74,17 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 #### 3.7 System Health
 
 - **Health Check:** API endpoint for system status monitoring
+
+#### 3.8 Activity Logging & Notifications
+
+- **Activity Tracking:** Automatically log modifications to projects, tasks, and team members.
+- **Real-Time Notifications:** Notify users when they are assigned tasks or added to projects.
+- **Notification Management:** Users can fetch their notifications and mark them as read.
+
+#### 3.9 Dashboard
+
+- **Statistical Aggregation:** Fetch summarized statistics for user's projects and tasks grouped by their statuses.
+- **Upcoming Tasks:** Quickly retrieve tasks that are due soon.
 
 ### 4. Technical Specifications
 
@@ -124,6 +138,20 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 
 - `GET /` - System health status
 
+**Dashboard Routes** (`/api/v1/dashboard/`)
+
+- `GET /stats` - Get user dashboard statistics (secured)
+
+**Activity Routes** (`/api/v1/activities/`)
+
+- `GET /:projectId` - List project activities (secured, paginated)
+
+**Notification Routes** (`/api/v1/notifications/`)
+
+- `GET /` - List user notifications (secured, paginated)
+- `PUT /read-all` - Mark all notifications as read (secured)
+- `PUT /:notificationId/read` - Mark specific notification as read (secured)
+
 #### 4.2 Permission Matrix
 
 | Feature                    | Admin | Project Admin | Member |
@@ -146,11 +174,24 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 - `project_admin` - Project-level administrative access
 - `member` - Basic project member access
 
+**Project Status:**
+
+- `planning` - Project is in planning phase
+- `active` - Project is currently active
+- `on_hold` - Project is temporarily paused
+- `completed` - Project has been finished
+
 **Task Status:**
 
 - `todo` - Task not started
 - `in_progress` - Task currently being worked on
 - `done` - Task completed
+
+**Priority Levels:**
+
+- `low` - Low priority
+- `medium` - Normal priority
+- `high` - Critical/High priority
 
 ### 5. Security Features
 

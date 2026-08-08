@@ -63,8 +63,8 @@ const createTaskValidator = () => {
     return [
         body("title").notEmpty().withMessage("Title is required"),
         body("description").optional(),
-        body("status").optional().isIn(AvailableTaskStatus).withMessage("Invalid status"),
-        body("priority").optional().isIn(AvailablePriorities).withMessage("Invalid priority"),
+        body("status").optional().isString().withMessage("Invalid status"),
+        body("priority").optional().isString().withMessage("Invalid priority"),
         body("dueDate").optional().isISO8601().withMessage("Invalid date format"),
     ];
 };
@@ -89,7 +89,7 @@ const addMemberToProjectValidator = () => {
         body("role")
             .notEmpty()
             .withMessage("Role is required")
-            .isIn(AvailableUserRoles)
+            .isString()
             .withMessage("Role is invalid")
     ]
 }

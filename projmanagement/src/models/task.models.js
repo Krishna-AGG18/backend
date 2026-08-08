@@ -23,17 +23,15 @@ const taskSchema = new Schema({
     },
     status : {
         type : String,
-        enum : AvailableTaskStatus,
-        default : TaskStatusEnum.TODO
+        required : true,
+    },
+    priority: {
+        type : String,
+        required : true,
     },
     attachments : {
         type : [{url : String, mimetype : String, size:Number}],
         default : []
-    },
-    priority: {
-        type: String,
-        enum: AvailablePriorities,
-        default: PriorityEnum.MEDIUM
     },
     dueDate: {
         type: Date

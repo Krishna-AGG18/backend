@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Project Camp API",
+    "title": "Workloom API",
     "version": "1.0.0",
-    "description": "Backend API for Project Management System"
+    "description": "Backend API for Workloom"
   },
   "servers": [
     {
@@ -490,6 +490,180 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/settings/statuses": {
+      "post": {
+        "summary": "Add a custom task status to a project",
+        "tags": [
+          "Project Settings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "category"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "In Review"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "in_progress",
+                    "enum": [
+                      "todo",
+                      "in_progress",
+                      "done"
+                    ]
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "#FF9900"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Custom status added successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/settings/priorities": {
+      "post": {
+        "summary": "Add a custom task priority to a project",
+        "tags": [
+          "Project Settings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "level"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Critical"
+                  },
+                  "level": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "#FF0000"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Custom priority added successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/settings/roles": {
+      "post": {
+        "summary": "Add a custom role to a project",
+        "tags": [
+          "Project Settings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "permissions"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "QA Tester"
+                  },
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "update_task"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Custom role added successfully"
           }
         }
       }

@@ -10,6 +10,9 @@ import {
     addMemberToProject,
     deleteMember,
     deleteProject,
+    addCustomStatus,
+    addCustomPriority,
+    addCustomRole,
 } from "../controllers/project.controllers.js";
 
 import { validate } from "../middlewares/validator.middleware.js";
@@ -25,6 +28,11 @@ import {
 } from "../middlewares/auth.middleware.js";
 import { AvailableUserRoles, UserRolesEnum } from "../utils/constants.js";
 
+// Project permissions
+const ANY_ROLE = [];
+const MANAGE_PROJECT = ["manage_project"];
+const MANAGE_MEMBERS = ["manage_members"];
+
 const router = Router();
 
 router.use(verifyJWT); // whatever written after this line will run verifyJWT firstly ; use means middleware
@@ -36,18 +44,31 @@ router
 
 router
     .route("/:projectId")
-    .get(validateProjectPermission(AvailableUserRoles), getProjectById)
-    .put(validateProjectPermission([UserRolesEnum.ADMIN]),       createProjectValidator(),validate,updateProject)
-    .delete(validateProjectPermission([UserRolesEnum.ADMIN,]),deleteProject)
+    .get(validateProjectPermission(ANY_ROLE), getProjectById)
+    .put(validateProjectPermission(MANAGE_PROJECT),       createProjectValidator(),validate,updateProject)
+    .delete(validateProjectPermission(MANAGE_PROJECT),deleteProject)
 
 router
     .route("/:projectId/members")
     .get(getProjectMembers)
-    .post(validateProjectPermission([UserRolesEnum.ADMIN]),addMemberToProjectValidator(),validate,addMemberToProject)
+    .post(validateProjectPermission(MANAGE_MEMBERS),addMemberToProjectValidator(),validate,addMemberToProject)
 
 router
     .route("/:projectId/members/:userId")
-    .put(validateProjectPermission([UserRolesEnum.ADMIN]),updateMemberRole)
-    .delete(validateProjectPermission([UserRolesEnum.ADMIN]),deleteMember)
+    .put(validateProjectPermission(MANAGE_MEMBERS),updateMemberRole)
+    .delete(validateProjectPermission(MANAGE_MEMBERS),deleteMember)
+
+// Project Settings Routes
+router
+    .route("/:projectId/settings/statuses")
+    .post(validateProjectPermission(MANAGE_PROJECT), addCustomStatus);
+
+router
+    .route("/:projectId/settings/priorities")
+    .post(validateProjectPermission(MANAGE_PROJECT), addCustomPriority);
+
+router
+    .route("/:projectId/settings/roles")
+    .post(validateProjectPermission(MANAGE_PROJECT), addCustomRole);
 
 export default router;

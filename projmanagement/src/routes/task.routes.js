@@ -18,30 +18,32 @@ const router = Router();
 // All task routes require authentication
 router.use(verifyJWT);
 
-const { ADMIN, PROJECT_ADMIN, MEMBER } = UserRolesEnum;
-const ALL_ROLES = [ADMIN, PROJECT_ADMIN, MEMBER];
-const ADMIN_ROLES = [ADMIN, PROJECT_ADMIN];
+// Task permissions
+const ALL_ROLES = [];
+const CREATE_TASK = ["create_task"];
+const UPDATE_TASK = ["update_task"];
+const DELETE_TASK = ["delete_task"];
 
 // Task Routes
 router
     .route("/:projectId")
     .get(validateProjectPermission(ALL_ROLES), getTasks)
-    .post(validateProjectPermission(ADMIN_ROLES), upload.array("attachments"), createTask);
+    .post(validateProjectPermission(CREATE_TASK), upload.array("attachments"), createTask);
 
 router
     .route("/:projectId/t/:taskId")
     .get(validateProjectPermission(ALL_ROLES), getTaskById)
-    .put(validateProjectPermission(ADMIN_ROLES), updateTask)
-    .delete(validateProjectPermission(ADMIN_ROLES), deleteTask);
+    .put(validateProjectPermission(UPDATE_TASK), updateTask)
+    .delete(validateProjectPermission(DELETE_TASK), deleteTask);
 
 // Subtask Routes
 router
     .route("/:projectId/t/:taskId/subtasks")
-    .post(validateProjectPermission(ADMIN_ROLES), createSubTask);
+    .post(validateProjectPermission(CREATE_TASK), createSubTask);
 
 router
     .route("/:projectId/st/:subTaskId")
     .put(validateProjectPermission(ALL_ROLES), updateSubTask)
-    .delete(validateProjectPermission(ADMIN_ROLES), deleteSubTask);
+    .delete(validateProjectPermission(DELETE_TASK), deleteSubTask);
 
 export default router;

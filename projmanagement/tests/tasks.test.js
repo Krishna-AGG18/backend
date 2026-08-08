@@ -33,7 +33,7 @@ describe('Task Routes', () => {
       const res = await request(app)
         .post(`/api/v1/tasks/${projectId}`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ title: 'New Task', description: 'Task desc', status: 'todo' });
+        .send({ title: 'New Task', description: 'Task desc', status: 'todo', priority: 'medium' });
 
       if (res.statusCode !== 201) console.error('Task error:', res.body);
 
@@ -46,7 +46,7 @@ describe('Task Routes', () => {
       const res = await request(app)
         .post(`/api/v1/tasks/${projectId}`)
         .set('Authorization', `Bearer ${memberToken}`)
-        .send({ title: 'Hacked Task', status: 'todo' });
+        .send({ title: 'Hacked Task', status: 'todo', priority: 'medium' });
 
       expect(res.statusCode).toEqual(403);
     });
@@ -57,7 +57,7 @@ describe('Task Routes', () => {
       const createRes = await request(app)
         .post(`/api/v1/tasks/${projectId}`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ title: 'Task to fetch' });
+        .send({ title: 'Task to fetch', status: 'todo', priority: 'low' });
         
       const taskId = createRes.body.data._id;
 

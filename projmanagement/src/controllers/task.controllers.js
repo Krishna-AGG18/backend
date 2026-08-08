@@ -60,6 +60,16 @@ const createTask = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "Project not found");
     }
 
+    if (status) {
+        const isValidStatus = project.taskStatuses.some(s => s.name === status);
+        if (!isValidStatus) throw new ApiErrors(400, "Invalid status for this project");
+    }
+
+    if (req.body.priority) {
+        const isValidPriority = project.taskPriorities.some(p => p.name === req.body.priority);
+        if (!isValidPriority) throw new ApiErrors(400, "Invalid priority for this project");
+    }
+
     const files = req.files || [];
 
     const attachments = files.map((file) => {
@@ -187,6 +197,16 @@ const updateTask = asyncHandler(async (req, res) => {
     if (req.body.priority !== undefined) updateFields.priority = req.body.priority;
     if (req.body.dueDate !== undefined) updateFields.dueDate = req.body.dueDate;
     if (assignedTo) updateFields.assignedTo = new mongoose.Types.ObjectId(assignedTo);
+
+    if (status) {
+        const isValidStatus = project.taskStatuses.some(s => s.name === status);
+        if (!isValidStatus) throw new ApiErrors(400, "Invalid status for this project");
+    }
+
+    if (req.body.priority) {
+        const isValidPriority = project.taskPriorities.some(p => p.name === req.body.priority);
+        if (!isValidPriority) throw new ApiErrors(400, "Invalid priority for this project");
+    }
 
     const task = await Task.findOneAndUpdate(
         { _id: taskId, project: projectId },

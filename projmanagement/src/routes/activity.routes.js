@@ -6,8 +6,8 @@ import { UserRolesEnum } from "../utils/constants.js";
 const router = Router();
 router.use(verifyJWT);
 
-const ALL_ROLES = [UserRolesEnum.ADMIN, UserRolesEnum.PROJECT_ADMIN, UserRolesEnum.MEMBER];
+const ANY_ROLE = [];
 
-router.route("/:projectId").get(validateProjectPermission(ALL_ROLES), getProjectActivities);
+router.route("/:projectId").get(validateProjectPermission(ANY_ROLE), getProjectActivities);
 
 export default router;

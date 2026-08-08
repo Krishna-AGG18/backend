@@ -29,7 +29,7 @@ describe('Subtask Routes', () => {
     const taskRes = await request(app)
       .post(`/api/v1/tasks/${projectId}`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ title: 'Parent Task', status: 'todo' });
+      .send({ title: 'Parent Task', status: 'todo', priority: 'medium' });
     taskId = taskRes.body.data._id;
   });
 
