@@ -128,7 +128,7 @@ const login = asyncHandler(async (req, res) => {
     //options is just a object that specifies that cokkies are http and browser can edit them only
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
     };
 
     //return and set cookies
@@ -293,7 +293,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
         };
 
         const { accessToken, refreshToken: newRefreshToken } =
