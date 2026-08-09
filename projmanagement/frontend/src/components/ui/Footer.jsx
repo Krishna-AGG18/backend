@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="bg-background px-8 md:px-12 pt-24 pb-8 overflow-hidden border-t border-border mt-24">
+    <footer className="bg-background px-8 md:px-12 pb-8 overflow-hidden relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 mb-24">
           
@@ -37,9 +37,9 @@ export default function Footer() {
                 <span className="w-3 h-[1px] bg-primary"></span> Connect
               </h4>
               <ul className="space-y-5 text-[14px] text-muted-foreground font-medium">
-                <li><a href="mailto:hello@workloom.com" className="hover:text-primary transition-colors">hello@workloom.com</a></li>
-                <li><a href="https://twitter.com/workloom" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter (X)</a></li>
-                <li><a href="https://github.com/workloom" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/krishnawd" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a></li>
+                <li><a href="https://x.com/krishna2909782" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter (X)</a></li>
+                <li><a href="https://github.com/Krishna-agg18" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a></li>
               </ul>
             </div>
           </div>
