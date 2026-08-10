@@ -17,7 +17,7 @@ const FloatingWidget = ({ icon: Icon, title, tasks, color, className, delay = "0
     </div>
     <div className="pr-2">
       <div className="text-white text-[13px] font-semibold font-['Space_Grotesk'] leading-tight mb-0.5">{title}</div>
-      <div className="text-[#8a8897] text-[11px]">{tasks} tasks</div>
+      <div className="text-[#a1a1aa] text-[11px]">{tasks} tasks</div>
     </div>
   </div>
 );
@@ -90,7 +90,7 @@ export function OrbitScene() {
                  </div>
                </div>
                
-               <div className="text-[#8a8897] text-[11px] font-medium pt-1 px-1">+ 2 more</div>
+               <div className="text-[#a1a1aa] text-[11px] font-medium pt-1 px-1">+ 2 more</div>
             </div>
             
             {/* Column 2: In Progress */}
@@ -164,7 +164,7 @@ export function OrbitScene() {
                  </div>
                </div>
                
-               <div className="text-[#8a8897] text-[11px] font-medium pt-1 px-1">+ 1 more</div>
+               <div className="text-[#a1a1aa] text-[11px] font-medium pt-1 px-1">+ 1 more</div>
             </div>
          </div>
          

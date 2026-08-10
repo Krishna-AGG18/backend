@@ -41,12 +41,12 @@ export function LandingPage() {
         <div className="w-[min(1240px,calc(100%-64px))] mx-auto pt-[74px] pb-[80px] max-md:w-[min(100%-36px,620px)] max-md:pt-[62px]">
           <div className="inline-flex items-center gap-[7px] text-[#b695ff] text-[11px] font-semibold tracking-[.08em] uppercase"><Sparkles size={14} /> Plan, collaborate, ship.</div>
           <h1 className="max-w-[590px] mt-[18px] mb-[20px] font-bold text-[clamp(51px,6.2vw,92px)] leading-[.96] tracking-[-.08em] font-['Space_Grotesk'] max-md:text-[clamp(47px,14vw,74px)]">Where projects<br /><span className="text-[var(--accent-2)]">come together.</span></h1>
-          <p className="max-w-[430px] text-[var(--muted)] text-[17px] leading-[1.7] mb-[30px] max-md:text-[15px]">Workloom is the modern workspace for planning, collaboration, and delivering work that matters.</p>
+          <p className="max-w-[430px] text-[#a1a1aa] text-[17px] leading-[1.7] mb-[30px] max-md:text-[15px]">Workloom is the modern workspace for planning, collaboration, and delivering work that matters.</p>
           <div className="flex gap-[12px] flex-wrap">
             <a className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-white bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] border border-[rgba(199,171,255,.28)] rounded-[11px] shadow-[0_14px_35px_rgba(95,40,214,.25)] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] hover:shadow-[0_18px_45px_rgba(95,40,214,.42)]" href="/signup">Get started for free <ArrowRight size={17} /></a>
             <button className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-inherit bg-[rgba(255,255,255,.045)] border border-[var(--line)] rounded-[11px] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px]" onClick={() => setShowVideo(true)}><Play size={15} fill="currentColor" /> See how it works</button>
           </div>
-          <div className="flex items-center gap-[21px] flex-wrap mt-[82px] text-[#6d6d7b] text-[11px] max-md:mt-[46px]"><span>Trusted by fast-moving teams</span><span className="text-[#8a8897] max-sm:hidden">◈ northstar</span><span className="text-[#8a8897] max-sm:hidden">◈ pixelpeak</span><span className="text-[#8a8897] max-sm:hidden">◈ sequence</span></div>
+          <div className="flex items-center gap-[21px] flex-wrap mt-[82px] text-[#a1a1aa] text-[11px] max-md:mt-[46px]"><span>Trusted by fast-moving teams</span><span className="text-[#a1a1aa] max-sm:hidden">◈ northstar</span><span className="text-[#a1a1aa] max-sm:hidden">◈ pixelpeak</span><span className="text-[#a1a1aa] max-sm:hidden">◈ sequence</span></div>
         </div>
         <div className="absolute bottom-[26px] right-[32px] text-[#666573] text-[11px] flex items-center gap-[9px]"><span className="w-[5px] h-[5px] bg-[#7c3cff] rounded-full shadow-[0_0_12px_#7c3cff]" /> Scroll to explore</div>
       </section>
@@ -73,7 +73,7 @@ export function LandingPage() {
             </span>
             <h2 className="font-semibold text-[17px] font-['Space_Grotesk'] text-[#a678ff]">Plan</h2>
           </div>
-          <p className="text-[var(--muted)] text-[14px] leading-[1.6]">Break down ideas into actionable plans and prioritize what matters.</p>
+          <p className="text-[#a1a1aa] text-[14px] leading-[1.6]">Break down ideas into actionable plans and prioritize what matters.</p>
         </MovingDotCard>
         
         <MovingDotCard className="h-full min-h-[220px]" dotColor="#5c82ff" bgGlow="rgba(92,130,255,0.06)">
@@ -83,7 +83,7 @@ export function LandingPage() {
             </span>
             <h2 className="font-semibold text-[17px] font-['Space_Grotesk'] text-[#5c82ff]">Collaborate</h2>
           </div>
-          <p className="text-[var(--muted)] text-[14px] leading-[1.6]">Align your team with real-time updates and shared context.</p>
+          <p className="text-[#a1a1aa] text-[14px] leading-[1.6]">Align your team with real-time updates and shared context.</p>
         </MovingDotCard>
 
         <MovingDotCard className="h-full min-h-[220px]" dotColor="#41d1ff" bgGlow="rgba(65,209,255,0.06)">
@@ -93,7 +93,7 @@ export function LandingPage() {
             </span>
             <h2 className="font-semibold text-[17px] font-['Space_Grotesk'] text-[#41d1ff]">Track</h2>
           </div>
-          <p className="text-[var(--muted)] text-[14px] leading-[1.6]">Get full visibility into progress, roadblocks, and deadlines.</p>
+          <p className="text-[#a1a1aa] text-[14px] leading-[1.6]">Get full visibility into progress, roadblocks, and deadlines.</p>
         </MovingDotCard>
 
         <MovingDotCard className="h-full min-h-[220px]" dotColor="#52e7bc" bgGlow="rgba(82,231,188,0.06)">
@@ -103,7 +103,7 @@ export function LandingPage() {
             </span>
             <h2 className="font-semibold text-[17px] font-['Space_Grotesk'] text-[#52e7bc]">Ship</h2>
           </div>
-          <p className="text-[var(--muted)] text-[14px] leading-[1.6]">Deliver quality work faster with confidence and clarity.</p>
+          <p className="text-[#a1a1aa] text-[14px] leading-[1.6]">Deliver quality work faster with confidence and clarity.</p>
         </MovingDotCard>
       </section>
       </FadeIn>
@@ -144,7 +144,7 @@ export function LandingPage() {
                 <span className="w-[28px] h-[28px] grid place-items-center rounded-full border border-[rgba(166,120,255,.3)] bg-[#08070e] text-[12px] font-bold text-[#a1a1aa]">1</span>
                 <h3 className="font-semibold text-[15px] font-['Space_Grotesk'] text-[#a678ff]">Create Project</h3>
               </div>
-              <p className="text-[#8a8897] text-[13px] leading-[1.6] mb-[24px]">Start with a name, goal, and roadmap.</p>
+              <p className="text-[#a1a1aa] text-[13px] leading-[1.6] mb-[24px]">Start with a name, goal, and roadmap.</p>
               <div className="mt-auto">
                 <span className="w-[36px] h-[36px] grid place-items-center rounded-[10px] bg-[rgba(166,120,255,.08)] text-[#a678ff]">
                   <Folder size={18} />
@@ -157,7 +157,7 @@ export function LandingPage() {
                 <span className="w-[28px] h-[28px] grid place-items-center rounded-full border border-[rgba(92,130,255,.3)] bg-[#08070e] text-[12px] font-bold text-[#a1a1aa]">2</span>
                 <h3 className="font-semibold text-[15px] font-['Space_Grotesk'] text-[#5c82ff]">Add Team</h3>
               </div>
-              <p className="text-[#8a8897] text-[13px] leading-[1.6] mb-[24px]">Invite members and set roles in seconds.</p>
+              <p className="text-[#a1a1aa] text-[13px] leading-[1.6] mb-[24px]">Invite members and set roles in seconds.</p>
               <div className="mt-auto">
                 <span className="w-[36px] h-[36px] grid place-items-center rounded-[10px] bg-[rgba(92,130,255,.08)] text-[#5c82ff]">
                   <Users size={18} />
@@ -170,7 +170,7 @@ export function LandingPage() {
                 <span className="w-[28px] h-[28px] grid place-items-center rounded-full border border-[rgba(65,209,255,.3)] bg-[#08070e] text-[12px] font-bold text-[#a1a1aa]">3</span>
                 <h3 className="font-semibold text-[15px] font-['Space_Grotesk'] text-[#41d1ff]">Assign Tasks</h3>
               </div>
-              <p className="text-[#8a8897] text-[13px] leading-[1.6] mb-[24px]">Break work down and assign with context.</p>
+              <p className="text-[#a1a1aa] text-[13px] leading-[1.6] mb-[24px]">Break work down and assign with context.</p>
               <div className="mt-auto">
                 <span className="w-[36px] h-[36px] grid place-items-center rounded-[10px] bg-[rgba(65,209,255,.08)] text-[#41d1ff]">
                   <CheckSquare size={18} />
@@ -183,7 +183,7 @@ export function LandingPage() {
                 <span className="w-[28px] h-[28px] grid place-items-center rounded-full border border-[rgba(82,231,188,.3)] bg-[#08070e] text-[12px] font-bold text-[#a1a1aa]">4</span>
                 <h3 className="font-semibold text-[15px] font-['Space_Grotesk'] text-[#52e7bc]">Track Progress</h3>
               </div>
-              <p className="text-[#8a8897] text-[13px] leading-[1.6] mb-[24px]">Monitor updates and ship with confidence.</p>
+              <p className="text-[#a1a1aa] text-[13px] leading-[1.6] mb-[24px]">Monitor updates and ship with confidence.</p>
               <div className="mt-auto">
                 <span className="w-[36px] h-[36px] grid place-items-center rounded-[10px] bg-[rgba(82,231,188,.08)] text-[#52e7bc]">
                   <TrendingUp size={18} />
@@ -209,7 +209,7 @@ export function LandingPage() {
           
           <ul className="space-y-[24px]">
             {['Real-time updates', 'Custom workflows', 'Unified project hub', 'AI-powered insights'].map((item) => (
-              <li key={item} className="flex items-center gap-[16px] text-[#8a8897] text-[15px] font-medium transition-colors hover:text-white">
+              <li key={item} className="flex items-center gap-[16px] text-[#a1a1aa] text-[15px] font-medium transition-colors hover:text-white">
                 <CheckCircle2 size={18} className="text-[#a1a1aa]" />
                 {item}
               </li>

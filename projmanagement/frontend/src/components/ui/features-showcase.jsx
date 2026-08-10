@@ -23,7 +23,7 @@ const SideText = ({ subtitle, title, description, features, color = "text-[#a678
         </span>
       ))}
     </h3>
-    <p className="text-[#8a8897] text-[15px] leading-[1.6] mb-[32px]">
+    <p className="text-[#a1a1aa] text-[15px] leading-[1.6] mb-[32px]">
       {description}
     </p>
     
@@ -112,7 +112,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                  <img src={getAvatar('cc')} className="w-6 h-6 rounded-full bg-white/10" alt="avatar"/>
                </div>
              </div>
-             <div className="text-[#8a8897] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
+             <div className="text-[#a1a1aa] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
           </Card>
           
           {/* Column 2: In Progress */}
@@ -139,7 +139,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                  <img src={getAvatar('ff')} className="w-6 h-6 rounded-full bg-white/10" alt="avatar"/>
                </div>
              </div>
-             <div className="text-[#8a8897] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
+             <div className="text-[#a1a1aa] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
           </Card>
 
           {/* Column 3: Done */}
@@ -166,7 +166,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                  <img src={getAvatar('ii')} className="w-6 h-6 rounded-full bg-white/10" alt="avatar"/>
                </div>
              </div>
-             <div className="text-[#8a8897] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
+             <div className="text-[#a1a1aa] text-[13px] flex items-center gap-2 mt-auto pt-2 cursor-pointer hover:text-white"><Plus size={14} /> Add task</div>
           </Card>
         </div>
       </div>
@@ -195,7 +195,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                     <img src={getAvatar(m.name)} className="w-[32px] h-[32px] rounded-full border border-white/10" alt="avatar"/>
                     <div>
                       <div className="text-white text-[13px] font-medium">{m.name}</div>
-                      <div className="text-[#8a8897] text-[11px]">{m.role}</div>
+                      <div className="text-[#a1a1aa] text-[11px]">{m.role}</div>
                     </div>
                   </div>
                   <div className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold", m.color)}>{m.badge}</div>
@@ -222,12 +222,12 @@ export function FeaturesShowcase({ onPlayVideo }) {
                   </div>
                   <div>
                     <p className="text-[#a1a1aa] text-[12px] leading-tight mb-1">{a.text}</p>
-                    <span className="text-[#6d6d7b] text-[10px]">{a.time}</span>
+                    <span className="text-[#a1a1aa] text-[10px]">{a.time}</span>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="text-[#8a8897] text-[13px] text-center mt-[24px] pt-[16px] border-t border-white/5 cursor-pointer hover:text-white">View all activity</div>
+            <div className="text-[#a1a1aa] text-[13px] text-center mt-[24px] pt-[16px] border-t border-white/5 cursor-pointer hover:text-white">View all activity</div>
           </Card>
 
           {/* Notifications */}
@@ -245,12 +245,12 @@ export function FeaturesShowcase({ onPlayVideo }) {
                   </div>
                   <div>
                     <p className="text-white/90 text-[13px] leading-tight mb-1">{n.title}</p>
-                    <span className="text-[#6d6d7b] text-[11px]">{n.time}</span>
+                    <span className="text-[#a1a1aa] text-[11px]">{n.time}</span>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="text-[#8a8897] text-[13px] text-center mt-auto pt-[16px] border-t border-white/5 cursor-pointer hover:text-white">View all notifications</div>
+            <div className="text-[#a1a1aa] text-[13px] text-center mt-auto pt-[16px] border-t border-white/5 cursor-pointer hover:text-white">View all notifications</div>
           </Card>
         </div>
       </div>
@@ -281,19 +281,19 @@ export function FeaturesShowcase({ onPlayVideo }) {
                     </div>
                   </div>
                   <div className="flex flex-col gap-[12px]">
-                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#52e7bc] rounded-[2px]"/> <span className="text-white">Done</span> <span className="text-[#8a8897] ml-auto">72%</span></div>
-                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#4182ff] rounded-[2px]"/> <span className="text-white">In Progress</span> <span className="text-[#8a8897] ml-auto">18%</span></div>
-                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#8a8897] rounded-[2px]"/> <span className="text-white">Todo</span> <span className="text-[#8a8897] ml-auto">10%</span></div>
+                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#52e7bc] rounded-[2px]"/> <span className="text-white">Done</span> <span className="text-[#a1a1aa] ml-auto">72%</span></div>
+                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#4182ff] rounded-[2px]"/> <span className="text-white">In Progress</span> <span className="text-[#a1a1aa] ml-auto">18%</span></div>
+                    <div className="flex items-center gap-2 text-[12px]"><div className="w-2.5 h-2.5 bg-[#8a8897] rounded-[2px]"/> <span className="text-white">Todo</span> <span className="text-[#a1a1aa] ml-auto">10%</span></div>
                   </div>
                 </div>
                 <div className="mt-[32px] pt-[16px] border-t border-white/5 flex justify-between">
                    <div>
                      <div className="text-white text-[13px] font-bold">72 / 100</div>
-                     <div className="text-[#8a8897] text-[11px]">Tasks</div>
+                     <div className="text-[#a1a1aa] text-[11px]">Tasks</div>
                    </div>
                    <div className="text-right">
                      <div className="text-[#52e7bc] text-[13px] font-bold flex items-center gap-1"><CheckCircle2 size={12}/> Excellent</div>
-                     <div className="text-[#8a8897] text-[11px]">On Track</div>
+                     <div className="text-[#a1a1aa] text-[11px]">On Track</div>
                    </div>
                 </div>
              </Card>
@@ -306,7 +306,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                 </div>
                 <div className="relative h-[120px] w-full flex items-end">
                    {/* Y Axis */}
-                   <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-[#6d6d7b]">
+                   <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-[#a1a1aa]">
                      <span>100%</span>
                      <span>75%</span>
                      <span>50%</span>
@@ -314,7 +314,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                      <span>0%</span>
                    </div>
                    {/* X Axis */}
-                   <div className="absolute left-8 right-0 bottom-0 flex justify-between text-[10px] text-[#6d6d7b]">
+                   <div className="absolute left-8 right-0 bottom-0 flex justify-between text-[10px] text-[#a1a1aa]">
                      <span>Apr 1</span>
                      <span>Apr 15</span>
                      <span>May 1</span>
@@ -359,7 +359,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                   ].map((u, i) => (
                     <div key={i} className="flex justify-between items-center text-[13px]">
                       <span className="text-white/80">{u.n}</span>
-                      <span className="text-[#8a8897]">{u.d}</span>
+                      <span className="text-[#a1a1aa]">{u.d}</span>
                     </div>
                   ))}
                 </div>
@@ -387,7 +387,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
                       </div>
                       <div className="absolute top-[28px] whitespace-nowrap text-center">
                         <div className={`text-[11px] font-medium ${s.color || 'text-white/80'}`}>{s.t}</div>
-                        <div className="text-[10px] text-[#6d6d7b]">{s.d}</div>
+                        <div className="text-[10px] text-[#a1a1aa]">{s.d}</div>
                       </div>
                     </div>
                   ))}
@@ -460,7 +460,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
          
          <div className="relative z-10">
            <h2 className="text-white text-[clamp(32px,4vw,42px)] font-bold font-['Space_Grotesk'] tracking-tight mb-[16px]">Ready to build better together?</h2>
-           <p className="text-[#8a8897] text-[16px] mb-[40px]">Create your workspace in seconds and start shipping.</p>
+           <p className="text-[#a1a1aa] text-[16px] mb-[40px]">Create your workspace in seconds and start shipping.</p>
            
            <div className="flex items-center justify-center gap-[16px] max-sm:flex-col">
              <a href="/login" className="bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white px-[28px] py-[14px] rounded-[12px] font-semibold flex items-center justify-center gap-[8px] hover:-translate-y-[2px] transition-transform shadow-[0_10px_25px_rgba(95,40,214,.3)] max-sm:w-full">

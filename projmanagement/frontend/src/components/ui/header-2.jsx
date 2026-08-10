@@ -27,7 +27,10 @@ export function Header() {
 	return (
 		<header
 			className={cn(
-				'sticky top-0 z-50 mt-4 mx-auto w-full max-w-7xl border-b border-border md:rounded-md md:border md:transition-all md:ease-out bg-background/95 py-0 supports-[backdrop-filter]:bg-background/50 backdrop-blur-lg md:top-4 md:max-w-5xl md:shadow',
+				'fixed z-50 mx-auto w-full transition-all duration-300 ease-out bg-background/80 py-0 supports-[backdrop-filter]:bg-background/40 backdrop-blur-md border-border',
+				scrolled
+					? 'top-4 max-w-5xl rounded-[16px] border shadow-lg left-1/2 -translate-x-1/2'
+					: 'top-0 max-w-full rounded-none border-b border-x-0 border-t-0',
 				{
 					'bg-background/90': open,
 				},
@@ -35,7 +38,8 @@ export function Header() {
 		>
 			<nav
 				className={cn(
-					'flex h-14 w-full items-center justify-between px-4 md:h-12 md:px-2 md:transition-all md:ease-out'
+					'flex w-full items-center justify-between px-6 md:px-8 transition-all duration-300 ease-out',
+					scrolled ? 'h-14' : 'h-16'
 				)}
 			>
 				<div className="flex items-center gap-3">
