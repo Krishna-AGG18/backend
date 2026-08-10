@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils.js';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon.jsx';
 import { useScroll } from '@/components/ui/use-scroll.js';
 import WarpText from '../3d/WrapText';
+import { Link } from 'react-router-dom';
+
 export function Header() {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
@@ -65,8 +67,8 @@ export function Header() {
 					</div>
 				</div>
 				<div className="hidden items-center gap-2 md:flex">
-					<Button variant="outline" className="cursor-pointer">Sign In</Button>
-					<Button className="cursor-pointer">Get Started</Button>
+					<Link to="/login"><Button variant="outline" className="cursor-pointer">Sign In</Button></Link>
+					<Link to="/signup"><Button className="cursor-pointer">Get Started</Button></Link>
 				</div>
 				<Button size="icon" variant="outline" onClick={() => setOpen(!open)} className="md:hidden">
 					<MenuToggleIcon open={open} className="size-5" duration={300} />
@@ -87,10 +89,14 @@ export function Header() {
 					)}
 				>
 					<div className="flex flex-col gap-2">
-						<Button variant="outline" className="w-full cursor-pointer">
-							Sign In
-						</Button>
-						<Button className="w-full cursor-pointer">Get Started</Button>
+						<Link to="/login" className="w-full">
+							<Button variant="outline" className="w-full cursor-pointer">
+								Sign In
+							</Button>
+						</Link>
+						<Link to="/signup" className="w-full">
+							<Button className="w-full cursor-pointer">Get Started</Button>
+						</Link>
 					</div>
 				</div>
 			</div>

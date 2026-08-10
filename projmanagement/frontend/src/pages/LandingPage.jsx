@@ -38,13 +38,13 @@ export function LandingPage() {
       <section className="relative grid items-center mx-auto min-h-[700px] max-w-[1440px] isolate max-md:min-h-[720px] max-sm:min-h-[760px]" id="top">
         <HeroScene />
         <div className="absolute inset-0 -z-10 pointer-events-none bg-[linear-gradient(90deg,var(--bg)_0%,rgba(5,6,8,.94)_29%,rgba(5,6,8,.26)_61%,rgba(5,6,8,.08)_100%),radial-gradient(ellipse_at_75%_55%,transparent_0%,rgba(5,6,8,.24)_68%,var(--bg)_100%)] max-md:bg-[linear-gradient(180deg,var(--bg)_0%,rgba(5,6,8,.72)_40%,rgba(5,6,8,.2)_100%)]" aria-hidden="true" />
-        <div className="w-[min(1240px,calc(100%-64px))] mx-auto pt-[74px] pb-[80px] max-md:w-[min(100%-36px,620px)] max-md:pt-[62px]">
+        <div className="w-[min(1240px,calc(100%-64px))] mx-auto pt-[74px] pb-[80px] max-md:w-[min(100%-36px,620px)] max-md:pt-[62px] max-md:pb-[40px]">
           <div className="inline-flex items-center gap-[7px] text-[#b695ff] text-[11px] font-semibold tracking-[.08em] uppercase"><Sparkles size={14} /> Plan, collaborate, ship.</div>
           <h1 className="max-w-[590px] mt-[18px] mb-[20px] font-bold text-[clamp(51px,6.2vw,92px)] leading-[.96] tracking-[-.08em] font-['Space_Grotesk'] max-md:text-[clamp(47px,14vw,74px)]">Where projects<br /><span className="text-[var(--accent-2)]">come together.</span></h1>
           <p className="max-w-[430px] text-[#a1a1aa] text-[17px] leading-[1.7] mb-[30px] max-md:text-[15px]">Workloom is the modern workspace for planning, collaboration, and delivering work that matters.</p>
-          <div className="flex gap-[12px] flex-wrap">
-            <a className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-white bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] border border-[rgba(199,171,255,.28)] rounded-[11px] shadow-[0_14px_35px_rgba(95,40,214,.25)] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] hover:shadow-[0_18px_45px_rgba(95,40,214,.42)]" href="/signup">Get started for free <ArrowRight size={17} /></a>
-            <button className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-inherit bg-[rgba(255,255,255,.045)] border border-[var(--line)] rounded-[11px] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px]" onClick={() => setShowVideo(true)}><Play size={15} fill="currentColor" /> See how it works</button>
+          <div className="flex gap-[12px] flex-col sm:flex-row">
+            <a className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-white bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] border border-[rgba(199,171,255,.28)] rounded-[11px] shadow-[0_14px_35px_rgba(95,40,214,.25)] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] hover:shadow-[0_18px_45px_rgba(95,40,214,.42)] max-sm:w-full" href="/signup">Get started for free <ArrowRight size={17} /></a>
+            <button className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-inherit bg-[rgba(255,255,255,.045)] border border-[var(--line)] rounded-[11px] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] max-sm:w-full" onClick={() => setShowVideo(true)}><Play size={15} fill="currentColor" /> See how it works</button>
           </div>
           <div className="flex items-center gap-[21px] flex-wrap mt-[82px] text-[#a1a1aa] text-[11px] max-md:mt-[46px]"><span>Trusted by fast-moving teams</span><span className="text-[#a1a1aa] max-sm:hidden">◈ northstar</span><span className="text-[#a1a1aa] max-sm:hidden">◈ pixelpeak</span><span className="text-[#a1a1aa] max-sm:hidden">◈ sequence</span></div>
         </div>
@@ -52,7 +52,7 @@ export function LandingPage() {
       </section>
 
       <FadeIn direction="up" delay={0.1}>
-      <section className="w-[min(1240px,calc(100%-64px))] mx-auto mt-[80px] grid grid-cols-4 gap-[24px] max-md:w-[min(100%-36px,620px)] max-md:grid-cols-2 max-sm:grid-cols-1 relative" id="product">
+      <section className="w-[min(1240px,calc(100%-64px))] mx-auto mt-[48px] md:mt-[80px] grid grid-cols-4 gap-[24px] max-md:w-[min(100%-36px,620px)] max-md:grid-cols-2 max-sm:grid-cols-1 relative" id="product">
         <div className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute top-[10%] left-[-10%] w-[300px] h-[300px] rounded-full" style={{ backgroundImage: 'radial-gradient(circle, rgba(166,120,255,0.1) 0%, transparent 70%)' }} />
           <div className="absolute bottom-[-10%] right-[-10%] w-[250px] h-[250px] rounded-full" style={{ backgroundImage: 'radial-gradient(circle, rgba(65,209,255,0.1) 0%, transparent 70%)' }} />
@@ -109,7 +109,7 @@ export function LandingPage() {
       </FadeIn>
 
       <FadeIn direction="up" delay={0.1}>
-      <section className="w-[min(1240px,calc(100%-64px))] mx-auto mt-[80px] flex gap-[24px] max-lg:flex-col relative" id="how-it-works">
+      <section className="w-[min(1240px,calc(100%-64px))] mx-auto mt-[48px] md:mt-[80px] flex gap-[24px] max-lg:flex-col relative" id="how-it-works">
         <div className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute top-[30%] left-[20%] w-[400px] h-[400px] rounded-full" style={{ backgroundImage: 'radial-gradient(circle, rgba(92,130,255,0.1) 0%, transparent 70%)' }} />
           <div className="absolute bottom-[10%] right-[10%] w-[350px] h-[350px] rounded-full" style={{ backgroundImage: 'radial-gradient(circle, rgba(82,231,188,0.1) 0%, transparent 70%)' }} />
@@ -130,7 +130,7 @@ export function LandingPage() {
             fontSize="clamp(42px, 5vw, 64px)"
             fontWeight={800}
             lineHeight={0.9}
-            className="w-full min-h-[180px] -ml-2"
+            className="w-full min-h-[100px] lg:min-h-[180px] -ml-2"
           />
         </div>
         
@@ -197,7 +197,7 @@ export function LandingPage() {
 
       {/* Orbit Scene Section */}
       <FadeIn direction="up" delay={0.1}>
-      <section className="w-[min(1400px,calc(100%-64px))] mx-auto mt-[80px] flex items-center justify-between gap-[40px] max-lg:flex-col relative">
+      <section className="w-[min(1400px,calc(100%-64px))] mx-auto mt-[48px] md:mt-[80px] flex items-center justify-between gap-[40px] max-lg:flex-col relative">
         <div className="absolute left-[10%] top-[30%] w-[500px] h-[500px] rounded-full pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(166,120,255,0.03) 0%, transparent 70%)' }} />
         
         {/* Left Side Text */}

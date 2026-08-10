@@ -14,9 +14,9 @@ const IsometricCube = ({ size = 60, color = "#a678ff", className, style }) => (
 const getAvatar = (seed) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
 
 const SideText = ({ subtitle, title, description, features, color = "text-[#a678ff]" }) => (
-  <div className="w-[340px] shrink-0 max-lg:w-full z-10">
+  <div className="w-[340px] shrink-0 max-lg:w-full z-10 text-center lg:text-left">
     <h2 className={cn("text-[11px] font-bold tracking-[0.15em] uppercase mb-[16px]", color)}>{subtitle}</h2>
-    <h3 className="text-white text-[32px] font-medium leading-[1.2] mb-[24px] font-['Space_Grotesk'] tracking-tight">
+    <h3 className="text-white text-[28px] md:text-[32px] font-medium leading-[1.2] mb-[24px] font-['Space_Grotesk'] tracking-tight">
       {title.split('. ').map((part, i, arr) => (
         <span key={i}>
           {part}{i < arr.length - 1 ? '.' : ''}<br/>
@@ -28,7 +28,7 @@ const SideText = ({ subtitle, title, description, features, color = "text-[#a678
     </p>
     
     {features && (
-      <ul className="space-y-[16px]">
+      <ul className="space-y-[16px] inline-block text-left">
         {features.map((item) => (
           <li key={item} className="flex items-center gap-[12px] text-[#a1a1aa] text-[14px] font-medium">
             <CheckCircle2 size={16} className="text-[#a1a1aa]" />
@@ -76,10 +76,10 @@ export function FeaturesShowcase({ onPlayVideo }) {
         <div className="absolute top-[95%] right-[55%] w-[5px] h-[5px] bg-[#52e7bc]/70 rounded-full will-change-transform" style={{ animation: 'float 7s ease-in-out infinite 1.2s' }} />
       </div>
 
-      <div className="w-[min(1400px,calc(100%-64px))] mx-auto flex flex-col gap-[80px] mt-[80px] relative z-10">
+      <div className="w-[min(1400px,calc(100%-64px))] mx-auto flex flex-col gap-[48px] lg:gap-[80px] mt-[48px] lg:mt-[80px] relative z-10">
       
       {/* 1. TASK MANAGEMENT */}
-      <div className="flex justify-between items-center gap-[64px] max-lg:flex-col">
+      <div className="flex justify-between items-center gap-[32px] lg:gap-[64px] max-lg:flex-col">
         <SideText 
           subtitle="YOUR MANAGEMENT"
           title="Turn goals into. clear next steps."
@@ -172,7 +172,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
       </div>
 
       {/* 2. TEAM COLLABORATION */}
-      <div className="flex justify-between items-center gap-[64px] max-lg:flex-col">
+      <div className="flex justify-between items-center gap-[32px] lg:gap-[64px] max-lg:flex-col">
         <SideText 
           subtitle="TEAM COLLABORATION"
           title="Work together.. Stay aligned."
@@ -256,7 +256,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
       </div>
 
       {/* 3. PROGRESS & VISIBILITY */}
-      <div className="flex justify-between items-start gap-[64px] max-lg:flex-col">
+      <div className="flex justify-between items-start gap-[32px] lg:gap-[64px] max-lg:flex-col">
         <SideText 
           subtitle="PROGRESS & VISIBILITY"
           title="See the big picture.. Act with confidence."
@@ -398,7 +398,7 @@ export function FeaturesShowcase({ onPlayVideo }) {
       </div>
       
       {/* 4. ROLE-BASED ACCESS */}
-      <div className="flex justify-between items-start gap-[64px] max-lg:flex-col">
+      <div className="flex justify-between items-start gap-[32px] lg:gap-[64px] max-lg:flex-col">
         <SideText 
           subtitle="ROLE-BASED ACCESS"
           title="Right access.. Right control."
@@ -473,14 +473,14 @@ export function FeaturesShowcase({ onPlayVideo }) {
          </div>
          
          {/* Decorative Floating Isometric Cubes */}
-         <IsometricCube size={90} color="#a678ff" className="left-[8%] top-[25%]" style={{ animation: 'float 6s ease-in-out infinite' }} />
-         <IsometricCube size={60} color="#a678ff" className="left-[18%] top-[55%]" style={{ animation: 'float 5s ease-in-out infinite 1s' }} />
-         <IsometricCube size={30} color="#a678ff" className="left-[12%] bottom-[15%]" style={{ animation: 'float 7s ease-in-out infinite 0.5s' }} />
-         <IsometricCube size={15} color="#5c82ff" className="left-[25%] top-[15%]" style={{ animation: 'float 8s ease-in-out infinite 2s' }} />
+         <IsometricCube size={90} color="#a678ff" className="left-[8%] top-[25%] max-md:hidden" style={{ animation: 'float 6s ease-in-out infinite' }} />
+         <IsometricCube size={60} color="#a678ff" className="left-[18%] top-[55%] max-md:hidden" style={{ animation: 'float 5s ease-in-out infinite 1s' }} />
+         <IsometricCube size={30} color="#a678ff" className="left-[12%] bottom-[15%] max-md:hidden" style={{ animation: 'float 7s ease-in-out infinite 0.5s' }} />
+         <IsometricCube size={15} color="#5c82ff" className="left-[25%] top-[15%] max-md:hidden" style={{ animation: 'float 8s ease-in-out infinite 2s' }} />
          
-         <IsometricCube size={80} color="#5c82ff" className="right-[10%] bottom-[20%]" style={{ animation: 'float 7s ease-in-out infinite 1.5s' }} />
-         <IsometricCube size={50} color="#5c82ff" className="right-[22%] top-[30%]" style={{ animation: 'float 6s ease-in-out infinite 0.8s' }} />
-         <IsometricCube size={20} color="#a678ff" className="right-[5%] top-[40%]" style={{ animation: 'float 5s ease-in-out infinite 2.5s' }} />
+         <IsometricCube size={80} color="#5c82ff" className="right-[10%] bottom-[20%] max-md:hidden" style={{ animation: 'float 7s ease-in-out infinite 1.5s' }} />
+         <IsometricCube size={50} color="#5c82ff" className="right-[22%] top-[30%] max-md:hidden" style={{ animation: 'float 6s ease-in-out infinite 0.8s' }} />
+         <IsometricCube size={20} color="#a678ff" className="right-[5%] top-[40%] max-md:hidden" style={{ animation: 'float 5s ease-in-out infinite 2.5s' }} />
       </div>
 
       </div>
