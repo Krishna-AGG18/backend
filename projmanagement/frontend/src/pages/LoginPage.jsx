@@ -2,29 +2,46 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Mail, Lock, Loader2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { AuthAPI } from '../api/auth.api';
+import { useAuthStore } from '../stores/auth.store';
+
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const setLogin = useAuthStore(state => state.setLogin);
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const loginMutation = useMutation({
+    mutationFn: AuthAPI.login,
+    onSuccess: (data) => {
+      // Backend response structure ke according data nikal rahe hain
+      const user = data.data.user;
+      const token = data.data.accessToken;
+      setLogin(user, token); // Zustand & localStorage me save ho jayega
+      navigate('/dashboard'); // Dashboard par redirect
+    },
+    onError: (err) => {
+      // Backend se jo error aayega wo dikhayenge, warna default error
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    }
+  });
+
+    const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
     
-    // Simulate API call to match the required fields: email, password
-    setTimeout(() => {
-      setIsLoading(false);
-      if (!formData.email || !formData.password) {
-        setError('Please fill in all required fields.');
-        return;
-      }
-      // Success logic would go here
-      console.log('Login attempt:', formData);
-      navigate('/dashboard');
-    }, 1500);
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    // Actual API Call trigger karega
+    loginMutation.mutate({ 
+      email: formData.email, 
+      password: formData.password 
+    });
   };
 
   return (
@@ -78,10 +95,10 @@ export const LoginPage = () => {
 
         <button 
           type="submit" 
-          disabled={isLoading}
-          className="w-full mt-2 bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(95,40,214,.4)] disabled:opacity-70 disabled:cursor-not-allowed"
+          disabled={loginMutation.isPending}
+          className="w-full mt-4 bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(95,40,214,.4)] disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Sign In'}
+          {loginMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : 'Sign in'}
         </button>
       </form>
 
