@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Mail, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { AuthAPI } from '../api/auth.api';
 
 export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -9,25 +11,32 @@ export const ForgotPasswordPage = () => {
   const [error, setError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const forgotMutation = useMutation({
+    mutationFn: AuthAPI.forgotPassword,
+    onSuccess: () => {
+      setIsSuccess(true); // Isse automatically aapka "Check your email" wala UI dikhne lagega
+    },
+    onError: (err) => {
+      setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
+    }
+  });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      if (!email) {
-        setError('Please enter your email address.');
-        return;
-      }
-      setIsSuccess(true);
-    }, 1500);
+    if (!email) {
+      setError('Please enter your email address.');
+      return;
+    }
+
+    // API Call
+    forgotMutation.mutate({ email });
   };
 
   if (isSuccess) {
     return (
-      <AuthLayout 
-        title="Check your email" 
+      <AuthLayout
+        title="Check your email"
         subtitle={`We sent a password reset link to ${email}`}
       >
         <div className="flex flex-col items-center justify-center py-8">
@@ -46,8 +55,8 @@ export const ForgotPasswordPage = () => {
   }
 
   return (
-    <AuthLayout 
-      title="Forgot password" 
+    <AuthLayout
+      title="Forgot password"
       subtitle="Enter your email and we'll send you a link to reset your password."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -56,14 +65,14 @@ export const ForgotPasswordPage = () => {
             {error}
           </div>
         )}
-        
+
         <div className="space-y-2">
           <label className="text-[14px] font-medium text-[#f6f4ff]">Email address</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#a1a1aa]">
               <Mail size={18} />
             </div>
-            <input 
+            <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,12 +83,12 @@ export const ForgotPasswordPage = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="w-full mt-2 bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(95,40,214,.4)] disabled:opacity-70 disabled:cursor-not-allowed"
+        <button
+          type="submit"
+          disabled={forgotMutation.isPending}
+          className="w-full mt-4 bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Send reset link'}
+          {forgotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : 'Send reset link'}
         </button>
       </form>
 

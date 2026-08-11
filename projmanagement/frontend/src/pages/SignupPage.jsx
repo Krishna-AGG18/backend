@@ -15,13 +15,12 @@ export const SignupPage = () => {
     password: ''
   });
   const [error, setError] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const signupMutation = useMutation({
     mutationFn: AuthAPI.register,
     onSuccess: () => {
-      // Backend automatically verification email bhejega
-      alert("Registration successful! Please check your email to verify your account.");
-      navigate('/login');
+      setIsSuccess(true);
     },
     onError: (err) => {
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
@@ -57,7 +56,29 @@ export const SignupPage = () => {
     });
   };
 
-
+  if (isSuccess) {
+    return (
+      <AuthLayout 
+        title="Check your email" 
+        subtitle={`We sent a verification link to ${formData.email}`}
+      >
+        <div className="flex flex-col items-center justify-center py-8">
+          <div className="w-16 h-16 bg-[#52e7bc]/10 text-[#52e7bc] rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(82,231,188,0.2)]">
+            <Mail size={32} />
+          </div>
+          <p className="text-center text-[#a1a1aa] mb-8 leading-relaxed max-w-[300px]">
+            Please check your inbox and click the verification link to complete your registration.
+          </p>
+          <button 
+            onClick={() => navigate('/login')}
+            className="w-full bg-[rgba(255,255,255,.045)] border border-[var(--line)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center hover:bg-white/5 transition-colors"
+          >
+            Return to log in
+          </button>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout

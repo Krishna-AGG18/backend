@@ -109,6 +109,10 @@ const login = asyncHandler(async (req, res) => {
         throw new ApiErrors(400, "User does not exists!");
     }
 
+    if (!user.isEmailVerified) {
+        throw new ApiErrors(403, "Please verify your email before logging in.");
+    }
+
     const isPasswordValid = await user.isPasswordCorrect(password);
 
     if (!isPasswordValid) {

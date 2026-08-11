@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
@@ -7,15 +7,19 @@ import { AuthAPI } from '../api/auth.api';
 export const VerifyEmailPage = () => {
   const { verificationToken  } = useParams();
   const [status, setStatus] = useState('verifying'); // verifying, success, error
+  const hasCalled = useRef(false);
 
   useEffect(() => {
-    if (!verificationToken ) {
+    if (!verificationToken) {
       setStatus('error');
       return;
     }
 
     // Simulate API call to verify token
     const verifyToken = async () => {
+      if (hasCalled.current) return;
+      hasCalled.current = true;
+
       try {
         // Backend API call
         await AuthAPI.verifyEmail(verificationToken);

@@ -28,25 +28,25 @@ export const LoginPage = () => {
     }
   });
 
-    const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError(null);
-    
+
     if (!formData.email || !formData.password) {
       setError('Please fill in all required fields.');
       return;
     }
 
     // Actual API Call trigger karega
-    loginMutation.mutate({ 
-      email: formData.email, 
-      password: formData.password 
+    loginMutation.mutate({
+      email: formData.email.toLowerCase().trim(),
+      password: formData.password
     });
   };
 
   return (
-    <AuthLayout 
-      title="Welcome back" 
+    <AuthLayout
+      title="Welcome back"
       subtitle="Enter your email to sign in to your workspace."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -55,17 +55,17 @@ export const LoginPage = () => {
             {error}
           </div>
         )}
-        
+
         <div className="space-y-2">
           <label className="text-[14px] font-medium text-[#f6f4ff]">Email address</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#a1a1aa]">
               <Mail size={18} />
             </div>
-            <input 
+            <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
               className="w-full bg-[#0a0812]/50 border border-white/10 rounded-[12px] py-3 pl-10 pr-4 text-white placeholder:text-[#a1a1aa]/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               placeholder="name@example.com"
@@ -82,10 +82,10 @@ export const LoginPage = () => {
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#a1a1aa]">
               <Lock size={18} />
             </div>
-            <input 
+            <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               className="w-full bg-[#0a0812]/50 border border-white/10 rounded-[12px] py-3 pl-10 pr-4 text-white placeholder:text-[#a1a1aa]/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               placeholder="••••••••"
@@ -93,8 +93,8 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loginMutation.isPending}
           className="w-full mt-4 bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] text-white py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(95,40,214,.4)] disabled:opacity-70 disabled:cursor-not-allowed"
         >
