@@ -4,6 +4,11 @@ import { SignupPage } from "./SignupPage";
 import { ForgotPasswordPage } from "./ForgotPasswordPage";
 import { ResetPasswordPage } from "./ResetPasswordPage";
 import { VerifyEmailPage } from "./VerifyEmailPage";
+import { DashboardPage } from "./DashboardPage";
+import { TasksPage } from "./TasksPage";
+import { CreateTaskPage } from "./CreateTaskPage";
+import { TaskDetailPage } from "./TaskDetailPage";
+import { ProjectMembersPage } from "./ProjectMembersPage";
 
 export {
     LandingPage,
@@ -11,5 +16,10 @@ export {
     SignupPage,
     ForgotPasswordPage,
     ResetPasswordPage,
-    VerifyEmailPage
+    VerifyEmailPage,
+    DashboardPage,
+    TasksPage,
+    CreateTaskPage,
+    TaskDetailPage,
+    ProjectMembersPage
 }
