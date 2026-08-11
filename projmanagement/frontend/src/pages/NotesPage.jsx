@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, MoreHorizontal, Clock, Loader2, Save, Trash2, X } from 'lucide-react';
+import { Search, Plus, Edit2, MoreHorizontal, Clock, Loader2, Save, Trash2, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';

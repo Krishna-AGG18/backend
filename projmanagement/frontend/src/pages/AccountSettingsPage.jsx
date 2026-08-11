@@ -1,16 +1,50 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { useAuthStore } from '@/stores/auth.store';
+import { useMutation } from '@tanstack/react-query';
+import { AuthAPI } from '@/api/auth.api';
 
 export const AccountSettingsPage = () => {
   const [activeTab, setActiveTab] = useState('Profile');
+  const { user } = useAuthStore();
+  
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  const changePasswordMutation = useMutation({
+    mutationFn: AuthAPI.changePassword,
+    onSuccess: () => {
+      setPasswordSuccess('Password updated successfully.');
+      setPasswordError('');
+      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setPasswordSuccess(''), 3000);
+    },
+    onError: (err) => {
+      setPasswordError(err.response?.data?.message || 'Failed to update password');
+      setPasswordSuccess('');
+    }
+  });
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+    changePasswordMutation.mutate({
+      oldPassword: passwordData.oldPassword,
+      newPassword: passwordData.newPassword
+    });
+  };
 
   const navItems = [
     { id: 'Profile', label: 'Profile' },
-    { id: 'Security', label: 'Security' },
-    { id: 'Appearance', label: 'Appearance' },
-    { id: 'Notifications', label: 'Notifications' },
-    { id: 'Sessions', label: 'Sessions' },
   ];
 
   return (
@@ -54,17 +88,19 @@ export const AccountSettingsPage = () => {
                 <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Profile Information</h2>
                 
                 <div className="flex items-center gap-4">
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia" alt="Olivia" className="w-16 h-16 rounded-full bg-white/10" />
-                  <button className="text-[13px] text-[#8b55ff] hover:underline font-medium">Change avatar</button>
+                  <img src={user?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || 'User'}`} alt={user?.username} className="w-16 h-16 rounded-full bg-white/10" />
+                  <button className="text-[13px] text-[#8b55ff] hover:underline font-medium">Change avatar (Coming soon)</button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 opacity-70 pointer-events-none">
+                  <p className="text-[11px] text-[#a1a1aa] mb-2">Profile editing is temporarily disabled.</p>
                   <div className="space-y-2">
                     <label className="text-[13px] font-medium text-white">Full Name</label>
                     <input 
                       type="text" 
-                      defaultValue="Olivia Rhye" 
-                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                      defaultValue={user?.fullName || ''} 
+                      readOnly
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none"
                     />
                   </div>
 
@@ -73,47 +109,22 @@ export const AccountSettingsPage = () => {
                     <div className="relative">
                       <input 
                         type="email" 
-                        defaultValue="olivia@workloom.com" 
-                        className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 pr-20 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                        defaultValue={user?.email || ''} 
+                        readOnly
+                        className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 pr-20 text-[13px] text-white focus:outline-none"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[#52e7bc] font-medium bg-[#52e7bc]/10 px-2 py-0.5 rounded">Verified</span>
+                      {user?.isEmailVerified && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[#52e7bc] font-medium bg-[#52e7bc]/10 px-2 py-0.5 rounded">Verified</span>
+                      )}
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[13px] font-medium text-white">Role</label>
-                    <select className="w-full appearance-none bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 cursor-pointer">
-                      <option>Product Designer</option>
-                      <option>Developer</option>
-                      <option>Product Manager</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
-
-              {/* Appearance */}
-              <section className="space-y-6">
-                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Appearance</h2>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-white">Theme</label>
-                    <div className="flex gap-4">
-                      {['Dark', 'Light', 'System'].map((theme, i) => (
-                        <label key={theme} className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" name="theme" defaultChecked={i === 0} className="accent-[#8b55ff]" />
-                          <span className="text-[13px] text-white/80">{theme}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-white">Accent Color</label>
-                    <div className="flex gap-3">
-                      {['bg-[#8b55ff]', 'bg-blue-500', 'bg-cyan-400', 'bg-emerald-400', 'bg-orange-400', 'bg-pink-500'].map((color, i) => (
-                        <button key={i} className={cn("w-6 h-6 rounded-full ring-2 ring-offset-2 ring-offset-[#12101b] transition-all", color, i === 0 ? "ring-white/40" : "ring-transparent hover:ring-white/20")} />
-                      ))}
+                    <div>
+                      <span className="bg-[#8b55ff]/10 text-[#8b55ff] border border-[#8b55ff]/20 text-[11px] font-medium px-2.5 py-1 rounded-full uppercase">
+                        {user?.role || 'Member'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -127,11 +138,14 @@ export const AccountSettingsPage = () => {
               <section className="space-y-6">
                 <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Change Password</h2>
                 
-                <div className="space-y-4">
+                <form onSubmit={handleChangePassword} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[13px] font-medium text-white">Current Password</label>
                     <input 
-                      type="password" 
+                      type="password"
+                      required
+                      value={passwordData.oldPassword}
+                      onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
                       className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
                     />
                   </div>
@@ -139,7 +153,10 @@ export const AccountSettingsPage = () => {
                   <div className="space-y-2">
                     <label className="text-[13px] font-medium text-white">New Password</label>
                     <input 
-                      type="password" 
+                      type="password"
+                      required
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
                       className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
                     />
                   </div>
@@ -148,14 +165,25 @@ export const AccountSettingsPage = () => {
                     <label className="text-[13px] font-medium text-white">Confirm New Password</label>
                     <input 
                       type="password" 
+                      required
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
                       className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
                     />
                   </div>
 
-                  <button className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors mt-2">
+                  {passwordError && <p className="text-[12px] text-red-400">{passwordError}</p>}
+                  {passwordSuccess && <p className="text-[12px] text-[#52e7bc]">{passwordSuccess}</p>}
+
+                  <button 
+                    type="submit"
+                    disabled={changePasswordMutation.isPending}
+                    className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors mt-2 flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {changePasswordMutation.isPending && <Loader2 size={14} className="animate-spin" />}
                     Update Password
                   </button>
-                </div>
+                </form>
               </section>
 
               {/* Email Verification */}
@@ -163,16 +191,24 @@ export const AccountSettingsPage = () => {
                 <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Email Verification</h2>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-[#52e7bc]">
-                    <CheckCircle2 size={16} />
-                    <span className="text-[13px] font-medium">Your email is verified.</span>
-                  </div>
+                  {user?.isEmailVerified ? (
+                    <div className="flex items-center gap-2 text-[#52e7bc]">
+                      <CheckCircle2 size={16} />
+                      <span className="text-[13px] font-medium">Your email is verified.</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-yellow-500">
+                      <span className="text-[13px] font-medium">Your email is not verified yet.</span>
+                    </div>
+                  )}
                   <div className="text-[13px] text-white/80">
-                    olivia@workloom.com
+                    {user?.email}
                   </div>
-                  <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors mt-2">
-                    Resend Verification Email
-                  </button>
+                  {!user?.isEmailVerified && (
+                    <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors mt-2">
+                      Resend Verification Email
+                    </button>
+                  )}
                 </div>
               </section>
 

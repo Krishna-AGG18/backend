@@ -199,7 +199,7 @@ export const TasksBoard = () => {
                                 </button>
                               </div>
                               <h4 className="text-[14px] text-white font-medium mb-2 leading-snug">
-                                {task.name}
+                                {task.title}
                               </h4>
                               <p className="text-[12px] text-[#a1a1aa] line-clamp-2 mb-4">
                                 {task.description || "No description"}
@@ -218,15 +218,14 @@ export const TasksBoard = () => {
                                   </div>
                                 </div>
                                 <div className="flex -space-x-1.5">
-                                  {task.assignees && task.assignees.slice(0,2).map((a, i) => (
+                                  {task.assignedTo && (
                                     <img 
-                                      key={i} 
-                                      src={a.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${a.username}`}
+                                      src={task.assignedTo?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo?.username}`}
                                       className="w-6 h-6 rounded-full border border-[#12101b] bg-black" 
                                       alt="assignee"
-                                      title={a.username}
+                                      title={task.assignedTo?.username}
                                     />
-                                  ))}
+                                  )}
                                 </div>
                               </div>
                             </div>

@@ -51,9 +51,6 @@ export const DashboardPage = () => {
             Here's what's happening with your work today.
           </p>
         </div>
-        <button className="bg-[#12101b] border border-white/5 hover:bg-white/5 text-white text-[13px] font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
-          This Week <ChevronDown size={14} className="text-[#a1a1aa]" />
-        </button>
       </div>
 
       {/* Metrics Row */}
@@ -122,9 +119,6 @@ export const DashboardPage = () => {
         <Card className="col-span-1 flex flex-col h-[280px]">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-[14px] font-semibold text-white">Project Progress</h3>
-            <div className="flex items-center gap-1 text-[11px] text-[#a1a1aa] cursor-pointer">
-              This Week <ChevronDown size={12} />
-            </div>
           </div>
           <div className="relative flex-1 w-full flex items-end pt-2">
             {/* Y Axis */}
@@ -164,9 +158,6 @@ export const DashboardPage = () => {
                 <circle cx="80" cy="30" r="3" fill="#0a0812" stroke="#4182ff" strokeWidth="2" className="drop-shadow-[0_0_8px_rgba(65,130,255,0.8)]" />
               </svg>
             </div>
-            <div className="absolute top-[30%] right-[15%] bg-[#12101b] border border-white/10 px-2 py-1 rounded text-[10px] text-white shadow-lg pointer-events-none">
-              <span className="text-[#a1a1aa] mr-1">Friday</span> 68%
-            </div>
           </div>
         </Card>
 
@@ -179,17 +170,15 @@ export const DashboardPage = () => {
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="38" stroke="#1f1d2b" strokeWidth="16" fill="none" />
                 
-                {/* To Do (11%) */}
+                {/* To Do */}
                 <circle cx="50" cy="50" r="38" stroke="#a1a1aa" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset="0" />
-                {/* In Progress (47%) */}
-                <circle cx="50" cy="50" r="38" stroke="#4182ff" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset="26.26" className="drop-shadow-[0_0_8px_rgba(65,130,255,0.4)]" />
-                {/* Completed (38%) */}
-                <circle cx="50" cy="50" r="38" stroke="#52e7bc" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset="138.48" className="drop-shadow-[0_0_8px_rgba(82,231,188,0.4)]" />
-                {/* Blocked (2%) */}
-                <circle cx="50" cy="50" r="38" stroke="#ef4444" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset="229.21" />
+                {/* In Progress */}
+                <circle cx="50" cy="50" r="38" stroke="#4182ff" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset={238.76 * (1 - ((taskStats.in_progress + taskStats.done) / (taskStats.total || 1)))} className="drop-shadow-[0_0_8px_rgba(65,130,255,0.4)]" />
+                {/* Completed */}
+                <circle cx="50" cy="50" r="38" stroke="#52e7bc" strokeWidth="16" fill="none" strokeDasharray="238.76" strokeDashoffset={238.76 * (1 - (taskStats.done / (taskStats.total || 1)))} className="drop-shadow-[0_0_8px_rgba(82,231,188,0.4)]" />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-white text-[28px] font-bold leading-none mb-1">72</span>
+                <span className="text-white text-[28px] font-bold leading-none mb-1">{taskStats.total}</span>
                 <span className="text-[#a1a1aa] text-[10px]">Total</span>
               </div>
             </div>
@@ -200,28 +189,21 @@ export const DashboardPage = () => {
                 <div className="w-2.5 h-2.5 rounded-full bg-[#52e7bc]" />
                 <div className="flex flex-col">
                   <span className="text-[11px] text-white/90">Completed</span>
-                  <span className="text-[10px] text-[#a1a1aa]">28 (38%)</span>
+                  <span className="text-[10px] text-[#a1a1aa]">{taskStats.done} ({taskStats.total ? Math.round((taskStats.done/taskStats.total)*100) : 0}%)</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#4182ff]" />
                 <div className="flex flex-col">
                   <span className="text-[11px] text-white/90">In Progress</span>
-                  <span className="text-[10px] text-[#a1a1aa]">34 (47%)</span>
+                  <span className="text-[10px] text-[#a1a1aa]">{taskStats.in_progress} ({taskStats.total ? Math.round((taskStats.in_progress/taskStats.total)*100) : 0}%)</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#a1a1aa]" />
                 <div className="flex flex-col">
                   <span className="text-[11px] text-white/90">To Do</span>
-                  <span className="text-[10px] text-[#a1a1aa]">8 (11%)</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
-                <div className="flex flex-col">
-                  <span className="text-[11px] text-white/90">Blocked</span>
-                  <span className="text-[10px] text-[#a1a1aa]">2 (2%)</span>
+                  <span className="text-[10px] text-[#a1a1aa]">{taskStats.todo} ({taskStats.total ? Math.round((taskStats.todo/taskStats.total)*100) : 0}%)</span>
                 </div>
               </div>
             </div>
@@ -249,24 +231,22 @@ export const DashboardPage = () => {
                     <stop offset="0%" stopColor="#8b55ff" />
                     <stop offset="100%" stopColor="#4c1d95" />
                   </radialGradient>
-                
                 </defs>
 
                 {/* Planets */}
                 <circle cx="20" cy="60" r="4" fill="#a1a1aa" className="drop-shadow-[0_0_8px_rgba(161,161,170,0.8)]" />
                 <circle cx="150" cy="45" r="4.5" fill="#4182ff" className="drop-shadow-[0_0_8px_rgba(65,130,255,0.8)]" />
-                <circle cx="70" cy="80" r="3.5" fill="#f59e0b" className="drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+                <circle cx="70" cy="80" r="3.5" fill="#ef4444" className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
                 <circle cx="130" cy="72" r="5" fill="#52e7bc" className="drop-shadow-[0_0_8px_rgba(82,231,188,0.8)]" />
               </svg>
             </div>
             {/* Labels overlay */}
             <div className="absolute inset-0 flex items-end justify-center pb-2">
               <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[9px] text-[#a1a1aa]">
-                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#a1a1aa]" /> Planning</div>
-                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#4182ff]" /> In Progress</div>
-                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" /> Review</div>
-                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> On Hold</div>
-                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#52e7bc]" /> Completed</div>
+                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#a1a1aa]" /> Planning ({projectStats.planning || 0})</div>
+                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#4182ff]" /> Active ({projectStats.active || 0})</div>
+                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> On Hold ({projectStats.on_hold || 0})</div>
+                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#52e7bc]" /> Completed ({projectStats.completed || 0})</div>
               </div>
             </div>
           </div>
@@ -275,7 +255,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Bottom Lists Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
         
         {/* Assigned Tasks */}
         <Card className="col-span-1 flex flex-col">
@@ -284,24 +264,28 @@ export const DashboardPage = () => {
             <button onClick={() => navigate('/dashboard/tasks')} className="text-[11px] text-[#8b55ff] hover:underline font-medium">View all</button>
           </div>
           <div className="flex-1 overflow-y-auto pr-2 scrollbar-none space-y-3">
-            {[
-              { t: 'Design system updates', p: 'Loom Website Redesign', s: 'In Progress', c: 'text-[#4182ff] bg-[#4182ff]/10', icon: Layout },
-              { t: 'User research synthesis', p: 'Customer Portal', s: 'To Do', c: 'text-[#a1a1aa] bg-white/10', icon: FileText },
-              { t: 'Dashboard analytics', p: 'Internal Tooling', s: 'In Progress', c: 'text-[#4182ff] bg-[#4182ff]/10', icon: Layout }
-            ].map((task, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-[#0a0812] border border-white/5 rounded-lg group hover:border-white/10 transition-colors cursor-pointer">
+            {upcomingTasks.slice(0, 3).map((task) => (
+              <div key={task._id} onClick={() => navigate(`/dashboard/projects/${task.project?._id}/tasks`)} className="flex items-center gap-3 p-3 bg-[#0a0812] border border-white/5 rounded-lg group hover:border-white/10 transition-colors cursor-pointer">
                 <div className="w-8 h-8 rounded-lg bg-[#8b55ff]/10 flex items-center justify-center text-[#8b55ff] shrink-0">
-                  <task.icon size={16} />
+                  <CheckSquare size={16} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[12px] font-medium text-white truncate">{task.t}</div>
-                  <div className="text-[11px] text-[#a1a1aa] truncate">{task.p}</div>
+                  <div className="text-[12px] font-medium text-white truncate">{task.title}</div>
+                  <div className="text-[11px] text-[#a1a1aa] truncate">{task.project?.name || 'Unknown Project'}</div>
                 </div>
-                <div className={cn("text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0", task.c)}>
-                  {task.s}
+                <div className={cn("text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0", 
+                  task.status === 'in_progress' ? 'text-[#4182ff] bg-[#4182ff]/10' :
+                  task.status === 'in_review' ? 'text-[#f59e0b] bg-[#f59e0b]/10' :
+                  task.status === 'done' ? 'text-[#52e7bc] bg-[#52e7bc]/10' :
+                  'text-[#a1a1aa] bg-white/10'
+                )}>
+                  {task.status.replace('_', ' ')}
                 </div>
               </div>
             ))}
+            {upcomingTasks.length === 0 && (
+              <div className="text-[13px] text-[#a1a1aa] text-center mt-4">No tasks assigned yet.</div>
+            )}
           </div>
         </Card>
 
@@ -334,19 +318,6 @@ export const DashboardPage = () => {
             )) : (
               <div className="text-[13px] text-[#a1a1aa] text-center mt-4">No upcoming tasks due soon.</div>
             )}
-          </div>
-        </Card>
-
-        {/* Activity */}
-        <Card className="col-span-1 flex flex-col">
-          <div className="flex justify-between items-center mb-4 shrink-0">
-            <h3 className="text-[14px] font-semibold text-white">Activity</h3>
-            <button onClick={() => navigate('/dashboard/projects/1/activity')} className="text-[11px] text-[#8b55ff] hover:underline font-medium">View all</button>
-          </div>
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar-none">
-            <div className="space-y-4">
-              <div className="text-[13px] text-[#a1a1aa] text-center mt-4">Activity feed not available globally yet.</div>
-            </div>
           </div>
         </Card>
 

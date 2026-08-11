@@ -46,31 +46,14 @@ export const ProjectsListPage = () => {
 
       {/* Toolbar */}
       <div className="flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="relative w-[280px]">
+        <div className="flex items-center gap-3 w-full max-w-md">
+          <div className="relative w-full">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a1a1aa]" />
             <input 
               type="text" 
               placeholder="Search projects..." 
               className="w-full bg-[#12101b] border border-white/5 hover:border-white/10 rounded-lg pl-9 pr-4 py-2 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
             />
-          </div>
-          <button className="bg-[#12101b] border border-white/5 hover:bg-white/5 text-white text-[13px] font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
-            <Filter size={14} className="text-[#a1a1aa]" /> Filter
-          </button>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-[13px]">
-            <span className="text-[#a1a1aa]">Sort:</span>
-            <button className="text-white font-medium hover:text-[#8b55ff] transition-colors">Recently updated</button>
-          </div>
-          <div className="flex items-center gap-1 bg-[#12101b] border border-white/5 p-1 rounded-lg">
-            <button className="p-1.5 bg-white/10 text-white rounded shadow-sm">
-              <LayoutGrid size={16} />
-            </button>
-            <button className="p-1.5 text-[#a1a1aa] hover:text-white transition-colors">
-              <ListIcon size={16} />
-            </button>
           </div>
         </div>
       </div>

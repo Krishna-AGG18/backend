@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CheckSquare, 
@@ -19,9 +19,42 @@ import {
   Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth.store';
+import { AuthAPI } from '@/api/auth.api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { NotificationsAPI } from '@/api/notifications.api';
 
 export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, setLogout } = useAuthStore();
+  const [showProfileMenu, setShowProfileMenu] = React.useState(false);
+
+  // Fetch unread notifications count
+  const { data: notifData } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => NotificationsAPI.getUserNotifications({ limit: 1 }),
+  });
+  
+  const unreadCount = notifData?.data?.metadata?.unread || 0;
+
+  const logoutMutation = useMutation({
+    mutationFn: AuthAPI.logout,
+    onSuccess: () => {
+      setLogout();
+      navigate('/login');
+    },
+    onError: () => {
+      // Even if API fails, clear local store
+      setLogout();
+      navigate('/login');
+    }
+  });
+
+  const handleSearchClick = (e) => {
+    e.preventDefault();
+    alert("Global Search is coming soon!");
+  };
 
   const navItems = [
     { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
@@ -31,8 +64,8 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
 
   const toolsItems = [
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
-    { name: 'Search', path: '#', icon: Search },
-    { name: 'Notifications', path: '/dashboard/notifications', icon: Bell, badge: 3 },
+    { name: 'Search', path: '#', icon: Search, onClick: handleSearchClick },
+    { name: 'Notifications', path: '/dashboard/notifications', icon: Bell, badge: unreadCount > 0 ? unreadCount : null },
   ];
 
   return (
@@ -100,12 +133,27 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
             <div className="px-3 mb-2 text-[11px] font-semibold tracking-wider text-[#a1a1aa] uppercase">
               Tools
             </div>
-            {toolsItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] font-medium text-[#a1a1aa] hover:bg-white/5 hover:text-white transition-all group"
-              >
+            {toolsItems.map((item) => {
+              if (item.onClick) {
+                return (
+                  <button
+                    key={item.name}
+                    onClick={item.onClick}
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] font-medium text-[#a1a1aa] hover:bg-white/5 hover:text-white transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon size={16} className="text-[#a1a1aa] group-hover:text-white transition-colors" />
+                      {item.name}
+                    </div>
+                  </button>
+                );
+              }
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] font-medium text-[#a1a1aa] hover:bg-white/5 hover:text-white transition-all group"
+                >
                 <div className="flex items-center gap-3">
                   <item.icon size={16} className="text-[#a1a1aa] group-hover:text-white transition-colors" />
                   {item.name}
@@ -121,28 +169,54 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
                   </span>
                 )}
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* User Profile Footer */}
-        <div className="p-4 border-t border-white/5 shrink-0">
-          <button className="flex items-center justify-between w-full p-2 rounded-xl hover:bg-white/5 transition-colors group text-left">
-            <div className="flex items-center gap-3">
-              <div className="relative">
+        <div className="p-4 border-t border-white/5 shrink-0 relative">
+          
+          {/* Profile Dropdown Menu */}
+          {showProfileMenu && (
+            <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#12101b] border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50">
+              <div className="px-3 py-2 border-b border-white/5 mb-1">
+                <p className="text-[12px] text-[#a1a1aa]">Signed in as</p>
+                <p className="text-[13px] font-medium text-white truncate">{user?.email}</p>
+              </div>
+              <button 
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  logoutMutation.mutate();
+                }}
+                disabled={logoutMutation.isPending}
+                className="w-full text-left px-3 py-2 text-[13px] text-red-400 hover:bg-white/5 flex items-center gap-2 transition-colors disabled:opacity-50"
+              >
+                <LogOut size={14} />
+                {logoutMutation.isPending ? 'Logging out...' : 'Log out'}
+              </button>
+            </div>
+          )}
+
+          <button 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center justify-between w-full p-2 rounded-xl hover:bg-white/5 transition-colors group text-left"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="relative shrink-0">
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Krishna" 
+                  src={user?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || 'User'}`} 
                   alt="User" 
                   className="w-9 h-9 rounded-full bg-white/10 border border-white/10"
                 />
                 <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#52e7bc] rounded-full border-[2px] border-[#050608]" />
               </div>
-              <div>
-                <p className="text-[13px] font-semibold text-white leading-none mb-1">Krishna</p>
-                <p className="text-[11px] text-[#a1a1aa] leading-none">Admin</p>
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold text-white leading-none mb-1 truncate">{user?.fullName || user?.username || 'User'}</p>
+                <p className="text-[11px] text-[#a1a1aa] leading-none capitalize truncate">{user?.role || 'Member'}</p>
               </div>
             </div>
-            <MoreHorizontal size={16} className="text-[#a1a1aa] group-hover:text-white transition-colors" />
+            <MoreHorizontal size={16} className="text-[#a1a1aa] group-hover:text-white transition-colors shrink-0" />
           </button>
         </div>
 

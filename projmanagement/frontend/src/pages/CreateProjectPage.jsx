@@ -39,7 +39,7 @@ export const CreateProjectPage = () => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col h-full w-full max-w-4xl mx-auto space-y-8">
       
-      {/* Header & Stepper */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shrink-0 border-b border-white/5 pb-8">
         <div>
           <h1 className="text-[28px] font-bold text-white font-['Space_Grotesk'] tracking-tight mb-2">
@@ -48,27 +48,6 @@ export const CreateProjectPage = () => {
           <p className="text-[13px] text-[#a1a1aa]">
             Add a new project to get your team aligned and moving forward.
           </p>
-        </div>
-        
-        {/* Stepper */}
-        <div className="flex items-center gap-2">
-          {/* Step 1 */}
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-[#8b55ff] flex items-center justify-center text-[10px] text-white font-bold">1</div>
-            <span className="text-[12px] font-medium text-white">Details</span>
-          </div>
-          <div className="w-8 h-px bg-white/10" />
-          {/* Step 2 */}
-          <div className="flex items-center gap-2 opacity-50">
-            <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[10px] text-white font-bold">2</div>
-            <span className="text-[12px] font-medium text-white">Team</span>
-          </div>
-          <div className="w-8 h-px bg-white/10" />
-          {/* Step 3 */}
-          <div className="flex items-center gap-2 opacity-50">
-            <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[10px] text-white font-bold">3</div>
-            <span className="text-[12px] font-medium text-white">Review</span>
-          </div>
         </div>
       </div>
 

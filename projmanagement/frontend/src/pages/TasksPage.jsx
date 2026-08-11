@@ -86,37 +86,16 @@ export const TasksPage = () => {
 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        {/* Left Side: Search & Filters */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative w-64 max-md:w-full">
+        {/* Left Side: Search */}
+        <div className="flex flex-wrap items-center gap-2 w-full max-w-md">
+          <div className="relative w-full">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a1a1aa]" />
             <input 
               type="text" 
-              placeholder="Search tasks..." 
+              placeholder="Search upcoming tasks..." 
               className="w-full bg-[#12101b] border border-white/5 rounded-md h-9 pl-9 pr-4 text-[13px] text-white placeholder:text-[#a1a1aa] focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
             />
           </div>
-          
-          {['Status', 'Priority', 'Assignee'].map((filter) => (
-            <button key={filter} className="h-9 px-3 bg-[#12101b] border border-white/5 rounded-md text-[13px] text-white/80 hover:bg-white/5 flex items-center gap-2 transition-colors">
-              {filter} <ChevronDown size={14} className="text-[#a1a1aa]" />
-            </button>
-          ))}
-          
-          <button className="h-9 px-3 text-[13px] text-[#a1a1aa] hover:text-white transition-colors">Clear</button>
-        </div>
-
-        {/* Right Side: Actions */}
-        <div className="flex items-center gap-2">
-          <button className="h-9 px-3 bg-[#12101b] border border-white/5 rounded-md text-[13px] text-white/80 hover:bg-white/5 flex items-center gap-2 transition-colors">
-            <Filter size={14} /> Filters
-          </button>
-          <button className="h-9 px-3 bg-[#12101b] border border-white/5 rounded-md text-[13px] text-white/80 hover:bg-white/5 flex items-center gap-2 transition-colors">
-            <List size={14} /> List View
-          </button>
-          <Link to="/dashboard/tasks/new" className="h-9 px-4 bg-[#8b55ff] hover:bg-[#7a4be0] rounded-md text-[13px] text-white font-medium flex items-center gap-2 transition-colors">
-            <Plus size={16} /> Create Task
-          </Link>
         </div>
       </div>
 

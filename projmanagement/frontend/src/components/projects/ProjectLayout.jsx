@@ -27,7 +27,7 @@ export const ProjectLayout = () => {
     );
   }
 
-  if (error || !data?.data?.project) {
+  if (error || !data?.data) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-red-400">Failed to load project details.</div>
@@ -35,7 +35,7 @@ export const ProjectLayout = () => {
     );
   }
 
-  const project = data.data.project;
+  const project = data.data;
 
   const tabs = [
     { name: 'Overview', path: `/dashboard/projects/${projectId}` },

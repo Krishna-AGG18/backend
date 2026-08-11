@@ -148,7 +148,13 @@ export const ProjectSettingsPage = () => {
 
             {/* Statuses Section */}
             {activeTab === 'Statuses' && (
-              <section className="space-y-6">
+              <section className="space-y-6 relative">
+                <div className="absolute inset-0 bg-[#12101b]/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl border border-white/5">
+                  <div className="text-center px-4 py-3 bg-[#0a0812] border border-[#8b55ff]/20 rounded-lg shadow-lg">
+                    <p className="text-[14px] font-medium text-white mb-1">Coming Soon</p>
+                    <p className="text-[12px] text-[#a1a1aa]">Custom statuses are under development.</p>
+                  </div>
+                </div>
                 <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Statuses</h2>
                 
                 <div className="flex flex-wrap gap-3">
@@ -158,7 +164,7 @@ export const ProjectSettingsPage = () => {
                       {status}
                     </div>
                   ))}
-                  <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
+                  <button disabled className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
                     + Add Status
                   </button>
                 </div>
@@ -167,7 +173,13 @@ export const ProjectSettingsPage = () => {
 
             {/* Priorities Section */}
             {activeTab === 'Priorities' && (
-              <section className="space-y-6">
+              <section className="space-y-6 relative">
+                <div className="absolute inset-0 bg-[#12101b]/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl border border-white/5">
+                  <div className="text-center px-4 py-3 bg-[#0a0812] border border-[#8b55ff]/20 rounded-lg shadow-lg">
+                    <p className="text-[14px] font-medium text-white mb-1">Coming Soon</p>
+                    <p className="text-[12px] text-[#a1a1aa]">Custom priorities are under development.</p>
+                  </div>
+                </div>
                 <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Priorities</h2>
                 
                 <div className="flex flex-wrap gap-3">
@@ -182,7 +194,7 @@ export const ProjectSettingsPage = () => {
                       {priority.name}
                     </div>
                   ))}
-                  <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
+                  <button disabled className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
                     + Add Priority
                   </button>
                 </div>
