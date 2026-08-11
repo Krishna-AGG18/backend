@@ -18,6 +18,7 @@ import WarpText from "../components/3d/WrapText.jsx";
 import { HeroScene } from "../components/3d/HeroScene.jsx";
 import { Header } from "../components/ui/header-2.jsx";
 import Footer from "../components/ui/Footer.jsx";
+import { Link } from "react-router-dom";
 import { MovingDotCard } from "../components/ui/moving-dot-card.jsx";
 import { HighlightCard } from "../components/ui/highlight-card.jsx";
 import { OrbitScene } from "../components/ui/orbit-scene.jsx";
@@ -43,7 +44,7 @@ export function LandingPage() {
           <h1 className="max-w-[590px] mt-[18px] mb-[20px] font-bold text-[clamp(51px,6.2vw,92px)] leading-[.96] tracking-[-.08em] font-['Space_Grotesk'] max-md:text-[clamp(47px,14vw,74px)]">Where projects<br /><span className="text-[var(--accent-2)]">come together.</span></h1>
           <p className="max-w-[430px] text-[#a1a1aa] text-[17px] leading-[1.7] mb-[30px] max-md:text-[15px]">Workloom is the modern workspace for planning, collaboration, and delivering work that matters.</p>
           <div className="flex gap-[12px] flex-col sm:flex-row">
-            <a className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-white bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] border border-[rgba(199,171,255,.28)] rounded-[11px] shadow-[0_14px_35px_rgba(95,40,214,.25)] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] hover:shadow-[0_18px_45px_rgba(95,40,214,.42)] max-sm:w-full" href="/signup">Get started for free <ArrowRight size={17} /></a>
+            <Link to="/signup" className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-white bg-[linear-gradient(135deg,#8b55ff,#5b28d9)] border border-[rgba(199,171,255,.28)] rounded-[11px] shadow-[0_14px_35px_rgba(95,40,214,.25)] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] hover:shadow-[0_18px_45px_rgba(95,40,214,.42)] max-sm:w-full">Get started for free <ArrowRight size={17} /></Link>
             <button className="inline-flex items-center justify-center gap-[9px] min-h-[48px] px-[20px] text-inherit bg-[rgba(255,255,255,.045)] border border-[var(--line)] rounded-[11px] text-[14px] font-semibold cursor-pointer transition-all hover:-translate-y-[2px] max-sm:w-full" onClick={() => setShowVideo(true)}><Play size={15} fill="currentColor" /> See how it works</button>
           </div>
           <div className="flex items-center gap-[21px] flex-wrap mt-[82px] text-[#a1a1aa] text-[11px] max-md:mt-[46px]"><span>Trusted by fast-moving teams</span><span className="text-[#a1a1aa] max-sm:hidden">◈ northstar</span><span className="text-[#a1a1aa] max-sm:hidden">◈ pixelpeak</span><span className="text-[#a1a1aa] max-sm:hidden">◈ sequence</span></div>

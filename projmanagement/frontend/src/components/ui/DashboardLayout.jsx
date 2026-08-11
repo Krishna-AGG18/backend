@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Menu, Search, Bell, ChevronLeft, Home } from 'lucide-react';
 import { DashboardSidebar } from './DashboardSidebar';
 
 export const DashboardLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const getBreadcrumbs = () => {
+    const paths = location.pathname.split('/').filter(Boolean);
+    const breadcrumbs = [];
+    let currentPath = '';
+
+    paths.forEach((path, index) => {
+      currentPath += `/${path}`;
+      let label = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ');
+      
+      if (!isNaN(path) && paths[index - 1] === 'projects') {
+        label = `Project ${path}`;
+      } else if (!isNaN(path) && paths[index - 1] === 'tasks') {
+        label = `Task ${path}`;
+      }
+      
+      breadcrumbs.push({ label, path: currentPath });
+    });
+    
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+  const currentTitle = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].label : 'Dashboard';
 
   return (
     <div className="flex h-screen w-full bg-[#050608] overflow-hidden text-white font-sans selection:bg-[#8b55ff]/30 selection:text-white">
@@ -28,8 +54,8 @@ export const DashboardLayout = () => {
           >
             <Menu size={20} />
           </button>
-          <div className="font-['Space_Grotesk'] font-bold tracking-tight text-[16px]">
-            Dashboard
+          <div className="font-['Space_Grotesk'] font-bold tracking-tight text-[16px] truncate max-w-[200px]">
+            {currentTitle}
           </div>
           <div className="w-9 h-9 rounded-full bg-white/10" /> {/* Placeholder for balance */}
         </header>
@@ -37,11 +63,32 @@ export const DashboardLayout = () => {
         {/* Desktop Topbar */}
         <header className="max-lg:hidden h-[64px] flex items-center justify-between px-6 border-b border-white/5 shrink-0 bg-[#050608]/80 backdrop-blur-md relative z-20">
           
-          <div className="flex items-center gap-3 text-[13px] text-[#a1a1aa] font-medium">
-            <button className="hover:text-white transition-colors"><ChevronLeft size={16} /></button>
-            <button className="hover:text-white transition-colors"><Home size={15} /></button>
-            <span className="text-white/20">/</span>
-            <span className="text-white">Dashboard</span>
+          <div className="flex items-center gap-2 md:gap-3 text-[13px] text-[#a1a1aa] font-medium">
+            <button onClick={() => navigate(-1)} className="hover:text-white transition-colors mr-2"><ChevronLeft size={16} /></button>
+            <Link to="/dashboard" className="hover:text-white transition-colors"><Home size={15} /></Link>
+            
+            {breadcrumbs.map((crumb, index) => {
+              // Hide 'dashboard' since home icon already handles it
+              if (index === 0 && crumb.label.toLowerCase() === 'dashboard') {
+                return breadcrumbs.length === 1 ? (
+                  <React.Fragment key={crumb.path}>
+                    <span className="text-white/20">/</span>
+                    <span className="text-white">Overview</span>
+                  </React.Fragment>
+                ) : null;
+              }
+              
+              return (
+                <React.Fragment key={crumb.path}>
+                  <span className="text-white/20">/</span>
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-white truncate max-w-[120px]">{crumb.label}</span>
+                  ) : (
+                    <Link to={crumb.path} className="hover:text-white transition-colors truncate max-w-[120px]">{crumb.label}</Link>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
           
           <div className="flex items-center gap-6">
@@ -50,11 +97,8 @@ export const DashboardLayout = () => {
               <input 
                 type="text" 
                 placeholder="Search projects, tasks, people..." 
-                className="w-full bg-white/5 border border-white/5 rounded-md h-[32px] pl-9 pr-12 text-[13px] text-white placeholder:text-[#a1a1aa] focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                className="w-full bg-white/5 border border-white/5 rounded-md h-[32px] pl-9 pr-4 text-[13px] text-white placeholder:text-[#a1a1aa] focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
               />
-              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                 <span className="bg-white/10 text-[#a1a1aa] text-[10px] px-1.5 py-0.5 rounded flex items-center gap-0.5 font-mono">⌘ K</span>
-              </div>
             </div>
             
             <button className="relative text-[#a1a1aa] hover:text-white transition-colors">

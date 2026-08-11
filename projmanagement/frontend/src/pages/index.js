@@ -16,6 +16,10 @@ import { ProjectSettingsPage } from "./ProjectSettingsPage";
 import { AccountSettingsPage } from "./AccountSettingsPage";
 import { UnauthorizedPage } from "./UnauthorizedPage";
 import { OnboardingPage } from "./OnboardingPage";
+import { ProjectsListPage } from "./ProjectsListPage";
+import { CreateProjectPage } from "./CreateProjectPage";
+import { ProjectOverviewPage } from "./ProjectOverviewPage";
+import { NotFoundPage } from "./NotFoundPage";
 
 export {
     LandingPage,
@@ -35,5 +39,9 @@ export {
     ProjectSettingsPage,
     AccountSettingsPage,
     UnauthorizedPage,
-    OnboardingPage
+    OnboardingPage,
+    ProjectsListPage,
+    CreateProjectPage,
+    ProjectOverviewPage,
+    NotFoundPage
 }

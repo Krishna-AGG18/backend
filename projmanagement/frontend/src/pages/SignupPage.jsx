@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Mail, Lock, User, AtSign, Loader2 } from 'lucide-react';
 
 export const SignupPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ 
     email: '', 
     username: '',
@@ -39,6 +40,7 @@ export const SignupPage = () => {
       }
       // Success logic would go here
       console.log('Signup attempt:', formData);
+      navigate('/onboarding');
     }, 1500);
   };
 

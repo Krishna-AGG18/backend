@@ -151,9 +151,9 @@ export const CreateTaskPage = () => {
             <Link to="/dashboard/tasks" className="text-[13px] text-white font-medium hover:text-white/80 transition-colors">
               Cancel
             </Link>
-            <button className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors shadow-[0_0_15px_rgba(139,85,255,0.4)]">
+            <Link to="/dashboard/tasks" className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors shadow-[0_0_15px_rgba(139,85,255,0.4)] block text-center">
               Create Task
-            </button>
+            </Link>
           </div>
 
         </div>

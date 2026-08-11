@@ -6,7 +6,9 @@ import {
   ResetPasswordPage, VerifyEmailPage, DashboardPage,
   TasksPage, CreateTaskPage, TaskDetailPage, ProjectMembersPage,
   NotesPage, ActivityTimelinePage, NotificationsPage, ProjectSettingsPage,
-  AccountSettingsPage, UnauthorizedPage, OnboardingPage
+  AccountSettingsPage, UnauthorizedPage, OnboardingPage,
+  ProjectsListPage, CreateProjectPage, ProjectOverviewPage,
+  NotFoundPage
 } from "./pages/index.js";
 import { DashboardLayout } from "./components/ui/DashboardLayout.jsx";
 import "./styles.css";
@@ -33,6 +35,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="tasks/new" element={<CreateTaskPage />} />
           <Route path="tasks/:taskId" element={<TaskDetailPage />} />
           
+          <Route path="projects" element={<ProjectsListPage />} />
+          <Route path="projects/new" element={<CreateProjectPage />} />
+          <Route path="projects/:projectId" element={<ProjectOverviewPage />} />
           <Route path="projects/:projectId/members" element={<ProjectMembersPage />} />
           <Route path="projects/:projectId/notes" element={<NotesPage />} />
           <Route path="projects/:projectId/activity" element={<ActivityTimelinePage />} />
@@ -41,6 +46,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="settings" element={<AccountSettingsPage />} />
         </Route>
+        
+        {/* Catch-all Route */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

@@ -76,7 +76,7 @@ export const OnboardingPage = () => {
               <Box size={18} /> Create Your First Project
             </Link>
             <Link 
-              to="#"
+              to="/dashboard/projects/1/members"
               className="text-[#a1a1aa] hover:text-white text-[14px] font-medium transition-colors flex items-center gap-2"
             >
               Invite Your Team <ArrowRight size={16} />

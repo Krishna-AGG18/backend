@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -22,6 +23,7 @@ export const LoginPage = () => {
       }
       // Success logic would go here
       console.log('Login attempt:', formData);
+      navigate('/dashboard');
     }, 1500);
   };
 

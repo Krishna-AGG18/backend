@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Settings, CheckCircle2, ChevronRight, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const ProjectSettingsPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('General');
 
   const navItems = [
@@ -142,7 +144,7 @@ export const ProjectSettingsPage = () => {
                   <span className="w-24 text-white font-medium">Viewer</span>
                   <span className="text-[#a1a1aa]">Can view project data and activities.</span>
                 </div>
-                <button className="text-[#8b55ff] font-medium hover:underline text-[13px]">
+                <button onClick={() => navigate('/dashboard/projects/1/members')} className="text-[#8b55ff] font-medium hover:underline text-[13px]">
                   Manage Roles
                 </button>
               </div>

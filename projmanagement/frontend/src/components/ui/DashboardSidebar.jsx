@@ -11,7 +11,12 @@ import {
   LogOut,
   Command,
   ChevronRight,
-  MoreHorizontal
+  ChevronDown,
+  MoreHorizontal,
+  KanbanSquare,
+  FileText,
+  Folder,
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,14 +25,18 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
 
   const navItems = [
     { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'My Tasks', path: '/dashboard/tasks', icon: CheckSquare },
-    { name: 'Projects', path: '/dashboard/projects/1/settings', icon: FolderGit2 },
-    { name: 'Activity', path: '/dashboard/projects/1/activity', icon: Activity },
+    { name: 'Tasks', path: '/dashboard/tasks', icon: CheckSquare },
+    { name: 'Board', path: '/dashboard/tasks', icon: KanbanSquare },
+    { name: 'Timeline', path: '/dashboard/projects/1/activity', icon: Activity },
+    { name: 'Notes', path: '/dashboard/projects/1/notes', icon: FileText },
+    { name: 'Files', path: '#', icon: Folder },
+    { name: 'Team', path: '/dashboard/projects/1/members', icon: Users },
+    { name: 'Settings', path: '/dashboard/projects/1/settings', icon: Settings },
   ];
 
   const toolsItems = [
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
-    { name: 'Search', path: '#', icon: Search, shortcut: '⌘K' },
+    { name: 'Search', path: '#', icon: Search },
     { name: 'Notifications', path: '/dashboard/notifications', icon: Bell, badge: 3 },
   ];
 
@@ -57,14 +66,22 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
           </Link>
         </div>
 
+        {/* Project Dropdown */}
+        <div className="px-3 pt-6 pb-2">
+          <Link to="/dashboard/projects" className="w-full flex items-center justify-between px-3 py-2 bg-[#12101b] border border-white/5 hover:bg-white/5 rounded-lg transition-colors group text-left">
+            <div>
+              <div className="text-[11px] text-[#a1a1aa] mb-0.5">Project</div>
+              <div className="text-[13px] font-semibold text-white">Astral Redesign</div>
+            </div>
+            <ChevronDown size={14} className="text-[#a1a1aa] group-hover:text-white transition-colors" />
+          </Link>
+        </div>
+
         {/* Navigation Content */}
         <div className="flex-1 overflow-y-auto py-6 px-3 space-y-8 scrollbar-none">
           
           {/* Main Menu */}
           <div className="space-y-1">
-            <div className="px-3 mb-2 text-[11px] font-semibold tracking-wider text-[#a1a1aa] uppercase">
-              Main Menu
-            </div>
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
