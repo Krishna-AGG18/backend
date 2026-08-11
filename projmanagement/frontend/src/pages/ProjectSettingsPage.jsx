@@ -1,11 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Settings, CheckCircle2, ChevronRight, AlertTriangle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Settings, CheckCircle2, ChevronRight, AlertTriangle, Loader2 } from 'lucide-react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ProjectAPI } from '@/api/projects.api';
 
 export const ProjectSettingsPage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { project } = useOutletContext();
   const [activeTab, setActiveTab] = useState('General');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    key: '',
+    description: ''
+  });
+
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        name: project.name || '',
+        key: project.key || '',
+        description: project.description || ''
+      });
+    }
+  }, [project]);
+
+  const updateProjectMutation = useMutation({
+    mutationFn: (data) => ProjectAPI.updateProject(project._id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['projects']);
+      queryClient.invalidateQueries(['project', project._id]);
+    }
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: () => ProjectAPI.deleteProject(project._id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['projects']);
+      navigate('/dashboard/projects');
+    }
+  });
+
+  const handleUpdateProject = (e) => {
+    e.preventDefault();
+    updateProjectMutation.mutate(formData);
+  };
+
+  const handleDeleteProject = () => {
+    if (window.confirm("Are you absolutely sure you want to delete this project? This action cannot be undone.")) {
+      deleteProjectMutation.mutate();
+    }
+  };
 
   const navItems = [
     { id: 'General', label: 'General' },
@@ -52,120 +99,145 @@ export const ProjectSettingsPage = () => {
           <div className="max-w-2xl space-y-12">
             
             {/* Project Details Section */}
-            <section className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Project Details</h2>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-[13px] font-medium text-white">Project Name</label>
-                  <input 
-                    type="text" 
-                    defaultValue="Astral Redesign" 
-                    className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
-                  />
-                </div>
+            {activeTab === 'General' && (
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Project Details</h2>
                 
-                <div className="space-y-2">
-                  <label className="text-[13px] font-medium text-white">Key</label>
-                  <input 
-                    type="text" 
-                    defaultValue="ASTRAL" 
-                    className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors uppercase"
-                  />
-                </div>
+                <form onSubmit={handleUpdateProject} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-medium text-white">Project Name</label>
+                    <input 
+                      type="text" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                    />
+                  </div>
+                
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-medium text-white">Key</label>
+                    <input 
+                      type="text" 
+                      value={formData.key}
+                      onChange={(e) => setFormData({ ...formData, key: e.target.value })}
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors uppercase"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <label className="text-[13px] font-medium text-white">Description</label>
-                  <textarea 
-                    defaultValue="Redesign of the Astral SaaS platform including marketing site and dashboard."
-                    className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white resize-none h-[100px] focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
-                  ></textarea>
-                </div>
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-medium text-white">Description</label>
+                    <textarea 
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white resize-none h-[100px] focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                    ></textarea>
+                  </div>
 
-                <button className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors">
-                  Save Changes
-                </button>
-              </div>
-            </section>
+                  <button 
+                    type="submit"
+                    disabled={updateProjectMutation.isPending}
+                    className="bg-[#8b55ff] hover:bg-[#7a4be0] text-white text-[13px] font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {updateProjectMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : null}
+                    Save Changes
+                  </button>
+                </form>
+              </section>
+            )}
 
             {/* Statuses Section */}
-            <section className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Statuses</h2>
-              
-              <div className="flex flex-wrap gap-3">
-                {['Todo', 'In Progress', 'In Review', 'Done'].map((status) => (
-                  <div key={status} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                    {status}
-                  </div>
-                ))}
-                <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
-                  + Add Status
-                </button>
-              </div>
-            </section>
+            {activeTab === 'Statuses' && (
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Statuses</h2>
+                
+                <div className="flex flex-wrap gap-3">
+                  {['Todo', 'In Progress', 'In Review', 'Done'].map((status) => (
+                    <div key={status} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                      {status}
+                    </div>
+                  ))}
+                  <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
+                    + Add Status
+                  </button>
+                </div>
+              </section>
+            )}
 
             {/* Priorities Section */}
-            <section className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Priorities</h2>
-              
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { name: 'Low', color: 'bg-blue-400' },
-                  { name: 'Medium', color: 'bg-yellow-400' },
-                  { name: 'High', color: 'bg-orange-400' },
-                  { name: 'Critical', color: 'bg-red-500' }
-                ].map((priority) => (
-                  <div key={priority.name} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${priority.color}`} />
-                    {priority.name}
+            {activeTab === 'Priorities' && (
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Priorities</h2>
+                
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { name: 'Low', color: 'bg-blue-400' },
+                    { name: 'Medium', color: 'bg-yellow-400' },
+                    { name: 'High', color: 'bg-orange-400' },
+                    { name: 'Critical', color: 'bg-red-500' }
+                  ].map((priority) => (
+                    <div key={priority.name} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full ${priority.color}`} />
+                      {priority.name}
+                    </div>
+                  ))}
+                  <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
+                    + Add Priority
+                  </button>
+                </div>
+              </section>
+            )}
+
+            {/* Roles & Permissions Section */}
+            {activeTab === 'Roles' && (
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Roles & Permissions</h2>
+                
+                <div className="space-y-4 text-[13px]">
+                  <div className="flex">
+                    <span className="w-24 text-white font-medium">Admin</span>
+                    <span className="text-[#a1a1aa]">Full access to all project settings and data.</span>
                   </div>
-                ))}
-                <button className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
-                  + Add Priority
-                </button>
-              </div>
-            </section>
+                  <div className="flex">
+                    <span className="w-24 text-white font-medium">Editor</span>
+                    <span className="text-[#a1a1aa]">Can manage tasks and collaborate.</span>
+                  </div>
+                  <div className="flex">
+                    <span className="w-24 text-white font-medium">Viewer</span>
+                    <span className="text-[#a1a1aa]">Can view project data and activities.</span>
+                  </div>
+                  <button onClick={() => navigate(`/dashboard/projects/${project._id}/members`)} className="text-[#8b55ff] font-medium hover:underline text-[13px]">
+                    Manage Roles
+                  </button>
+                </div>
+              </section>
+            )}
 
-            {/* Roles & Permissions Preview */}
-            <section className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Roles & Permissions</h2>
-              
-              <div className="space-y-4 text-[13px]">
-                <div className="flex">
-                  <span className="w-24 text-white font-medium">Admin</span>
-                  <span className="text-[#a1a1aa]">Full access to all project settings and data.</span>
+            {/* Danger Zone Section */}
+            {activeTab === 'Danger' && (
+              <section className="space-y-6 pt-4 border-t border-red-500/10">
+                <div className="flex items-center gap-2 text-red-400 border-b border-white/5 pb-2">
+                  <AlertTriangle size={18} />
+                  <h2 className="text-[16px] font-semibold">Danger Zone</h2>
                 </div>
-                <div className="flex">
-                  <span className="w-24 text-white font-medium">Editor</span>
-                  <span className="text-[#a1a1aa]">Can manage tasks and collaborate.</span>
+                
+                <div className="bg-red-950/20 border border-red-900/30 rounded-xl p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
+                  <div>
+                    <h3 className="text-[14px] font-semibold text-white mb-1">Delete Project</h3>
+                    <p className="text-[13px] text-[#a1a1aa]">Once you delete a project, there is no going back. Please be certain.</p>
+                  </div>
+                  <button 
+                    onClick={handleDeleteProject}
+                    disabled={deleteProjectMutation.isPending}
+                    className="shrink-0 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[13px] font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {deleteProjectMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : null}
+                    Delete Project
+                  </button>
                 </div>
-                <div className="flex">
-                  <span className="w-24 text-white font-medium">Viewer</span>
-                  <span className="text-[#a1a1aa]">Can view project data and activities.</span>
-                </div>
-                <button onClick={() => navigate('/dashboard/projects/1/members')} className="text-[#8b55ff] font-medium hover:underline text-[13px]">
-                  Manage Roles
-                </button>
-              </div>
-            </section>
-
-            {/* Danger Zone */}
-            <section className="space-y-6 pt-6 border-t border-red-500/20">
-              <h2 className="text-[16px] font-semibold text-red-500 flex items-center gap-2">
-                <AlertTriangle size={18} /> Danger Zone
-              </h2>
-              
-              <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-5 flex items-center justify-between">
-                <div>
-                  <h3 className="text-[14px] font-medium text-white mb-1">Delete Project</h3>
-                  <p className="text-[12px] text-[#a1a1aa]">This action cannot be undone. All project data will be lost.</p>
-                </div>
-                <button className="bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-[13px] font-medium transition-all">
-                  Delete Project
-                </button>
-              </div>
-            </section>
+              </section>
+            )}
 
           </div>
         </div>

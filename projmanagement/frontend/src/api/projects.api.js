@@ -17,5 +17,29 @@ export const ProjectAPI = {
   createProject: async (projectData) => {
     const response = await apiClient.post('/projects', projectData);
     return response.data;
+  },
+
+  // Get project members
+  getProjectMembers: async (projectId) => {
+    const response = await apiClient.get(`/projects/${projectId}/members`);
+    return response.data;
+  },
+
+  // Add a member to the project
+  addMemberToProject: async ({ projectId, email, role }) => {
+    const response = await apiClient.post(`/projects/${projectId}/members`, { email, role });
+    return response.data;
+  },
+
+  // Update member role
+  updateMemberRole: async ({ projectId, userId, role }) => {
+    const response = await apiClient.put(`/projects/${projectId}/members/${userId}`, { role });
+    return response.data;
+  },
+
+  // Delete a member from the project
+  deleteMember: async ({ projectId, userId }) => {
+    const response = await apiClient.delete(`/projects/${projectId}/members/${userId}`);
+    return response.data;
   }
 };

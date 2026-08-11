@@ -12,6 +12,8 @@ import {
   ProjectsListPage, CreateProjectPage, ProjectOverviewPage,
   NotFoundPage
 } from "./pages/index.js";
+import { ProjectLayout } from "./components/projects/ProjectLayout.jsx";
+import { TasksBoard } from "./components/projects/TasksBoard.jsx";
 import { DashboardLayout } from "./components/ui/DashboardLayout.jsx";
 import "./styles.css";
 
@@ -41,11 +43,16 @@ createRoot(document.getElementById("root")).render(
 
               <Route path="projects" element={<ProjectsListPage />} />
               <Route path="projects/new" element={<CreateProjectPage />} />
-              <Route path="projects/:projectId" element={<ProjectOverviewPage />} />
-              <Route path="projects/:projectId/members" element={<ProjectMembersPage />} />
-              <Route path="projects/:projectId/notes" element={<NotesPage />} />
-              <Route path="projects/:projectId/activity" element={<ActivityTimelinePage />} />
-              <Route path="projects/:projectId/settings" element={<ProjectSettingsPage />} />
+              
+              <Route path="projects/:projectId" element={<ProjectLayout />}>
+                <Route index element={<ProjectOverviewPage />} />
+                <Route path="tasks" element={<TasksBoard />} />
+                <Route path="members" element={<ProjectMembersPage />} />
+                <Route path="notes" element={<NotesPage />} />
+                <Route path="activity" element={<ActivityTimelinePage />} />
+                <Route path="settings" element={<ProjectSettingsPage />} />
+                <Route path="files" element={<div className="flex items-center justify-center text-[#a1a1aa] h-40">Files tab under construction</div>} />
+              </Route>
 
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="settings" element={<AccountSettingsPage />} />

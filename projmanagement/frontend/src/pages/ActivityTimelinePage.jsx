@@ -1,18 +1,21 @@
 import React from 'react';
-import { Filter, ChevronDown } from 'lucide-react';
+import { Filter, ChevronDown, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ActivityAPI } from '@/api/activity.api';
+import { formatDistanceToNow } from 'date-fns';
 
 export const ActivityTimelinePage = () => {
-  const activities = [
-    { id: 1, actor: 'Olivia Rhye', role: 'Designer', avatar: 'Olivia', action: 'Created a note', details: 'Design System Updates', time: '2h ago' },
-    { id: 2, actor: 'Phoenix Baker', role: 'Developer', avatar: 'Phoenix', action: 'Updated task status', details: 'Landing Page Redesign → In Progress', time: '4h ago' },
-    { id: 3, actor: 'Lana Steiner', role: 'Product Manager', avatar: 'Lana', action: 'Commented on a task', details: 'API Integration', time: '6h ago' },
-    { id: 4, actor: 'Demi Wilkinson', role: 'Developer', avatar: 'Demi', action: 'Pushed 3 commits', details: 'main', time: '1d ago' },
-    { id: 5, actor: 'Candice Wu', role: 'Designer', avatar: 'Candice', action: 'Uploaded a file', details: 'brand-guidelines.pdf', time: '1d ago' },
-    { id: 6, actor: 'Natali Craig', role: 'QA Engineer', avatar: 'Natali', action: 'Changed priority', details: 'Fix Navigation Bug → High', time: '2d ago' },
-    { id: 7, actor: 'Orlando Diggs', role: 'Developer', avatar: 'Orlando', action: 'Closed a task', details: 'Set up CI/CD Pipeline', time: '2d ago' },
-    { id: 8, actor: 'Andi Lane', role: 'Developer', avatar: 'Andi', action: 'Created a task', details: 'Add analytics events', time: '3d ago' },
-  ];
+  const { projectId } = useParams();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['activities', projectId],
+    queryFn: () => ActivityAPI.getProjectActivities(projectId, { limit: 50 }),
+    enabled: !!projectId
+  });
+
+  const activities = data?.data?.activities || [];
 
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto w-full">
@@ -28,8 +31,13 @@ export const ActivityTimelinePage = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-[#12101b] border border-white/5 rounded-xl overflow-hidden flex-1">
-        <div className="overflow-x-auto">
+      <div className="bg-[#12101b] border border-white/5 rounded-xl overflow-hidden flex-1 relative">
+        {isLoading && (
+          <div className="absolute inset-0 z-10 bg-[#12101b]/50 flex items-center justify-center">
+            <Loader2 className="animate-spin text-[#8b55ff]" />
+          </div>
+        )}
+        <div className="overflow-y-auto h-full scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5">
@@ -40,28 +48,36 @@ export const ActivityTimelinePage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {activities.map((activity) => (
-                <tr key={activity.id} className="hover:bg-white/5 transition-colors">
+              {activities.length > 0 ? activities.map((activity) => (
+                <tr key={activity._id} className="hover:bg-white/5 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${activity.avatar}`} alt={activity.actor} className="w-8 h-8 rounded-full bg-white/10" />
+                      <img src={activity.performedBy?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activity.performedBy?.username}`} alt={activity.performedBy?.username} className="w-8 h-8 rounded-full bg-white/10 object-cover" />
                       <div>
-                        <div className="text-[13px] text-white font-medium">{activity.actor}</div>
-                        <div className="text-[11px] text-[#a1a1aa]">{activity.role}</div>
+                        <div className="text-[13px] text-white font-medium">{activity.performedBy?.username}</div>
+                        <div className="text-[11px] text-[#a1a1aa]">Member</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-[13px] text-white/80">{activity.action}</span>
+                    <span className="text-[13px] text-white/80 capitalize">{activity.action?.replace(/_/g, ' ')}</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-[13px] text-white font-medium">{activity.details}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className="text-[12px] text-[#a1a1aa]">{activity.time}</span>
+                    <span className="text-[12px] text-[#a1a1aa] whitespace-nowrap">
+                      {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
+                    </span>
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center text-[13px] text-[#a1a1aa]">
+                    No activities found for this project yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -3,9 +3,12 @@ import { cn } from '@/lib/utils';
 import { 
   ChevronDown, ArrowUp, ArrowDown, Layout, CheckSquare, Clock, AlertOctagon, 
   Search, Bell, MoreHorizontal, FileText, CheckCircle2, MessageSquare,
-  Users, Calendar
+  Users, Calendar, Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardAPI } from '@/api/dashboard.api';
+import { useAuthStore } from '@/stores/auth.store';
 
 const Card = ({ children, className }) => (
   <div className={cn("bg-[#12101b] border border-white/5 rounded-xl p-5", className)}>
@@ -15,6 +18,25 @@ const Card = ({ children, className }) => (
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: DashboardAPI.getDashboardStats
+  });
+
+  const stats = data?.data;
+  const projectStats = stats?.projects || { total: 0, active: 0, completed: 0, planning: 0, on_hold: 0 };
+  const taskStats = stats?.tasks || { total: 0, todo: 0, in_progress: 0, done: 0 };
+  const upcomingTasks = stats?.upcomingTasks || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin text-[#8b55ff] w-8 h-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full w-full max-w-7xl mx-auto space-y-6">
@@ -23,7 +45,7 @@ export const DashboardPage = () => {
       <div className="flex justify-between items-start shrink-0">
         <div>
           <h1 className="text-[28px] font-bold text-white font-['Space_Grotesk'] tracking-tight mb-1">
-            Welcome back, Olivia! 👋
+            Welcome back, {user?.username || 'User'}! 👋
           </h1>
           <p className="text-[13px] text-[#a1a1aa]">
             Here's what's happening with your work today.
@@ -42,13 +64,11 @@ export const DashboardPage = () => {
             <div className="w-8 h-8 rounded-lg bg-[#8b55ff]/10 flex items-center justify-center text-[#8b55ff]">
               <Layout size={16} />
             </div>
-            <span className="text-[12px] font-medium text-[#a1a1aa]">Active Projects</span>
+            <span className="text-[12px] font-medium text-[#a1a1aa]">Total Projects</span>
           </div>
-          <div className="text-[32px] font-bold text-white leading-none mb-3">12</div>
-          <div className="flex items-center gap-1.5 text-[11px] font-medium">
-            <ArrowUp size={12} className="text-[#52e7bc]" />
-            <span className="text-[#52e7bc]">2</span>
-            <span className="text-[#a1a1aa]">from last week</span>
+          <div className="text-[32px] font-bold text-white leading-none mb-3">{projectStats.total}</div>
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#a1a1aa]">
+            <span>{projectStats.active || 0} active, {projectStats.completed || 0} completed</span>
           </div>
         </Card>
 
@@ -60,11 +80,9 @@ export const DashboardPage = () => {
             </div>
             <span className="text-[12px] font-medium text-[#a1a1aa]">Tasks Completed</span>
           </div>
-          <div className="text-[32px] font-bold text-white leading-none mb-3">28</div>
-          <div className="flex items-center gap-1.5 text-[11px] font-medium">
-            <ArrowUp size={12} className="text-[#52e7bc]" />
-            <span className="text-[#52e7bc]">14%</span>
-            <span className="text-[#a1a1aa]">from last week</span>
+          <div className="text-[32px] font-bold text-white leading-none mb-3">{taskStats.done}</div>
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#a1a1aa]">
+            <span>Out of {taskStats.total} total assigned tasks</span>
           </div>
         </Card>
 
@@ -76,11 +94,9 @@ export const DashboardPage = () => {
             </div>
             <span className="text-[12px] font-medium text-[#a1a1aa]">In Progress</span>
           </div>
-          <div className="text-[32px] font-bold text-white leading-none mb-3">34</div>
-          <div className="flex items-center gap-1.5 text-[11px] font-medium">
-            <ArrowUp size={12} className="text-[#52e7bc]" />
-            <span className="text-[#52e7bc]">5</span>
-            <span className="text-[#a1a1aa]">from last week</span>
+          <div className="text-[32px] font-bold text-white leading-none mb-3">{taskStats.in_progress}</div>
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#a1a1aa]">
+            <span>Tasks currently being worked on</span>
           </div>
         </Card>
 
@@ -90,13 +106,11 @@ export const DashboardPage = () => {
             <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500">
               <AlertOctagon size={16} />
             </div>
-            <span className="text-[12px] font-medium text-[#a1a1aa]">Blocked</span>
+            <span className="text-[12px] font-medium text-[#a1a1aa]">To Do</span>
           </div>
-          <div className="text-[32px] font-bold text-white leading-none mb-3">5</div>
-          <div className="flex items-center gap-1.5 text-[11px] font-medium">
-            <ArrowDown size={12} className="text-red-500" />
-            <span className="text-red-500">2</span>
-            <span className="text-[#a1a1aa]">from last week</span>
+          <div className="text-[32px] font-bold text-white leading-none mb-3">{taskStats.todo}</div>
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#a1a1aa]">
+            <span>Tasks waiting to be started</span>
           </div>
         </Card>
       </div>
@@ -297,25 +311,29 @@ export const DashboardPage = () => {
             <h3 className="text-[14px] font-semibold text-white">Upcoming Tasks</h3>
             <button onClick={() => navigate('/dashboard/tasks')} className="text-[11px] text-[#8b55ff] hover:underline font-medium">View all</button>
           </div>
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar-none space-y-3">
-            {[
-              { t: 'Prototype review', p: 'Loom Website Redesign', d: 'May 24', icon: Layout },
-              { t: 'Stakeholder interview', p: 'Customer Portal', d: 'May 25', icon: Users },
-              { t: 'Sprint planning', p: 'Internal Tooling', d: 'May 26', icon: Calendar }
-            ].map((task, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-[#0a0812] border border-white/5 rounded-lg group hover:border-white/10 transition-colors cursor-pointer">
-                <div className="w-8 h-8 rounded-lg bg-[#8b55ff]/10 flex items-center justify-center text-[#8b55ff] shrink-0">
-                  <task.icon size={16} />
+          <div className="flex-1 overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+            {upcomingTasks.length > 0 ? upcomingTasks.map((task, i) => (
+              <div key={task._id} onClick={() => navigate(`/dashboard/projects/${task.project?._id}/tasks`)} className="bg-[#0a0812] border border-white/5 rounded-lg p-3 hover:bg-white/5 transition-colors group cursor-pointer flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                    <CheckSquare size={14} className="text-[#a1a1aa] group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <h4 className="text-[13px] font-medium text-white/90 group-hover:text-white transition-colors mb-0.5">{task.title}</h4>
+                    <div className="text-[11px] text-[#a1a1aa]">Due {new Date(task.dueDate).toLocaleDateString()}</div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12px] font-medium text-white truncate">{task.t}</div>
-                  <div className="text-[11px] text-[#a1a1aa] truncate">{task.p}</div>
-                </div>
-                <div className="text-[11px] text-[#a1a1aa] shrink-0 font-medium">
-                  {task.d}
+                <div className={cn("text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0", 
+                  task.priority === 'High' ? 'text-red-400 bg-red-400/10' :
+                  task.priority === 'Medium' ? 'text-orange-400 bg-orange-400/10' :
+                  'text-[#8b55ff] bg-[#8b55ff]/10'
+                )}>
+                  {task.priority || 'Normal'}
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="text-[13px] text-[#a1a1aa] text-center mt-4">No upcoming tasks due soon.</div>
+            )}
           </div>
         </Card>
 
@@ -325,25 +343,10 @@ export const DashboardPage = () => {
             <h3 className="text-[14px] font-semibold text-white">Activity</h3>
             <button onClick={() => navigate('/dashboard/projects/1/activity')} className="text-[11px] text-[#8b55ff] hover:underline font-medium">View all</button>
           </div>
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar-none space-y-4">
-            {[
-              { a: 'Ethan', img: 'Ethan', action: 'updated a task', t: 'Design system updates', time: '2m ago' },
-              { a: 'Mia', img: 'Mia', action: 'completed a task', t: 'Homepage wireframe', time: '15m ago' },
-              { a: 'Noah', img: 'Noah', action: 'commented', t: 'On Dashboard analytics', time: '1h ago' }
-            ].map((act, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${act.img}`} alt={act.a} className="w-7 h-7 rounded-full bg-white/10 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12px] text-white/90 leading-snug">
-                    <span className="font-semibold text-white">{act.a}</span> {act.action}
-                  </div>
-                  <div className="text-[11px] text-[#a1a1aa] truncate">{act.t}</div>
-                </div>
-                <div className="text-[10px] text-[#a1a1aa] shrink-0 mt-0.5">
-                  {act.time}
-                </div>
-              </div>
-            ))}
+          <div className="flex-1 overflow-y-auto pr-2 scrollbar-none">
+            <div className="space-y-4">
+              <div className="text-[13px] text-[#a1a1aa] text-center mt-4">Activity feed not available globally yet.</div>
+            </div>
           </div>
         </Card>
 

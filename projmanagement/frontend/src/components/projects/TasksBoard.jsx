@@ -4,10 +4,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TaskAPI } from '@/api/tasks.api';
 import { useParams } from 'react-router-dom';
 import { MoreHorizontal, Calendar, MessageSquare, Paperclip, Plus } from 'lucide-react';
+import { CreateTaskModal } from './CreateTaskModal';
 
 export const TasksBoard = () => {
   const { projectId } = useParams();
   const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialStatus, setModalInitialStatus] = useState('todo');
 
   const { data, isLoading } = useQuery({
     queryKey: ['tasks', projectId],
@@ -143,7 +146,17 @@ export const TasksBoard = () => {
                   {column.taskIds.length}
                 </span>
               </h3>
-              <button className="text-[#a1a1aa] hover:text-white transition-colors">
+              <button 
+                onClick={() => {
+                  setModalInitialStatus(
+                    column.id === 'in-progress' ? 'in_progress' :
+                    column.id === 'review' ? 'in_review' :
+                    column.id === 'completed' ? 'done' : 'todo'
+                  );
+                  setIsModalOpen(true);
+                }}
+                className="text-[#a1a1aa] hover:text-white transition-colors"
+              >
                 <Plus size={16} />
               </button>
             </div>
@@ -229,6 +242,11 @@ export const TasksBoard = () => {
           </div>
         ))}
       </div>
+      <CreateTaskModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        initialStatus={modalInitialStatus}
+      />
     </DragDropContext>
   );
 };
