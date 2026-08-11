@@ -26,7 +26,6 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
   const navItems = [
     { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Tasks', path: '/dashboard/tasks', icon: CheckSquare },
-    { name: 'Board', path: '/dashboard/tasks', icon: KanbanSquare },
     { name: 'Timeline', path: '/dashboard/projects/1/activity', icon: Activity },
     { name: 'Notes', path: '/dashboard/projects/1/notes', icon: FileText },
     { name: 'Files', path: '#', icon: Folder },

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ProjectAPI } from '@/api/projects.api';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, Star, FileText } from 'lucide-react';
+import { TasksBoard } from '@/components/projects/TasksBoard';
 
 const Card = ({ children, className }) => (
   <div className={cn("bg-[#12101b] border border-white/5 rounded-xl p-6", className)}>
@@ -11,8 +14,37 @@ const Card = ({ children, className }) => (
 
 export const ProjectOverviewPage = () => {
   const navigate = useNavigate();
+  const { projectId } = useParams();
   const [activeTab, setActiveTab] = useState('Overview');
-  const tabs = ['Overview', 'Tasks', 'Timeline', 'Files', 'Discussions', 'Notes'];
+  const tabs = ['Overview', 'Tasks', 'Board', 'Timeline', 'Files', 'Discussions', 'Notes'];
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['project', projectId],
+    queryFn: () => ProjectAPI.getProjectById(projectId),
+    enabled: !!projectId
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-[#a1a1aa] flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-[#8b55ff] border-t-transparent rounded-full animate-spin"></div>
+          Loading project...
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data?.data?.project) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-red-400">Failed to load project details.</div>
+      </div>
+    );
+  }
+
+  const project = data.data.project;
+
 
   return (
     <div className="flex flex-col h-full w-full max-w-7xl mx-auto space-y-8">
@@ -28,29 +60,29 @@ export const ProjectOverviewPage = () => {
 
         <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
           <div className="flex gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 border border-white/5 flex items-center justify-center text-[24px] font-bold shrink-0">
-              L
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 border border-white/5 flex items-center justify-center text-[24px] font-bold shrink-0 uppercase">
+              {project.name.charAt(0)}
             </div>
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <h1 className="text-[28px] font-bold text-white font-['Space_Grotesk'] tracking-tight leading-none">
-                  Loom Website Redesign
+                  {project.name}
                 </h1>
                 <Star size={20} className="text-[#f59e0b] fill-[#f59e0b] cursor-pointer hover:scale-110 transition-transform" />
               </div>
               <p className="text-[14px] text-[#a1a1aa] mb-4">
-                Redesigning the marketing website for better engagement and conversions.
+                {project.description || "No description provided."}
               </p>
               
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="bg-[#4182ff]/10 text-[#4182ff] border border-[#4182ff]/20 text-[11px] font-medium px-2.5 py-1 rounded-full">
-                  In Progress
+                <span className="bg-[#4182ff]/10 text-[#4182ff] border border-[#4182ff]/20 text-[11px] font-medium px-2.5 py-1 rounded-full uppercase">
+                  {project.status || 'unknown'}
                 </span>
-                <span className="bg-transparent text-red-400 border border-red-500/30 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-500" /> High Priority
+                <span className="bg-transparent text-red-400 border border-red-500/30 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 uppercase">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500" /> {project.priority || 'normal'} Priority
                 </span>
                 <span className="text-[12px] text-[#a1a1aa] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                  Due Jun 15, 2024
+                  Due {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
             </div>
@@ -71,17 +103,20 @@ export const ProjectOverviewPage = () => {
             <div>
               <div className="text-[12px] text-[#a1a1aa] font-medium mb-2">Members</div>
               <div className="flex -space-x-2">
-                {['Olivia', 'Phoenix', 'Lana', 'Demi'].map((member, i) => (
+                {project.members && project.members.slice(0, 4).map((member, i) => (
                   <img 
                     key={i} 
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member}`} 
-                    alt={member} 
-                    className="w-8 h-8 rounded-full bg-[#12101b] border-2 border-[#12101b] cursor-pointer hover:z-10 relative"
+                    src={member.memberId?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.memberId?.username || i}`} 
+                    alt={member.memberId?.username || 'Member'} 
+                    className="w-8 h-8 rounded-full bg-[#12101b] border-2 border-[#12101b] cursor-pointer hover:z-10 relative object-cover"
+                    title={member.memberId?.username}
                   />
                 ))}
-                <div className="w-8 h-8 rounded-full bg-white/5 border-2 border-[#12101b] flex items-center justify-center text-[10px] font-medium text-white cursor-pointer hover:bg-white/10 transition-colors z-10">
-                  +3
-                </div>
+                {project.members && project.members.length > 4 && (
+                  <div className="w-8 h-8 rounded-full bg-white/5 border-2 border-[#12101b] flex items-center justify-center text-[10px] font-medium text-white cursor-pointer hover:bg-white/10 transition-colors z-10">
+                    +{project.members.length - 4}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -107,7 +142,10 @@ export const ProjectOverviewPage = () => {
       </div>
 
       {/* Grid Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 pb-10">
+      {activeTab === 'Tasks' || activeTab === 'Board' ? (
+        <TasksBoard />
+      ) : activeTab === 'Overview' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 pb-10">
         
         {/* Task Summary Donut */}
         <Card className="col-span-1">
@@ -230,6 +268,11 @@ export const ProjectOverviewPage = () => {
         </Card>
 
       </div>
+      ) : (
+        <div className="flex items-center justify-center text-[#a1a1aa] h-40">
+          This tab is under construction.
+        </div>
+      )}
     </div>
   );
 };
