@@ -4,11 +4,11 @@ import { AuthLayout } from '../components/ui/auth-layout';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
 export const VerifyEmailPage = () => {
-  const { token } = useParams();
+  const { verificationToken  } = useParams();
   const [status, setStatus] = useState('verifying'); // verifying, success, error
 
   useEffect(() => {
-    if (!token) {
+    if (!verificationToken ) {
       setStatus('error');
       return;
     }
@@ -20,7 +20,7 @@ export const VerifyEmailPage = () => {
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         // Mock success (you would replace this with actual api call)
-        // const response = await fetch(`/api/auth/verify-email/${token}`);
+        // const response = await fetch(`/api/auth/verify-email/${verificationToken }`);
         // if (!response.ok) throw new Error('Verification failed');
         
         setStatus('success');
@@ -30,7 +30,7 @@ export const VerifyEmailPage = () => {
     };
 
     verifyToken();
-  }, [token]);
+  }, [verificationToken ]);
 
   return (
     <AuthLayout 

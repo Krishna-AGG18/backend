@@ -4,7 +4,7 @@ import { AuthLayout } from '../components/ui/auth-layout';
 import { Lock, Loader2, CheckCircle2 } from 'lucide-react';
 
 export const ResetPasswordPage = () => {
-  const { token } = useParams();
+  const { resetToken } = useParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ export const ResetPasswordPage = () => {
     setTimeout(() => {
       setIsLoading(false);
       setIsSuccess(true);
-      console.log('Resetting password with token:', token);
+      console.log('Resetting password with resetToken:', resetToken);
     }, 1500);
   };
 
