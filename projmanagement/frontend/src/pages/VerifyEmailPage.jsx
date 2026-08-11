@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthLayout } from '../components/ui/auth-layout';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { AuthAPI } from '../api/auth.api';
 
 export const VerifyEmailPage = () => {
   const { verificationToken  } = useParams();
@@ -16,15 +17,11 @@ export const VerifyEmailPage = () => {
     // Simulate API call to verify token
     const verifyToken = async () => {
       try {
-        // Mock verification delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Mock success (you would replace this with actual api call)
-        // const response = await fetch(`/api/auth/verify-email/${verificationToken }`);
-        // if (!response.ok) throw new Error('Verification failed');
-        
+        // Backend API call
+        await AuthAPI.verifyEmail(verificationToken);
         setStatus('success');
       } catch (err) {
+        // Token galat/expire hone par error status dikhayega
         setStatus('error');
       }
     };
