@@ -21,14 +21,14 @@ export const DashboardSidebar = ({ mobileOpen, setMobileOpen }) => {
   const navItems = [
     { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
     { name: 'My Tasks', path: '/dashboard/tasks', icon: CheckSquare },
-    { name: 'Projects', path: '/dashboard/projects', icon: FolderGit2 },
-    { name: 'Activity', path: '/dashboard/activity', icon: Activity },
+    { name: 'Projects', path: '/dashboard/projects/1/settings', icon: FolderGit2 },
+    { name: 'Activity', path: '/dashboard/projects/1/activity', icon: Activity },
   ];
 
   const toolsItems = [
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
     { name: 'Search', path: '#', icon: Search, shortcut: '⌘K' },
-    { name: 'Notifications', path: '#', icon: Bell, badge: 3 },
+    { name: 'Notifications', path: '/dashboard/notifications', icon: Bell, badge: 3 },
   ];
 
   return (

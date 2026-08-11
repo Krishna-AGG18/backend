@@ -9,6 +9,13 @@ import { TasksPage } from "./TasksPage";
 import { CreateTaskPage } from "./CreateTaskPage";
 import { TaskDetailPage } from "./TaskDetailPage";
 import { ProjectMembersPage } from "./ProjectMembersPage";
+import { NotesPage } from "./NotesPage";
+import { ActivityTimelinePage } from "./ActivityTimelinePage";
+import { NotificationsPage } from "./NotificationsPage";
+import { ProjectSettingsPage } from "./ProjectSettingsPage";
+import { AccountSettingsPage } from "./AccountSettingsPage";
+import { UnauthorizedPage } from "./UnauthorizedPage";
+import { OnboardingPage } from "./OnboardingPage";
 
 export {
     LandingPage,
@@ -21,5 +28,12 @@ export {
     TasksPage,
     CreateTaskPage,
     TaskDetailPage,
-    ProjectMembersPage
+    ProjectMembersPage,
+    NotesPage,
+    ActivityTimelinePage,
+    NotificationsPage,
+    ProjectSettingsPage,
+    AccountSettingsPage,
+    UnauthorizedPage,
+    OnboardingPage
 }
