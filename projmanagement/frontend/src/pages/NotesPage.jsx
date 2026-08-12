@@ -12,8 +12,8 @@ export const NotesPage = () => {
   const [activeNoteId, setActiveNoteId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Editor State
   const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
 
   const { data, isLoading } = useQuery({
@@ -23,7 +23,10 @@ export const NotesPage = () => {
   });
 
   const notesList = data?.data || [];
-  const filteredNotes = notesList.filter(n => n.content?.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredNotes = notesList.filter(n => 
+    n.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    n.content?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
   const activeNote = notesList.find(n => n._id === activeNoteId);
 
@@ -40,6 +43,7 @@ export const NotesPage = () => {
       queryClient.invalidateQueries(['notes', projectId]);
       setActiveNoteId(res.data._id);
       setIsEditing(true);
+      setEditTitle(res.data.title || 'Untitled Note');
       setEditContent(res.data.content || '');
     }
   });
@@ -62,12 +66,12 @@ export const NotesPage = () => {
   });
 
   const handleCreateNew = () => {
-    createNoteMutation.mutate({ projectId, content: '<h1>New Note</h1><p>Start typing here...</p>' });
+    createNoteMutation.mutate({ projectId, title: 'New Note', content: '<p>Start typing here...</p>' });
   };
 
   const handleSave = () => {
     if (!activeNoteId) return;
-    updateNoteMutation.mutate({ projectId, noteId: activeNoteId, content: editContent });
+    updateNoteMutation.mutate({ projectId, noteId: activeNoteId, title: editTitle, content: editContent });
   };
 
   return (
@@ -110,11 +114,7 @@ export const NotesPage = () => {
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
             {filteredNotes.length > 0 ? filteredNotes.map((note) => {
-              // Extract title safely
-              const tempDiv = document.createElement("div");
-              tempDiv.innerHTML = note.content || '';
-              const titleMatch = tempDiv.querySelector('h1, h2, h3, p');
-              const title = titleMatch ? titleMatch.innerText.substring(0, 40) : 'Untitled Note';
+              const title = note.title || 'Untitled Note';
 
               return (
                 <button
@@ -153,12 +153,23 @@ export const NotesPage = () => {
             <>
               <div className="p-8 pb-4 flex justify-between items-start shrink-0 border-b border-white/5">
                 <div>
-                  <div className="flex items-center gap-2 text-[12px] text-[#a1a1aa] mb-1">
+                  <div className="flex items-center gap-2 text-[12px] text-[#a1a1aa] mb-3">
                     <img src={activeNote.createdBy?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeNote.createdBy?.username}`} alt="Creator" className="w-5 h-5 rounded-full bg-white/10" />
                     <span className="font-medium text-white/80">{activeNote.createdBy?.username}</span>
                     <span>•</span>
                     <span>{new Date(activeNote.createdAt).toLocaleString()}</span>
                   </div>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="bg-transparent text-[24px] font-bold text-white placeholder:text-[#a1a1aa] border-b border-[#8b55ff]/30 focus:border-[#8b55ff] outline-none w-full"
+                      placeholder="Note Title"
+                    />
+                  ) : (
+                    <h2 className="text-[24px] font-bold text-white">{activeNote.title || 'Untitled Note'}</h2>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   {isEditing ? (
@@ -179,6 +190,7 @@ export const NotesPage = () => {
                     <>
                       <button 
                         onClick={() => {
+                          setEditTitle(activeNote.title || 'Untitled Note');
                           setEditContent(activeNote.content || '');
                           setIsEditing(true);
                         }}

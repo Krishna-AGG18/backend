@@ -179,9 +179,8 @@ export const ProjectOverviewPage = () => {
                   <FileText size={14} className="text-[#a1a1aa] group-hover:text-[#8b55ff] transition-colors" />
                 </div>
                 <div>
-                  {/* Extract plain text from rich HTML text safely using regex or just showing "Note" if title isn't stored separately. Actually notes in backend have content. We will strip html tags for preview */}
                   <div className="text-[13px] font-medium text-white mb-0.5 group-hover:text-[#8b55ff] transition-colors line-clamp-1">
-                    {note.content?.replace(/<[^>]+>/g, '').substring(0, 50) || 'Untitled Note'}
+                    {note.title || 'Untitled Note'}
                   </div>
                   <div className="text-[11px] text-[#a1a1aa]">Updated {formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}</div>
                 </div>

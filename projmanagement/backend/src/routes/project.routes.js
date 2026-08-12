@@ -11,7 +11,9 @@ import {
     deleteMember,
     deleteProject,
     addCustomStatus,
+    deleteCustomStatus,
     addCustomPriority,
+    deleteCustomPriority,
     addCustomRole,
 } from "../controllers/project.controllers.js";
 
@@ -65,8 +67,16 @@ router
     .post(validateProjectPermission(MANAGE_PROJECT), addCustomStatus);
 
 router
+    .route("/:projectId/settings/statuses/:statusName")
+    .delete(validateProjectPermission(MANAGE_PROJECT), deleteCustomStatus);
+
+router
     .route("/:projectId/settings/priorities")
     .post(validateProjectPermission(MANAGE_PROJECT), addCustomPriority);
+
+router
+    .route("/:projectId/settings/priorities/:priorityName")
+    .delete(validateProjectPermission(MANAGE_PROJECT), deleteCustomPriority);
 
 router
     .route("/:projectId/settings/roles")

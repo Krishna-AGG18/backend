@@ -13,16 +13,18 @@ export const ProjectSettingsPage = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    key: '',
-    description: ''
+    description: '',
+    status: 'ACTIVE',
+    dueDate: ''
   });
 
   useEffect(() => {
     if (project) {
       setFormData({
         name: project.name || '',
-        key: project.key || '',
-        description: project.description || ''
+        description: project.description || '',
+        status: project.status || 'ACTIVE',
+        dueDate: project.dueDate ? new Date(project.dueDate).toISOString().split('T')[0] : ''
       });
     }
   }, [project]);
@@ -54,12 +56,34 @@ export const ProjectSettingsPage = () => {
     }
   };
 
+  const addStatusMutation = useMutation({
+    mutationFn: (data) => ProjectAPI.addCustomStatus({ projectId: project._id, statusData: data }),
+    onSuccess: () => queryClient.invalidateQueries(['project', project._id])
+  });
+
+  const deleteStatusMutation = useMutation({
+    mutationFn: (name) => ProjectAPI.deleteCustomStatus({ projectId: project._id, statusName: name }),
+    onSuccess: () => queryClient.invalidateQueries(['project', project._id])
+  });
+
+  const addPriorityMutation = useMutation({
+    mutationFn: (data) => ProjectAPI.addCustomPriority({ projectId: project._id, priorityData: data }),
+    onSuccess: () => queryClient.invalidateQueries(['project', project._id])
+  });
+
+  const deletePriorityMutation = useMutation({
+    mutationFn: (name) => ProjectAPI.deleteCustomPriority({ projectId: project._id, priorityName: name }),
+    onSuccess: () => queryClient.invalidateQueries(['project', project._id])
+  });
+
+  const [newStatus, setNewStatus] = useState({ name: '', category: 'todo', color: '#8b55ff' });
+  const [newPriority, setNewPriority] = useState({ name: '', level: 1, color: '#4182ff' });
+
   const navItems = [
     { id: 'General', label: 'General' },
     { id: 'Statuses', label: 'Statuses' },
     { id: 'Priorities', label: 'Priorities' },
     { id: 'Roles', label: 'Roles & Permissions' },
-    { id: 'Integrations', label: 'Integrations' },
     { id: 'Danger', label: 'Danger Zone', danger: true },
   ];
 
@@ -115,13 +139,28 @@ export const ProjectSettingsPage = () => {
                     />
                   </div>
                 
+
+
                   <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-white">Key</label>
+                    <label className="text-[13px] font-medium text-white">Status</label>
+                    <select 
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
+                    >
+                      <option value="ACTIVE">Active</option>
+                      <option value="COMPLETED">Completed</option>
+                      <option value="ARCHIVED">Archived</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-medium text-white">Due Date</label>
                     <input 
-                      type="text" 
-                      value={formData.key}
-                      onChange={(e) => setFormData({ ...formData, key: e.target.value })}
-                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors uppercase"
+                      type="date" 
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                      className="w-full bg-[#0a0812] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50 transition-colors"
                     />
                   </div>
 
@@ -148,55 +187,135 @@ export const ProjectSettingsPage = () => {
 
             {/* Statuses Section */}
             {activeTab === 'Statuses' && (
-              <section className="space-y-6 relative">
-                <div className="absolute inset-0 bg-[#12101b]/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl border border-white/5">
-                  <div className="text-center px-4 py-3 bg-[#0a0812] border border-[#8b55ff]/20 rounded-lg shadow-lg">
-                    <p className="text-[14px] font-medium text-white mb-1">Coming Soon</p>
-                    <p className="text-[12px] text-[#a1a1aa]">Custom statuses are under development.</p>
-                  </div>
-                </div>
-                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Statuses</h2>
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Custom Statuses</h2>
                 
-                <div className="flex flex-wrap gap-3">
-                  {['Todo', 'In Progress', 'In Review', 'Done'].map((status) => (
-                    <div key={status} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                      {status}
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {project?.taskStatuses?.map((status) => (
+                    <div key={status.name} className="bg-[#0a0812] border border-white/10 pl-3 pr-1 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2 group">
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: status.color || '#ccc' }} />
+                      {status.name}
+                      <button 
+                        onClick={() => {
+                          if(window.confirm(`Delete status ${status.name}?`)) {
+                            deleteStatusMutation.mutate(status.name);
+                          }
+                        }}
+                        className="w-5 h-5 ml-1 flex items-center justify-center rounded-full hover:bg-red-500/20 text-[#a1a1aa] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                      >
+                        <AlertTriangle size={10} className="hidden" />
+                        &times;
+                      </button>
                     </div>
                   ))}
-                  <button disabled className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
-                    + Add Status
-                  </button>
+                </div>
+
+                <div className="bg-[#0a0812] border border-white/5 p-4 rounded-xl max-w-sm">
+                  <h3 className="text-[13px] font-medium text-white mb-3">Add New Status</h3>
+                  <div className="space-y-3">
+                    <input 
+                      type="text"
+                      placeholder="Status Name"
+                      value={newStatus.name}
+                      onChange={(e) => setNewStatus({...newStatus, name: e.target.value})}
+                      className="w-full bg-[#12101b] border border-white/5 rounded-lg p-2 text-[12px] text-white focus:outline-none focus:border-[#8b55ff]/50"
+                    />
+                    <select 
+                      value={newStatus.category}
+                      onChange={(e) => setNewStatus({...newStatus, category: e.target.value})}
+                      className="w-full bg-[#12101b] border border-white/5 rounded-lg p-2 text-[12px] text-white focus:outline-none focus:border-[#8b55ff]/50"
+                    >
+                      <option value="todo">To Do</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="done">Done</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <input 
+                        type="color"
+                        value={newStatus.color}
+                        onChange={(e) => setNewStatus({...newStatus, color: e.target.value})}
+                        className="w-8 h-8 rounded bg-transparent border-0 cursor-pointer"
+                      />
+                      <button 
+                        onClick={() => {
+                          if (newStatus.name) {
+                            addStatusMutation.mutate(newStatus);
+                            setNewStatus({ name: '', category: 'todo', color: '#8b55ff' });
+                          }
+                        }}
+                        disabled={addStatusMutation.isPending || !newStatus.name}
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-medium rounded-lg transition-colors"
+                      >
+                        Add Status
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </section>
             )}
 
             {/* Priorities Section */}
             {activeTab === 'Priorities' && (
-              <section className="space-y-6 relative">
-                <div className="absolute inset-0 bg-[#12101b]/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl border border-white/5">
-                  <div className="text-center px-4 py-3 bg-[#0a0812] border border-[#8b55ff]/20 rounded-lg shadow-lg">
-                    <p className="text-[14px] font-medium text-white mb-1">Coming Soon</p>
-                    <p className="text-[12px] text-[#a1a1aa]">Custom priorities are under development.</p>
-                  </div>
-                </div>
-                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Priorities</h2>
+              <section className="space-y-6">
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Custom Priorities</h2>
                 
-                <div className="flex flex-wrap gap-3">
-                  {[
-                    { name: 'Low', color: 'bg-blue-400' },
-                    { name: 'Medium', color: 'bg-yellow-400' },
-                    { name: 'High', color: 'bg-orange-400' },
-                    { name: 'Critical', color: 'bg-red-500' }
-                  ].map((priority) => (
-                    <div key={priority.name} className="bg-[#0a0812] border border-white/10 px-3 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full ${priority.color}`} />
-                      {priority.name}
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {project?.taskPriorities?.map((priority) => (
+                    <div key={priority.name} className="bg-[#0a0812] border border-white/10 pl-3 pr-1 py-1.5 rounded-full text-[12px] text-white flex items-center gap-2 group">
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: priority.color || '#ccc' }} />
+                      {priority.name} (Lvl {priority.level})
+                      <button 
+                        onClick={() => {
+                          if(window.confirm(`Delete priority ${priority.name}?`)) {
+                            deletePriorityMutation.mutate(priority.name);
+                          }
+                        }}
+                        className="w-5 h-5 ml-1 flex items-center justify-center rounded-full hover:bg-red-500/20 text-[#a1a1aa] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                      >
+                        &times;
+                      </button>
                     </div>
                   ))}
-                  <button disabled className="px-3 py-1.5 rounded-full text-[12px] text-[#8b55ff] hover:bg-[#8b55ff]/10 font-medium transition-colors border border-dashed border-[#8b55ff]/30">
-                    + Add Priority
-                  </button>
+                </div>
+
+                <div className="bg-[#0a0812] border border-white/5 p-4 rounded-xl max-w-sm">
+                  <h3 className="text-[13px] font-medium text-white mb-3">Add New Priority</h3>
+                  <div className="space-y-3">
+                    <input 
+                      type="text"
+                      placeholder="Priority Name"
+                      value={newPriority.name}
+                      onChange={(e) => setNewPriority({...newPriority, name: e.target.value})}
+                      className="w-full bg-[#12101b] border border-white/5 rounded-lg p-2 text-[12px] text-white focus:outline-none focus:border-[#8b55ff]/50"
+                    />
+                    <input 
+                      type="number"
+                      placeholder="Level (e.g. 1)"
+                      value={newPriority.level}
+                      onChange={(e) => setNewPriority({...newPriority, level: parseInt(e.target.value)})}
+                      className="w-full bg-[#12101b] border border-white/5 rounded-lg p-2 text-[12px] text-white focus:outline-none focus:border-[#8b55ff]/50"
+                    />
+                    <div className="flex gap-2">
+                      <input 
+                        type="color"
+                        value={newPriority.color}
+                        onChange={(e) => setNewPriority({...newPriority, color: e.target.value})}
+                        className="w-8 h-8 rounded bg-transparent border-0 cursor-pointer"
+                      />
+                      <button 
+                        onClick={() => {
+                          if (newPriority.name) {
+                            addPriorityMutation.mutate(newPriority);
+                            setNewPriority({ name: '', level: 1, color: '#4182ff' });
+                          }
+                        }}
+                        disabled={addPriorityMutation.isPending || !newPriority.name}
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-white text-[12px] font-medium rounded-lg transition-colors"
+                      >
+                        Add Priority
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </section>
             )}

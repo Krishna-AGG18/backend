@@ -19,6 +19,7 @@ import { OnboardingPage } from "./OnboardingPage";
 import { ProjectsListPage } from "./ProjectsListPage";
 import { CreateProjectPage } from "./CreateProjectPage";
 import { ProjectOverviewPage } from "./ProjectOverviewPage";
+import { ProjectFilesPage } from "./ProjectFilesPage";
 import { NotFoundPage } from "./NotFoundPage";
 
 export {
@@ -43,5 +44,6 @@ export {
     ProjectsListPage,
     CreateProjectPage,
     ProjectOverviewPage,
+    ProjectFilesPage,
     NotFoundPage
 }

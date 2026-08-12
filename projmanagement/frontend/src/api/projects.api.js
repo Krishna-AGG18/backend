@@ -41,5 +41,26 @@ export const ProjectAPI = {
   deleteMember: async ({ projectId, userId }) => {
     const response = await apiClient.delete(`/projects/${projectId}/members/${userId}`);
     return response.data;
+  },
+
+  // Project Settings
+  addCustomStatus: async ({ projectId, statusData }) => {
+    const response = await apiClient.post(`/projects/${projectId}/settings/statuses`, statusData);
+    return response.data;
+  },
+
+  deleteCustomStatus: async ({ projectId, statusName }) => {
+    const response = await apiClient.delete(`/projects/${projectId}/settings/statuses/${statusName}`);
+    return response.data;
+  },
+
+  addCustomPriority: async ({ projectId, priorityData }) => {
+    const response = await apiClient.post(`/projects/${projectId}/settings/priorities`, priorityData);
+    return response.data;
+  },
+
+  deleteCustomPriority: async ({ projectId, priorityName }) => {
+    const response = await apiClient.delete(`/projects/${projectId}/settings/priorities/${priorityName}`);
+    return response.data;
   }
 };

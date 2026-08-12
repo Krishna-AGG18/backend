@@ -11,6 +11,11 @@ const projectNoteSchema = new Schema({
         ref : "User",
         required : true,
     },
+    title : {
+        type : String,
+        required : true,
+        default : "Untitled Note"
+    },
     content : {
         type : String,
         required : true

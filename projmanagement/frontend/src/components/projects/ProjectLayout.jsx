@@ -3,7 +3,9 @@ import { Link, useNavigate, useParams, Outlet, useLocation } from 'react-router-
 import { useQuery } from '@tanstack/react-query';
 import { ProjectAPI } from '@/api/projects.api';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, Star, Users } from 'lucide-react';
+import { ArrowLeft, Star, Users, Plus } from 'lucide-react';
+import { TaskAPI } from '@/api/tasks.api';
+import { CreateTaskModal } from './CreateTaskModal';
 
 export const ProjectLayout = () => {
   const navigate = useNavigate();
@@ -15,6 +17,14 @@ export const ProjectLayout = () => {
     queryFn: () => ProjectAPI.getProjectById(projectId),
     enabled: !!projectId
   });
+
+  const { data: tasksData } = useQuery({
+    queryKey: ['tasks', projectId],
+    queryFn: () => TaskAPI.getTasks(projectId),
+    enabled: !!projectId
+  });
+
+  const [isTaskModalOpen, setIsTaskModalOpen] = React.useState(false);
 
   if (isLoading) {
     return (
@@ -46,6 +56,13 @@ export const ProjectLayout = () => {
     { name: 'Files', path: `/dashboard/projects/${projectId}/files` },
     { name: 'Settings', path: `/dashboard/projects/${projectId}/settings` },
   ];
+
+  const tasks = tasksData?.data?.tasks || [];
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.status === 'done').length;
+  const progressPct = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  const isOverdue = project.dueDate && new Date(project.dueDate) < new Date();
 
   return (
     <div className="flex flex-col h-full w-full max-w-7xl mx-auto space-y-8">
@@ -82,7 +99,7 @@ export const ProjectLayout = () => {
                 <span className="bg-transparent text-red-400 border border-red-500/30 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 uppercase">
                   <div className="w-1.5 h-1.5 rounded-full bg-red-500" /> {project.priority || 'normal'} Priority
                 </span>
-                <span className="text-[12px] text-[#a1a1aa] bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+                <span className={cn("text-[12px] bg-white/5 border px-2.5 py-1 rounded-full", isOverdue ? "text-red-400 border-red-500/30" : "text-[#a1a1aa] border-white/10")}>
                   Due {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
@@ -91,13 +108,19 @@ export const ProjectLayout = () => {
 
           {/* Right Header Stats */}
           <div className="flex items-center gap-10">
+            <button 
+              onClick={() => setIsTaskModalOpen(true)}
+              className="px-4 py-2 bg-[#8b55ff] hover:bg-[#8b55ff]/90 text-white text-[13px] font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Plus size={16} /> Create Task
+            </button>
             <div className="flex flex-col gap-2 min-w-[140px]">
               <div className="flex justify-between text-[12px] font-medium">
                 <span className="text-white">Progress</span>
-                <span className="text-[#a1a1aa]">0%</span>
+                <span className="text-[#a1a1aa]">{progressPct}%</span>
               </div>
               <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#8b55ff] to-[#4182ff] rounded-full w-[0%]" />
+                <div className="h-full bg-gradient-to-r from-[#8b55ff] to-[#4182ff] rounded-full transition-all duration-500" style={{ width: `${progressPct}%` }} />
               </div>
             </div>
             
@@ -151,8 +174,13 @@ export const ProjectLayout = () => {
 
       {/* Grid Content - Outlet injects specific tab view */}
       <div className="flex-1 min-h-0">
-        <Outlet context={{ project }} />
+        <Outlet context={{ project, setIsTaskModalOpen }} />
       </div>
+
+      <CreateTaskModal 
+        isOpen={isTaskModalOpen} 
+        onClose={() => setIsTaskModalOpen(false)} 
+      />
     </div>
   );
 };

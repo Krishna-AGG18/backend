@@ -10,7 +10,7 @@ import {
   NotesPage, ActivityTimelinePage, NotificationsPage, ProjectSettingsPage,
   AccountSettingsPage, UnauthorizedPage, OnboardingPage,
   ProjectsListPage, CreateProjectPage, ProjectOverviewPage,
-  NotFoundPage
+  ProjectFilesPage, NotFoundPage
 } from "./pages/index.js";
 import { ProjectLayout } from "./components/projects/ProjectLayout.jsx";
 import { TasksBoard } from "./components/projects/TasksBoard.jsx";
@@ -51,7 +51,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="notes" element={<NotesPage />} />
                 <Route path="activity" element={<ActivityTimelinePage />} />
                 <Route path="settings" element={<ProjectSettingsPage />} />
-                <Route path="files" element={<div className="flex items-center justify-center text-[#a1a1aa] h-40">Files tab under construction</div>} />
+                <Route path="files" element={<ProjectFilesPage />} />
               </Route>
 
               <Route path="notifications" element={<NotificationsPage />} />

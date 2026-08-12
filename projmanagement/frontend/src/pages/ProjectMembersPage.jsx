@@ -73,7 +73,7 @@ export const ProjectMembersPage = () => {
     return <div className="text-[#a1a1aa] p-6 text-center">Loading members...</div>;
   }
 
-  const members = data?.data?.members || [];
+  const members = Array.isArray(data?.data) ? data.data : [];
   
   const adminsCount = members.filter(m => m.role === 'admin' || m.role === 'project_admin').length;
   const membersCount = members.filter(m => m.role === 'member').length;

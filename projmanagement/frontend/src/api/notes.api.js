@@ -14,14 +14,14 @@ export const NotesAPI = {
   },
 
   // Create a new note
-  createNote: async ({ projectId, content }) => {
-    const response = await apiClient.post(`/notes/${projectId}`, { content });
+  createNote: async ({ projectId, title, content }) => {
+    const response = await apiClient.post(`/notes/${projectId}`, { title, content });
     return response.data;
   },
 
   // Update a note
-  updateNote: async ({ projectId, noteId, content }) => {
-    const response = await apiClient.put(`/notes/${projectId}/n/${noteId}`, { content });
+  updateNote: async ({ projectId, noteId, title, content }) => {
+    const response = await apiClient.put(`/notes/${projectId}/n/${noteId}`, { title, content });
     return response.data;
   },
 

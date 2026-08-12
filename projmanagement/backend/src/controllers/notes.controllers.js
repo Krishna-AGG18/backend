@@ -11,7 +11,7 @@ import { ProjectNote } from "../models/note.models.js";
 
 const createNote = asyncHandler(async (req,res) => {
     const {projectId} = req.params;
-    const {content} = req.body;
+    const {content, title} = req.body;
 
     const project = await Project.findById(projectId);
 
@@ -22,6 +22,7 @@ const createNote = asyncHandler(async (req,res) => {
     const note = await ProjectNote.create({
             project: new mongoose.Types.ObjectId(projectId),
             createdBy : new mongoose.Types.ObjectId(req.user._id),
+            title: title || "Untitled Note",
             content
         });
 
@@ -71,7 +72,7 @@ const getNoteDetails = asyncHandler(async (req,res) => {
 })
 const updateNote = asyncHandler(async (req,res) => {
     const {projectId, noteId} = req.params;
-    const {content} = req.body;
+    const {content, title} = req.body;
 
     const project = await Project.findById(projectId);
 
@@ -93,6 +94,7 @@ const updateNote = asyncHandler(async (req,res) => {
     }
 
     note.content = content;
+    if (title) note.title = title;
     await note.save();
 
     return res
