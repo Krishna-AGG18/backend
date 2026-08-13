@@ -79,6 +79,22 @@ export const ProjectSettingsPage = () => {
   const [newStatus, setNewStatus] = useState({ name: '', category: 'todo', color: '#8b55ff' });
   const [newPriority, setNewPriority] = useState({ name: '', level: 1, color: '#4182ff' });
 
+  const addCustomRoleMutation = useMutation({
+    mutationFn: (data) => ProjectAPI.addCustomRole({ projectId: project._id, roleData: data }),
+    onSuccess: () => queryClient.invalidateQueries(['project', project._id])
+  });
+
+  const [newRole, setNewRole] = useState({ name: '', permissions: [] });
+  
+  const handleTogglePermission = (perm) => {
+    setNewRole(prev => ({
+      ...prev,
+      permissions: prev.permissions.includes(perm)
+        ? prev.permissions.filter(p => p !== perm)
+        : [...prev.permissions, perm]
+    }));
+  };
+
   const navItems = [
     { id: 'General', label: 'General' },
     { id: 'Statuses', label: 'Statuses' },
@@ -323,24 +339,86 @@ export const ProjectSettingsPage = () => {
             {/* Roles & Permissions Section */}
             {activeTab === 'Roles' && (
               <section className="space-y-6">
-                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Roles & Permissions</h2>
+                <h2 className="text-[16px] font-semibold text-white border-b border-white/5 pb-2">Custom Roles & Permissions</h2>
                 
-                <div className="space-y-4 text-[13px]">
-                  <div className="flex">
-                    <span className="w-24 text-white font-medium">Admin</span>
-                    <span className="text-[#a1a1aa]">Full access to all project settings and data.</span>
+                {/* List Current Custom Roles */}
+                <div className="grid gap-3 mb-6">
+                  {project?.customRoles?.length > 0 ? project.customRoles.map((role) => (
+                    <div key={role.name} className="bg-[#0a0812] border border-white/5 p-4 rounded-xl flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                      <div>
+                        <h4 className="text-[14px] font-medium text-white mb-1 capitalize">{role.name}</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {role.permissions.map(perm => (
+                            <span key={perm} className="bg-white/5 text-[#a1a1aa] px-2 py-0.5 rounded text-[11px] capitalize">
+                              {perm.replace('_', ' ')}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )) : (
+                    <div className="text-[13px] text-[#a1a1aa] p-4 text-center border border-dashed border-white/10 rounded-xl">
+                      No custom roles created yet.
+                    </div>
+                  )}
+                </div>
+
+                {/* Create New Role Form */}
+                <div className="bg-[#0a0812] border border-white/5 p-5 rounded-xl">
+                  <h3 className="text-[14px] font-medium text-white mb-4">Create New Custom Role</h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[12px] text-[#a1a1aa]">Role Name</label>
+                      <input 
+                        type="text"
+                        placeholder="e.g., Guest, SuperAdmin"
+                        value={newRole.name}
+                        onChange={(e) => setNewRole({...newRole, name: e.target.value})}
+                        className="w-full bg-[#12101b] border border-white/5 rounded-lg p-2.5 text-[13px] text-white focus:outline-none focus:border-[#8b55ff]/50"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[12px] text-[#a1a1aa]">Permissions</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                        {[
+                          { id: 'manage_project', label: 'Manage Project Settings' },
+                          { id: 'manage_members', label: 'Manage Members & Roles' },
+                          { id: 'create_task', label: 'Create Tasks' },
+                          { id: 'delete_task', label: 'Delete Tasks' },
+                          { id: 'view_reports', label: 'View Reports' }
+                        ].map(perm => (
+                          <label key={perm.id} onClick={() => handleTogglePermission(perm.id)} className="flex items-center gap-2 cursor-pointer group">
+                            <div className={cn(
+                              "w-4 h-4 rounded border flex items-center justify-center transition-colors",
+                              newRole.permissions.includes(perm.id) 
+                                ? "bg-[#8b55ff] border-[#8b55ff]" 
+                                : "border-white/20 group-hover:border-white/40"
+                            )}>
+                              {newRole.permissions.includes(perm.id) && <CheckCircle2 size={12} className="text-white" />}
+                            </div>
+                            <span className="text-[12px] text-white/80 group-hover:text-white transition-colors">{perm.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <button 
+                        onClick={() => {
+                          if (newRole.name && newRole.permissions.length > 0) {
+                            addCustomRoleMutation.mutate(newRole);
+                            setNewRole({ name: '', permissions: [] });
+                          }
+                        }}
+                        disabled={addCustomRoleMutation.isPending || !newRole.name || newRole.permissions.length === 0}
+                        className="bg-white/5 hover:bg-white/10 text-white text-[13px] font-medium py-2 px-5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {addCustomRoleMutation.isPending && <Loader2 size={14} className="animate-spin" />}
+                        Create Role
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex">
-                    <span className="w-24 text-white font-medium">Editor</span>
-                    <span className="text-[#a1a1aa]">Can manage tasks and collaborate.</span>
-                  </div>
-                  <div className="flex">
-                    <span className="w-24 text-white font-medium">Viewer</span>
-                    <span className="text-[#a1a1aa]">Can view project data and activities.</span>
-                  </div>
-                  <button onClick={() => navigate(`/dashboard/projects/${project._id}/members`)} className="text-[#8b55ff] font-medium hover:underline text-[13px]">
-                    Manage Roles
-                  </button>
                 </div>
               </section>
             )}

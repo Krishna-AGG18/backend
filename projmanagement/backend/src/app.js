@@ -28,13 +28,22 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 // to make public folder publicly viewable such that i can serve content from it directly
 app.use(express.static("public"));
 
+// CORS CONFIGURATION
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    }),
+);
+
 // 1. Set security HTTP headers
 app.use(helmet());
 
 // 2. Limit requests from same API (Rate Limiting)
-// Ye rule banayega ki 15 minute me ek IP se 100 se zyada requests na aayein
 const limiter = rateLimit({
-    max: 100, 
+    max: 1000, 
     windowMs: 15 * 60 * 1000, 
     message: "Too many requests from this IP, please try again in an hour!"
 });
@@ -49,17 +58,6 @@ app.use(mongoSanitize());
 
 // cookie-parser : now we have access to cookies
 app.use(cookieParser())
-
-
-// CORS CONFIGURATION
-app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    }),
-);
 
 // import the routes
 

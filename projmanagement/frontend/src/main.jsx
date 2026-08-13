@@ -39,7 +39,7 @@ createRoot(document.getElementById("root")).render(
               <Route index element={<DashboardPage />} />
               <Route path="tasks" element={<TasksPage />} />
               <Route path="tasks/new" element={<CreateTaskPage />} />
-              <Route path="tasks/:taskId" element={<TaskDetailPage />} />
+              <Route path="projects/:projectId/tasks/:taskId" element={<TaskDetailPage />} />
 
               <Route path="projects" element={<ProjectsListPage />} />
               <Route path="projects/new" element={<CreateProjectPage />} />

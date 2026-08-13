@@ -37,7 +37,7 @@ export const ProjectOverviewPage = () => {
     enabled: !!projectId
   });
 
-  const tasks = tasksData?.data?.tasks || [];
+  const tasks = tasksData?.data?.data || [];
   const activities = activitiesData?.data?.activities || [];
   const notes = notesData?.data || [];
 

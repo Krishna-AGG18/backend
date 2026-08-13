@@ -24,5 +24,20 @@ export const TaskAPI = {
   deleteTask: async (projectId, taskId) => {
     const response = await apiClient.delete(`/tasks/${projectId}/t/${taskId}`);
     return response.data;
+  },
+
+  createSubTask: async ({ projectId, taskId, data }) => {
+    const response = await apiClient.post(`/tasks/${projectId}/t/${taskId}/subtasks`, data);
+    return response.data;
+  },
+
+  updateSubTask: async ({ projectId, subTaskId, data }) => {
+    const response = await apiClient.put(`/tasks/${projectId}/st/${subTaskId}`, data);
+    return response.data;
+  },
+
+  deleteSubTask: async (projectId, subTaskId) => {
+    const response = await apiClient.delete(`/tasks/${projectId}/st/${subTaskId}`);
+    return response.data;
   }
 };

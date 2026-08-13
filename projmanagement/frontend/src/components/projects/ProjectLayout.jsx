@@ -26,6 +26,14 @@ export const ProjectLayout = () => {
 
   const [isTaskModalOpen, setIsTaskModalOpen] = React.useState(false);
 
+  const { data: membersData } = useQuery({
+    queryKey: ['project-members', projectId],
+    queryFn: () => ProjectAPI.getProjectMembers(projectId),
+    enabled: !!projectId
+  });
+  
+  const projectMembers = membersData?.data?.members || [];
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -57,7 +65,7 @@ export const ProjectLayout = () => {
     { name: 'Settings', path: `/dashboard/projects/${projectId}/settings` },
   ];
 
-  const tasks = tasksData?.data?.tasks || [];
+  const tasks = tasksData?.data?.data || [];
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   const progressPct = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -127,18 +135,18 @@ export const ProjectLayout = () => {
             <div>
               <div className="text-[12px] text-[#a1a1aa] font-medium mb-2">Members</div>
               <div className="flex -space-x-2">
-                {project.members && project.members.slice(0, 4).map((member, i) => (
+                {projectMembers.slice(0, 4).map((member, i) => (
                   <img 
                     key={i} 
-                    src={member.memberId?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.memberId?.username || i}`} 
-                    alt={member.memberId?.username || 'Member'} 
+                    src={member.user?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.user?.username || i}`} 
+                    alt={member.user?.username || 'Member'} 
                     className="w-8 h-8 rounded-full bg-[#12101b] border-2 border-[#12101b] cursor-pointer hover:z-10 relative object-cover"
-                    title={member.memberId?.username}
+                    title={member.user?.username}
                   />
                 ))}
-                {project.members && project.members.length > 4 && (
+                {projectMembers.length > 4 && (
                   <div className="w-8 h-8 rounded-full bg-white/5 border-2 border-[#12101b] flex items-center justify-center text-[10px] font-medium text-white cursor-pointer hover:bg-white/10 transition-colors z-10">
-                    +{project.members.length - 4}
+                    +{projectMembers.length - 4}
                   </div>
                 )}
               </div>

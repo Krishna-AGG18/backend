@@ -118,7 +118,7 @@ export const TasksPage = () => {
             </thead>
             <tbody className="divide-y divide-white/5">
               {upcomingTasks.length > 0 ? upcomingTasks.map((task) => (
-                <tr key={task._id} onClick={() => navigate(`/dashboard/projects/${task.project?._id}/tasks`)} className="hover:bg-white/5 transition-colors cursor-pointer group">
+                <tr key={task._id} onClick={() => navigate(`/dashboard/projects/${task.project?._id}/tasks/${task._id}`)} className="hover:bg-white/5 transition-colors cursor-pointer group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
@@ -141,7 +141,7 @@ export const TasksPage = () => {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className="text-[12px] text-[#a1a1aa] whitespace-nowrap">
-                      {new Date(task.dueDate).toLocaleDateString()}
+                      {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Due Date'}
                     </span>
                   </td>
                 </tr>

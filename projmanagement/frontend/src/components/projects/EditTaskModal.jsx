@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { TaskAPI } from '@/api/tasks.api';
 import { ProjectAPI } from '@/api/projects.api';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => {
+
+export const EditTaskModal = ({ isOpen, onClose, task }) => {
   const { projectId } = useParams();
   const queryClient = useQueryClient();
 
@@ -13,10 +13,26 @@ export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => 
     title: '',
     description: '',
     priority: 'low',
-    status: initialStatus,
+    status: 'todo',
     dueDate: '',
     assignedTo: ''
   });
+
+  const [attachments, setAttachments] = useState([]);
+
+  useEffect(() => {
+    if (task) {
+      setFormData({
+        title: task.title || '',
+        description: task.description || '',
+        priority: task.priority || 'low',
+        status: task.status || 'todo',
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
+        assignedTo: task.assignedTo?._id || task.assignedTo || ''
+      });
+      setAttachments([]);
+    }
+  }, [task]);
 
   const [error, setError] = useState(null);
 
@@ -26,15 +42,15 @@ export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => 
     enabled: !!projectId
   });
 
-  const createTaskMutation = useMutation({
-    mutationFn: (data) => TaskAPI.createTask(projectId, data),
+  const updateTaskMutation = useMutation({
+    mutationFn: (data) => TaskAPI.updateTask({ projectId, taskId: task._id, data }),
     onSuccess: () => {
       queryClient.invalidateQueries(['tasks', projectId]);
-      setFormData({ title: '', description: '', priority: 'low', status: initialStatus, dueDate: '', assignedTo: '' });
+      queryClient.invalidateQueries(['task', projectId, task._id]);
       onClose();
     },
     onError: (err) => {
-      setError(err.response?.data?.message || err.message || 'Failed to create task');
+      setError(err.response?.data?.message || err.message || 'Failed to update task');
     }
   });
 
@@ -42,23 +58,34 @@ export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => 
     e.preventDefault();
     setError(null);
     if (!formData.title.trim()) return setError('Task name is required');
-    createTaskMutation.mutate(formData);
+    
+    if (attachments.length > 0) {
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('description', formData.description);
+      data.append('priority', formData.priority);
+      data.append('status', formData.status);
+      if (formData.dueDate) data.append('dueDate', formData.dueDate);
+      if (formData.assignedTo) data.append('assignedTo', formData.assignedTo);
+      attachments.forEach((file) => data.append('attachments', file));
+      updateTaskMutation.mutate(data);
+    } else {
+      updateTaskMutation.mutate(formData);
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-md bg-[#12101b] border border-white/10 rounded-2xl shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md bg-[#12101b] border border-white/10 rounded-2xl shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-[18px] font-semibold text-white font-['Space_Grotesk']">Create New Task</h2>
+          <h2 className="text-[18px] font-semibold text-white font-['Space_Grotesk']">Edit Task</h2>
           <button 
             onClick={onClose}
             className="text-[#a1a1aa] hover:text-white transition-colors p-1 rounded-md hover:bg-white/5"
@@ -163,6 +190,23 @@ export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => 
               </select>
             </div>
           </div>
+          
+          <div>
+            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">
+              Add Attachments <span className="text-[#a1a1aa]/50">(Optional)</span>
+            </label>
+            <input
+              type="file"
+              multiple
+              onChange={(e) => setAttachments(Array.from(e.target.files))}
+              className="w-full bg-[#050608] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-[#a1a1aa] file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#8b55ff]/10 file:text-[#8b55ff] hover:file:bg-[#8b55ff]/20 transition-colors cursor-pointer"
+            />
+            {attachments.length > 0 && (
+              <div className="mt-2 text-[11px] text-[#a1a1aa]">
+                {attachments.length} file(s) selected
+              </div>
+            )}
+          </div>
 
           <div className="pt-4 flex justify-end gap-3">
             <button
@@ -174,11 +218,11 @@ export const CreateTaskModal = ({ isOpen, onClose, initialStatus = 'todo' }) => 
             </button>
             <button
               type="submit"
-              disabled={createTaskMutation.isPending}
+              disabled={updateTaskMutation.isPending}
               className="px-5 py-2 rounded-xl text-[13px] font-medium text-white bg-gradient-to-r from-[#8b55ff] to-[#4182ff] hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50"
             >
-              {createTaskMutation.isPending && <Loader2 size={14} className="animate-spin" />}
-              Create Task
+              {updateTaskMutation.isPending && <Loader2 size={14} className="animate-spin" />}
+              Save Changes
             </button>
           </div>
         </form>

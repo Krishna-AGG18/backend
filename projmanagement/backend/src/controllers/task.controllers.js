@@ -86,7 +86,7 @@ const createTask = asyncHandler(async (req, res) => {
         project: new mongoose.Types.ObjectId(projectId),
         assignedTo: assignedTo
             ? new mongoose.Types.ObjectId(assignedTo)
-            : undefined,
+            : new mongoose.Types.ObjectId(req.user._id),
         status,
         priority: req.body.priority,
         dueDate: req.body.dueDate,
@@ -209,9 +209,24 @@ const updateTask = asyncHandler(async (req, res) => {
         if (!isValidPriority) throw new ApiErrors(400, "Invalid priority for this project");
     }
 
+    const files = req.files || [];
+    let newAttachments = [];
+    if (files.length > 0) {
+        newAttachments = files.map((file) => {
+            return {
+                url: `${req.protocol}://${req.get("host")}/images/${file.filename}`,
+                mimetype: file.mimetype,
+                size: file.size,
+            };
+        });
+    }
+
     const task = await Task.findOneAndUpdate(
         { _id: taskId, project: projectId },
-        { $set: updateFields },
+        { 
+            $set: updateFields,
+            ...(newAttachments.length > 0 && { $push: { attachments: { $each: newAttachments } } })
+        },
         { new: true }
     );
 

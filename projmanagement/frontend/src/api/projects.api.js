@@ -19,6 +19,18 @@ export const ProjectAPI = {
     return response.data;
   },
 
+  // Update a project
+  updateProject: async (projectId, projectData) => {
+    const response = await apiClient.put(`/projects/${projectId}`, projectData);
+    return response.data;
+  },
+
+  // Delete a project
+  deleteProject: async (projectId) => {
+    const response = await apiClient.delete(`/projects/${projectId}`);
+    return response.data;
+  },
+
   // Get project members
   getProjectMembers: async (projectId) => {
     const response = await apiClient.get(`/projects/${projectId}/members`);
@@ -61,6 +73,11 @@ export const ProjectAPI = {
 
   deleteCustomPriority: async ({ projectId, priorityName }) => {
     const response = await apiClient.delete(`/projects/${projectId}/settings/priorities/${priorityName}`);
+    return response.data;
+  },
+
+  addCustomRole: async ({ projectId, roleData }) => {
+    const response = await apiClient.post(`/projects/${projectId}/settings/roles`, roleData);
     return response.data;
   }
 };

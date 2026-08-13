@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TaskAPI } from '@/api/tasks.api';
-import { useParams } from 'react-router-dom';
-import { MoreHorizontal, Calendar, MessageSquare, Paperclip, Plus } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { MoreHorizontal, Calendar, MessageSquare, Paperclip, Plus, ExternalLink } from 'lucide-react';
 import { CreateTaskModal } from './CreateTaskModal';
 
 export const TasksBoard = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialStatus, setModalInitialStatus] = useState('todo');
@@ -35,7 +36,7 @@ export const TasksBoard = () => {
   const [tasksMap, setTasksMap] = useState({});
 
   useEffect(() => {
-    if (data?.data?.tasks) {
+    if (data?.data?.data) {
       const newTasksMap = {};
       const newColumns = {
         'todo': { id: 'todo', title: 'To Do', taskIds: [] },
@@ -44,7 +45,7 @@ export const TasksBoard = () => {
         'completed': { id: 'completed', title: 'Completed', taskIds: [] }
       };
 
-      data.data.tasks.forEach(task => {
+      data.data.data.forEach(task => {
         const id = task._id;
         newTasksMap[id] = task;
         
@@ -185,6 +186,7 @@ export const TasksBoard = () => {
                               className={`bg-[#12101b] border border-white/5 p-4 rounded-xl cursor-grab active:cursor-grabbing hover:border-white/10 transition-colors ${
                                 snapshot.isDragging ? 'shadow-2xl shadow-black/50 rotate-2' : ''
                               }`}
+                              onDoubleClick={() => navigate(`/dashboard/projects/${projectId}/tasks/${task._id}`)}
                             >
                               <div className="flex justify-between items-start mb-3">
                                 <span className={`text-[10px] font-semibold px-2 py-1 rounded-md uppercase ${
@@ -198,7 +200,10 @@ export const TasksBoard = () => {
                                   <MoreHorizontal size={14} />
                                 </button>
                               </div>
-                              <h4 className="text-[14px] text-white font-medium mb-2 leading-snug">
+                              <h4 
+                                className="text-[14px] text-white font-medium mb-2 leading-snug cursor-pointer hover:text-[#8b55ff] hover:underline transition-colors"
+                                onClick={() => navigate(`/dashboard/projects/${projectId}/tasks/${task._id}`)}
+                              >
                                 {task.title}
                               </h4>
                               <p className="text-[12px] text-[#a1a1aa] line-clamp-2 mb-4">

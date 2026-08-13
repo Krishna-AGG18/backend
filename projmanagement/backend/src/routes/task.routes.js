@@ -36,7 +36,7 @@ router
 router
     .route("/:projectId/t/:taskId")
     .get(validateProjectPermission(ALL_ROLES), getTaskById)
-    .put(validateProjectPermission(UPDATE_TASK), updateTask)
+    .put(validateProjectPermission(UPDATE_TASK), upload.array("attachments"), updateTask)
     .delete(validateProjectPermission(DELETE_TASK), deleteTask);
 
 // Subtask Routes

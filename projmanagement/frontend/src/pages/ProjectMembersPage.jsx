@@ -152,9 +152,18 @@ export const ProjectMembersPage = () => {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="flex items-center gap-2">
-                        <RoleBadge role={member.role} />
-                      </div>
+                      <select 
+                        value={member.role}
+                        onChange={(e) => updateRoleMutation.mutate({ projectId, userId: member.user._id, role: e.target.value })}
+                        disabled={updateRoleMutation.isPending}
+                        className="bg-[#12101b] border border-white/10 text-[12px] text-white px-2 py-1 rounded focus:outline-none focus:border-[#8b55ff]/50 disabled:opacity-50 capitalize"
+                      >
+                        <option value="admin">Admin</option>
+                        <option value="member">Member</option>
+                        {project?.customRoles?.map(cr => (
+                          <option key={cr.name} value={cr.name}>{cr.name}</option>
+                        ))}
+                      </select>
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-[13px] text-[#a1a1aa]">
@@ -217,23 +226,19 @@ export const ProjectMembersPage = () => {
             <div className="space-y-2">
               <label className="text-[12px] font-medium text-[#a1a1aa]">Role</label>
               <div className="grid gap-3">
-                
-                <label className="flex items-start gap-3 p-3 rounded-xl border border-white/5 hover:border-[#8b55ff]/30 bg-white/[0.02] cursor-pointer transition-colors">
-                  <input type="radio" name="role" value="admin" checked={roleToInvite === 'admin'} onChange={(e) => setRoleToInvite(e.target.value)} className="mt-1 accent-[#8b55ff]" />
-                  <div>
-                    <div className="text-[13px] font-medium text-white mb-0.5">Admin</div>
-                    <div className="text-[11px] text-[#a1a1aa] leading-relaxed">Full access to project settings, members, and all content.</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start gap-3 p-3 rounded-xl border border-white/5 hover:border-[#8b55ff]/30 bg-white/[0.02] cursor-pointer transition-colors">
-                  <input type="radio" name="role" value="member" checked={roleToInvite === 'member'} onChange={(e) => setRoleToInvite(e.target.value)} className="mt-1 accent-[#8b55ff]" />
-                  <div>
-                    <div className="text-[13px] font-medium text-white mb-0.5">Member</div>
-                    <div className="text-[11px] text-[#a1a1aa] leading-relaxed">Can view, create and edit tasks, but cannot manage settings.</div>
-                  </div>
-                </label>
-
+                {[
+                  { name: 'admin', description: 'Full access to project settings, members, and all content.' },
+                  { name: 'member', description: 'Can view, create and edit tasks, but cannot manage settings.' },
+                  ...(project?.customRoles?.map(cr => ({ name: cr.name, description: 'Custom role with specific permissions.' })) || [])
+                ].map(r => (
+                  <label key={r.name} className="flex items-start gap-3 p-3 rounded-xl border border-white/5 hover:border-[#8b55ff]/30 bg-white/[0.02] cursor-pointer transition-colors">
+                    <input type="radio" name="role" value={r.name} checked={roleToInvite === r.name} onChange={(e) => setRoleToInvite(e.target.value)} className="mt-1 accent-[#8b55ff]" />
+                    <div>
+                      <div className="text-[13px] font-medium text-white mb-0.5 capitalize">{r.name}</div>
+                      <div className="text-[11px] text-[#a1a1aa] leading-relaxed">{r.description}</div>
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           </div>

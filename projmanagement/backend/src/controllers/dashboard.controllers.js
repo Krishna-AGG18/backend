@@ -57,8 +57,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     // 3. Upcoming tasks (due soon)
     const upcomingTasks = await Task.find({
         assignedTo: new mongoose.Types.ObjectId(userId),
-        status: { $ne: "done" },
-        dueDate: { $exists: true, $ne: null }
+        status: { $ne: "done" }
     })
     .sort({ dueDate: 1 })
     .limit(5)

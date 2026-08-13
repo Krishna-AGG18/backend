@@ -48,7 +48,7 @@ router
 router
     .route("/:projectId")
     .get(validateProjectPermission(ANY_ROLE), getProjectById)
-    .put(validateProjectPermission(MANAGE_PROJECT),       createProjectValidator(),validate,updateProject)
+    .put(validateProjectPermission(MANAGE_PROJECT),createProjectValidator(),validate,updateProject)
     .delete(validateProjectPermission(MANAGE_PROJECT),deleteProject)
 
 router

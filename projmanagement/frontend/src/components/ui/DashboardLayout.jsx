@@ -2,11 +2,27 @@ import React, { useState } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Menu, Search, Bell, ChevronLeft, Home } from 'lucide-react';
 import { DashboardSidebar } from './DashboardSidebar';
+import { useQuery } from '@tanstack/react-query';
+import { AuthAPI } from '@/api/auth.api';
+import { NotificationsAPI } from '@/api/notifications.api';
 
 export const DashboardLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { data: userResponse } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: AuthAPI.getCurrentUser
+  });
+
+  const { data: notifResponse } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => NotificationsAPI.getUserNotifications({ page: 1, limit: 10 })
+  });
+
+  const currentUser = userResponse?.data;
+  const unreadCount = notifResponse?.data?.notifications?.filter(n => !n.isRead).length || 0;
 
   const getBreadcrumbs = () => {
     const paths = location.pathname.split('/').filter(Boolean);
@@ -101,18 +117,22 @@ export const DashboardLayout = () => {
               />
             </div>
             
-            <button className="relative text-[#a1a1aa] hover:text-white transition-colors">
+            <button className="relative text-[#a1a1aa] hover:text-white transition-colors" onClick={() => navigate('/dashboard/notifications')}>
               <Bell size={18} />
-              <span className="absolute -top-1.5 -right-1.5 w-[16px] h-[16px] flex items-center justify-center bg-[#8b55ff] rounded-full text-[10px] font-bold text-white border-2 border-[#050608]">3</span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-[16px] h-[16px] flex items-center justify-center bg-[#8b55ff] rounded-full text-[10px] font-bold text-white border-2 border-[#050608]">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </button>
             
-            <div className="relative cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="relative cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate('/dashboard/settings/profile')}>
               <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Krishna" 
-                alt="User" 
+                src={currentUser?.avatar?.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser?.username || 'User'}`} 
+                alt={currentUser?.username || "User"} 
                 className="w-7 h-7 rounded-full bg-white/10"
               />
-              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-[2px] border-[#050608]" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-[2px] border-[#050608]" title="Online" />
             </div>
           </div>
         </header>
