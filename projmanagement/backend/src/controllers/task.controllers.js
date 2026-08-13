@@ -74,7 +74,7 @@ const createTask = asyncHandler(async (req, res) => {
 
     const attachments = files.map((file) => {
         return {
-            url: `${req.protocol}://${req.get("host")}/images/${file.filename}`,
+            url: file.path, // Cloudinary secure URL
             mimetype: file.mimetype,
             size: file.size,
         };
@@ -214,7 +214,7 @@ const updateTask = asyncHandler(async (req, res) => {
     if (files.length > 0) {
         newAttachments = files.map((file) => {
             return {
-                url: `${req.protocol}://${req.get("host")}/images/${file.filename}`,
+                url: file.path, // Cloudinary secure URL
                 mimetype: file.mimetype,
                 size: file.size,
             };
@@ -260,17 +260,8 @@ const deleteTask = asyncHandler(async (req, res) => {
     }
 
     if (task.attachments && task.attachments.length > 0) {
-        for (const attachment of task.attachments) {
-            try {
-                const filename = attachment.url.split("/").pop();
-                if (filename) {
-                    const filePath = path.resolve("./public/images", filename);
-                    await fs.unlink(filePath).catch(err => console.error("Error deleting file:", err));
-                }
-            } catch (err) {
-                console.error("Failed to delete attachment:", err);
-            }
-        }
+        // Cloudinary file deletion can be implemented here using cloudinary.uploader.destroy()
+        // if the public_id is extracted from the URL. For now, we skip deletion to prevent local fs errors.
     }
 
     await logActivity(taskId, "Task", projectId, "deleted", req.user._id, `Task '${task.title}' deleted`);

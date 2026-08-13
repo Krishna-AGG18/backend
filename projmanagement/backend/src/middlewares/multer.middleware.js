@@ -1,17 +1,27 @@
 import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, `./public/images`)
+// Configure Cloudinary with credentials from .env
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure Multer to use Cloudinary storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "workloom_uploads",
+        allowed_formats: ["jpg", "jpeg", "png", "gif", "pdf", "docx"], // Allow specific file types
+        public_id: (req, file) => `${Date.now()}-${file.originalname.split('.')[0]}` // Use original name (without extension)
     },
-    filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`)
-    }
-})
+});
 
 export const upload = multer({
     storage,
-    limits : {
-        fileSize: 1*1000*1000,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // Increased limit to 5MB for attachments
     }
-})
+});

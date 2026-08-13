@@ -22,7 +22,7 @@ export const DashboardLayout = () => {
   });
 
   const currentUser = userResponse?.data;
-  const unreadCount = notifResponse?.data?.notifications?.filter(n => !n.isRead).length || 0;
+  const unreadCount = notifResponse?.data?.data?.filter(n => !n.isRead).length || 0;
 
   const getBreadcrumbs = () => {
     const paths = location.pathname.split('/').filter(Boolean);
